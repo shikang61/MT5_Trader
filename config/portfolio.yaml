@@ -1,16 +1,25 @@
 # Books for the portfolio runner (scripts/run_portfolio.py).
 # weight = share of the round's risk budget (config/risk.yaml); sum ~1.
 # Same symbol in several books is fine — targets are netted before ordering.
-# Evidence-based book (real-month backtests, May 12 - Jun 11 ticks):
-#   london_orb +2.0%/mo Sharpe 1.8 | vwap_trend +3.5%/mo Sharpe 3.3 (in-sample caveat)
-# Benched on negative evidence: ratio_mr (-0.95%, DD -8.9%), donchian (-7.4%),
-# regime fades (-3.4%). Re-validate everything on the competition dump.
+# Evidence-based book (real-month backtests, May 12 - Jun 11 ticks).
+# Timeframe sweep finding: 5m bars beat 1m across strategies (1m = churn+noise):
+#   donchian@5m  +5.1%/mo Sharpe 4.2, 4/5 weeks positive, param plateau
+#   vwap_trend@5m +5.7%/mo Sharpe 7.7 (lumpy: trend weeks carry it)
+#   london_orb@1m +2.0%/mo Sharpe 1.8 (timeframe-insensitive, original form)
+# Benched: ratio_mr (-0.95%, DD -8.9%), regime_switch (duplicates donchian),
+# ofi (needs real depth), all FX/BTC books (negative cross-asset evidence).
 sl_atr_mult: 3.0      # broker-side disaster stop on net positions (0 = off)
 tp_atr_mult: 0.0      # broker-side take profit (0 = off; strategy exits first)
 books:
-  - strategy: london_orb
+  - strategy: donchian
     symbol: XAUUSD
-    weight: 0.5
+    timeframe: M5
+    weight: 0.35
   - strategy: vwap_trend
     symbol: XAUUSD
-    weight: 0.5
+    timeframe: M5
+    weight: 0.35
+  - strategy: london_orb
+    symbol: XAUUSD
+    timeframe: M1
+    weight: 0.3

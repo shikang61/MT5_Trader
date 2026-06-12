@@ -27,7 +27,8 @@ def load_books(path: Path) -> tuple[list[Book], dict]:
              symbol=b["symbol"],
              weight=float(b.get("weight", 1.0)),
              symbol_b=b.get("symbol2", ""),
-             beta=float(b.get("beta", 1.0)))
+             beta=float(b.get("beta", 1.0)),
+             timeframe=b.get("timeframe", "M1"))
         for b in cfg["books"]
     ]
     total = sum(b.weight for b in books)

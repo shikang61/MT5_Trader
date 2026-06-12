@@ -155,12 +155,14 @@ class LiveRunner:
 @dataclass
 class Book:
     """One strategy on one symbol (or symbol pair). weight scales its share
-    of the round's risk budget; weights across books should sum to ~1."""
+    of the round's risk budget; weights across books should sum to ~1.
+    timeframe is the bar size the strategy sees (M1/M5/M15/H1)."""
     strategy: object
     symbol: str
     weight: float = 1.0
     symbol_b: str = ""
     beta: float = 1.0
+    timeframe: str = "M1"
     _last_bar_ts: object = None
     _targets: dict = None  # type: ignore[assignment]
 
@@ -170,9 +172,9 @@ class Book:
         cached targets so the portfolio keeps holding existing positions."""
         from ..strategies.meanrev_pairs import spread_bars
 
-        bars_a = bars_of(self.symbol)
+        bars_a = bars_of(self.symbol, self.timeframe)
         if self.symbol_b:
-            sig_bars = spread_bars(bars_a, bars_of(self.symbol_b), self.beta)
+            sig_bars = spread_bars(bars_a, bars_of(self.symbol_b, self.timeframe), self.beta)
         else:
             sig_bars = bars_a
         bar_ts = sig_bars["ts"][-1]
@@ -187,7 +189,7 @@ class Book:
 
         price_a = float(bars_a["close"][-1])
         if self.symbol_b:
-            bars_b = bars_of(self.symbol_b)
+            bars_b = bars_of(self.symbol_b, self.timeframe)
             price_b = float(bars_b["close"][-1])
             lots_a, lots_b = pair_leg_lots(
                 frac, self.beta, equity, price_a, price_b,
@@ -204,7 +206,7 @@ class Book:
 
     def _name(self) -> str:
         leg2 = f"+{self.symbol_b}" if self.symbol_b else ""
-        return f"{type(self.strategy).__name__}:{self.symbol}{leg2}"
+        return f"{type(self.strategy).__name__}:{self.symbol}{leg2}@{self.timeframe}"
 
 
 class _BarCache:
@@ -215,10 +217,11 @@ class _BarCache:
         self._bars: dict = {}
         self._specs: dict = {}
 
-    def __call__(self, symbol: str):
-        if symbol not in self._bars:
-            self._bars[symbol] = self.gw.bars(symbol, "M1", self.lookback)
-        return self._bars[symbol]
+    def __call__(self, symbol: str, timeframe: str = "M1"):
+        key = (symbol, timeframe)
+        if key not in self._bars:
+            self._bars[key] = self.gw.bars(symbol, timeframe, self.lookback)
+        return self._bars[key]
 
     def spec(self, symbol: str) -> dict:
         if symbol not in self._specs:
@@ -273,7 +276,7 @@ class PortfolioRunner(LiveRunner):
 
         fills = {}
         for sym, lots in net.items():
-            bars = self._cache(sym)
+            bars = self._cache(sym, "M1")  # execution-level price/ATR always M1
             price = float(bars["close"][-1])
             atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
             sl, tp = protective_levels(lots, price, atr_val,
