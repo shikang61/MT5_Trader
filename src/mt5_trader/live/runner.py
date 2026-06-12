@@ -43,6 +43,17 @@ def protective_levels(side: float, price: float, atr_value: float,
     return sl, tp
 
 
+def ratchet_sl(side: float, sl: float, prev_side: float, prev_sl: float) -> float:
+    """Trailing stop: while the position direction is unchanged, the SL only
+    tightens (up for longs, down for shorts), never loosens. Direction flip
+    or flat resets the ratchet."""
+    if side == 0 or sl == 0.0:
+        return sl
+    if prev_side == 0 or prev_sl == 0.0 or (side > 0) != (prev_side > 0):
+        return sl
+    return max(sl, prev_sl) if side > 0 else min(sl, prev_sl)
+
+
 def pair_leg_lots(target_frac: float, beta: float, equity: float,
                   price_a: float, price_b: float,
                   contract_a: float, contract_b: float) -> tuple[float, float]:
@@ -106,6 +117,9 @@ class LiveRunner:
         atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
         sl, tp = protective_levels(target_lots, price, atr_val,
                                    self.cfg.sl_atr_mult, self.cfg.tp_atr_mult)
+        prev_side, prev_sl = getattr(self, "_trail", (0.0, 0.0))
+        sl = ratchet_sl(target_lots, sl, prev_side, prev_sl)
+        self._trail = (target_lots, sl)
         delta = self.gw.reconcile(self.cfg.symbol, target_lots, sl=sl, tp=tp)
 
         self._log(event="STEP", bar_ts=bar_ts, equity=equity, signal=sig,
@@ -184,7 +198,8 @@ class Book:
             spec = bars_of.spec(self.symbol)
             self._targets = {self.symbol: frac * equity / (spec["contract_size"] * price_a)}
         info = {"book": self._name(), "bar_ts": bar_ts, "signal": sig,
-                "realized_vol": vol, "weighted_frac": frac}
+                "realized_vol": vol, "weighted_frac": frac,
+                "targets": dict(self._targets)}
         return self._targets, info
 
     def _name(self) -> str:
@@ -225,6 +240,7 @@ class PortfolioRunner(LiveRunner):
         self.books = books
         self.symbols = sorted({s for b in books for s in (b.symbol, b.symbol_b) if s})
         self._cache = _BarCache(gateway, cfg.lookback_bars)
+        self._trail: dict[str, tuple[float, float]] = {}
 
     def flatten_all(self) -> None:
         for s in self.symbols:
@@ -262,7 +278,12 @@ class PortfolioRunner(LiveRunner):
             atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
             sl, tp = protective_levels(lots, price, atr_val,
                                        self.cfg.sl_atr_mult, self.cfg.tp_atr_mult)
+            prev_side, prev_sl = self._trail.get(sym, (0.0, 0.0))
+            sl = ratchet_sl(lots, sl, prev_side, prev_sl)
+            self._trail[sym] = (lots, sl)
             fills[sym] = {"target_lots": lots, "sl": sl, "tp": tp,
+                          "price": price,
+                          "contract_size": self._cache.spec(sym)["contract_size"],
                           "traded_lots": self.gw.reconcile(sym, lots, sl=sl, tp=tp)}
 
         self._log(event="STEP", equity=equity, books=infos, fills=fills)
