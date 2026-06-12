@@ -53,7 +53,10 @@ ip)
     az network nsg rule update \
         -g "$RG" --nsg-name "${VM}NSG" -n AllowRDPFromMe \
         --source-address-prefixes "$(myip)/32" -o none
-    echo "RDP now allowed from $(myip)"
+    az network nsg rule update \
+        -g "$RG" --nsg-name "${VM}NSG" -n AllowSSHFromMe \
+        --source-address-prefixes "$(myip)/32" -o none 2>/dev/null || true
+    echo "RDP+SSH now allowed from $(myip)"
     ;;
 destroy)
     echo "This deletes the VM, disk and all data in resource group '$RG'."
