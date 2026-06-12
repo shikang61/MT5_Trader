@@ -1,0 +1,31 @@
+# Round-aware risk budgets. Times UTC (competition times are BST = UTC+1).
+# Posture: survive rounds 1-2 (clear the cutoff, don't blow up), push round 3.
+# target_vol = annualized vol budget; sizing = min(target_vol / realized_vol, max_leverage).
+# loss_limit = kill switch as a fraction of round-start equity.
+
+default:            # prep phase / outside rounds (paper trading)
+  max_leverage: 2
+  loss_limit: 0.04
+  target_vol: 0.15
+
+rounds:
+  - name: round1    # Jun 21 11pm -> Jun 22 10pm BST, top 200 advance
+    start: 2026-06-21T22:00:00Z
+    end: 2026-06-22T21:00:00Z
+    max_leverage: 3
+    loss_limit: 0.05
+    target_vol: 0.25
+
+  - name: round2    # -> Jun 23 10pm BST, top 150 advance
+    start: 2026-06-22T21:00:00Z
+    end: 2026-06-23T21:00:00Z
+    max_leverage: 3
+    loss_limit: 0.05
+    target_vol: 0.25
+
+  - name: round3    # -> Jun 24 10pm BST, top 100 to Finals — push
+    start: 2026-06-23T21:00:00Z
+    end: 2026-06-24T21:00:00Z
+    max_leverage: 6
+    loss_limit: 0.10
+    target_vol: 0.50

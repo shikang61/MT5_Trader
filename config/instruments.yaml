@@ -1,0 +1,9 @@
+# Competition instruments. Symbol names may differ on the competition broker —
+# verify in MT5 Market Watch after account setup and update here.
+instruments:
+  XAUUSD: {asset_class: metal, note: "primary — Gold"}
+  XAGUSD: {asset_class: metal, note: "Silver, for the Gold/Silver ratio pair"}
+  EURUSD: {asset_class: fx, note: "primary FX"}
+  GBPUSD: {asset_class: fx, note: "primary FX"}
+  USDJPY: {asset_class: fx}
+  EURGBP: {asset_class: fx, note: "FX triangle leg vs EURUSD/GBPUSD"}
