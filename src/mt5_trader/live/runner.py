@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from ..backtest.engine import BTConfig
-from ..features.technicals import realized_vol
+from ..features.technicals import atr, realized_vol
 from ..risk.manager import RiskManager
 from .mt5_gateway import MT5Gateway
 
@@ -25,7 +25,22 @@ class RunnerCfg:
     vol_window: int = 240
     poll_seconds: float = 5.0
     heartbeat_seconds: float = 60.0
+    sl_atr_mult: float = 3.0   # broker-side disaster stop, 0 = off
+    tp_atr_mult: float = 0.0   # broker-side take profit, 0 = off
+    atr_window: int = 60
     log_path: Path = Path("logs/live.jsonl")
+
+
+def protective_levels(side: float, price: float, atr_value: float,
+                      sl_mult: float, tp_mult: float) -> tuple[float, float]:
+    """Absolute SL/TP prices for a position. Wide by design: the strategy's
+    own exit logic fires first; these survive a dead runner/VPS. 0 = off."""
+    if side == 0 or atr_value <= 0 or not (atr_value == atr_value):  # NaN guard
+        return 0.0, 0.0
+    direction = 1.0 if side > 0 else -1.0
+    sl = price - direction * sl_mult * atr_value if sl_mult > 0 else 0.0
+    tp = price + direction * tp_mult * atr_value if tp_mult > 0 else 0.0
+    return sl, tp
 
 
 def pair_leg_lots(target_frac: float, beta: float, equity: float,
@@ -87,11 +102,16 @@ class LiveRunner:
         spec = self.gw.symbol_spec(self.cfg.symbol)
         price = float(bars["close"][-1])
         target_lots = target_frac * equity / (spec["contract_size"] * price)
-        delta = self.gw.reconcile(self.cfg.symbol, target_lots)
+
+        atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
+        sl, tp = protective_levels(target_lots, price, atr_val,
+                                   self.cfg.sl_atr_mult, self.cfg.tp_atr_mult)
+        delta = self.gw.reconcile(self.cfg.symbol, target_lots, sl=sl, tp=tp)
 
         self._log(event="STEP", bar_ts=bar_ts, equity=equity, signal=sig,
                   realized_vol=vol, target_frac=target_frac,
-                  target_lots=target_lots, traded_lots=delta, price=price)
+                  target_lots=target_lots, traded_lots=delta, price=price,
+                  sl=sl, tp=tp)
 
     def flatten_all(self) -> None:
         self.gw.flatten(self.cfg.symbol)
@@ -108,6 +128,157 @@ class LiveRunner:
                 self._log(event="ERROR", error=repr(e))
                 consec_errors += 1
                 if consec_errors >= 3:  # terminal likely restarted — re-attach
+                    try:
+                        self.gw.reconnect()
+                        self._log(event="RECONNECT_OK")
+                    except Exception as re_err:
+                        self._log(event="RECONNECT_FAILED", error=repr(re_err))
+                    consec_errors = 0
+            time.sleep(self.cfg.poll_seconds)
+        self._log(event="HALTED")
+
+
+@dataclass
+class Book:
+    """One strategy on one symbol (or symbol pair). weight scales its share
+    of the round's risk budget; weights across books should sum to ~1."""
+    strategy: object
+    symbol: str
+    weight: float = 1.0
+    symbol_b: str = ""
+    beta: float = 1.0
+    _last_bar_ts: object = None
+    _targets: dict = None  # type: ignore[assignment]
+
+    def targets(self, bars_of, equity: float, risk: RiskManager, now,
+                vol_window: int) -> tuple[dict[str, float], dict]:
+        """Target lots per symbol. Recomputes on a new bar, else returns the
+        cached targets so the portfolio keeps holding existing positions."""
+        from ..strategies.meanrev_pairs import spread_bars
+
+        bars_a = bars_of(self.symbol)
+        if self.symbol_b:
+            sig_bars = spread_bars(bars_a, bars_of(self.symbol_b), self.beta)
+        else:
+            sig_bars = bars_a
+        bar_ts = sig_bars["ts"][-1]
+        if bar_ts == self._last_bar_ts and self._targets is not None:
+            return self._targets, {}
+        self._last_bar_ts = bar_ts
+
+        sig = float(self.strategy.signal(sig_bars)[-1])
+        vol = float(sig_bars.select(
+            realized_vol(vol_window, BTConfig().bars_per_year)).to_series()[-1])
+        frac = risk.size(sig, vol, now) * self.weight
+
+        price_a = float(bars_a["close"][-1])
+        if self.symbol_b:
+            bars_b = bars_of(self.symbol_b)
+            price_b = float(bars_b["close"][-1])
+            lots_a, lots_b = pair_leg_lots(
+                frac, self.beta, equity, price_a, price_b,
+                bars_of.spec(self.symbol)["contract_size"],
+                bars_of.spec(self.symbol_b)["contract_size"])
+            self._targets = {self.symbol: lots_a, self.symbol_b: lots_b}
+        else:
+            spec = bars_of.spec(self.symbol)
+            self._targets = {self.symbol: frac * equity / (spec["contract_size"] * price_a)}
+        info = {"book": self._name(), "bar_ts": bar_ts, "signal": sig,
+                "realized_vol": vol, "weighted_frac": frac}
+        return self._targets, info
+
+    def _name(self) -> str:
+        leg2 = f"+{self.symbol_b}" if self.symbol_b else ""
+        return f"{type(self.strategy).__name__}:{self.symbol}{leg2}"
+
+
+class _BarCache:
+    """One bars/spec fetch per symbol per cycle, shared across books."""
+
+    def __init__(self, gw: MT5Gateway, lookback: int):
+        self.gw, self.lookback = gw, lookback
+        self._bars: dict = {}
+        self._specs: dict = {}
+
+    def __call__(self, symbol: str):
+        if symbol not in self._bars:
+            self._bars[symbol] = self.gw.bars(symbol, "M1", self.lookback)
+        return self._bars[symbol]
+
+    def spec(self, symbol: str) -> dict:
+        if symbol not in self._specs:
+            self._specs[symbol] = self.gw.symbol_spec(symbol)
+        return self._specs[symbol]
+
+    def new_cycle(self) -> None:
+        self._bars.clear()
+
+
+class PortfolioRunner(LiveRunner):
+    """Runs all books in one loop: per-symbol targets are NETTED across books
+    (two books disagreeing on XAUUSD partially cancel — intended), risk budget
+    is split by book weight, kill switch flattens every symbol."""
+
+    def __init__(self, gateway: MT5Gateway, books: list[Book], risk: RiskManager,
+                 cfg: RunnerCfg):
+        super().__init__(gateway, books[0].strategy, risk, cfg)
+        self.books = books
+        self.symbols = sorted({s for b in books for s in (b.symbol, b.symbol_b) if s})
+        self._cache = _BarCache(gateway, cfg.lookback_bars)
+
+    def flatten_all(self) -> None:
+        for s in self.symbols:
+            self.gw.flatten(s)
+
+    def step(self) -> None:
+        now = datetime.now(timezone.utc)
+        self._cache.new_cycle()
+        equity = self.gw.equity()
+        self.risk.mark_round_start(now, equity)
+
+        if self.risk.kill(equity, now):
+            self.flatten_all()
+            self.halted = True
+            self._log(event="KILL_SWITCH", equity=equity)
+            return
+
+        net: dict[str, float] = {s: 0.0 for s in self.symbols}
+        infos = []
+        for book in self.books:
+            targets, info = book.targets(self._cache, equity, self.risk, now,
+                                         self.cfg.vol_window)
+            for sym, lots in targets.items():
+                net[sym] += lots
+            if info:
+                infos.append(info)
+        if not infos:
+            self._heartbeat()
+            return  # no book saw a new bar
+
+        fills = {}
+        for sym, lots in net.items():
+            bars = self._cache(sym)
+            price = float(bars["close"][-1])
+            atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
+            sl, tp = protective_levels(lots, price, atr_val,
+                                       self.cfg.sl_atr_mult, self.cfg.tp_atr_mult)
+            fills[sym] = {"target_lots": lots, "sl": sl, "tp": tp,
+                          "traded_lots": self.gw.reconcile(sym, lots, sl=sl, tp=tp)}
+
+        self._log(event="STEP", equity=equity, books=infos, fills=fills)
+
+    def run(self) -> None:
+        self._log(event="START", books=[b._name() for b in self.books],
+                  symbols=self.symbols)
+        consec_errors = 0
+        while not self.halted:
+            try:
+                self.step()
+                consec_errors = 0
+            except Exception as e:
+                self._log(event="ERROR", error=repr(e))
+                consec_errors += 1
+                if consec_errors >= 3:
                     try:
                         self.gw.reconnect()
                         self._log(event="RECONNECT_OK")

@@ -1,0 +1,15 @@
+# Books for the portfolio runner (scripts/run_portfolio.py).
+# weight = share of the round's risk budget (config/risk.yaml); sum ~1.
+# Same symbol in several books is fine — targets are netted before ordering.
+# Round-1 lineup (adjust after the research pass on the historical dump):
+sl_atr_mult: 3.0      # broker-side disaster stop on net positions (0 = off)
+tp_atr_mult: 0.0      # broker-side take profit (0 = off; strategy exits first)
+books:
+  - strategy: london_orb
+    symbol: XAUUSD
+    weight: 0.5
+  - strategy: ratio_mr
+    symbol: XAUUSD
+    symbol2: XAGUSD
+    beta: 1.0
+    weight: 0.5

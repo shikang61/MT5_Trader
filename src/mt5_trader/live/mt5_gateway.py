@@ -94,8 +94,22 @@ class MT5Gateway:
         return sum(p.volume if p.type == mt5.POSITION_TYPE_BUY else -p.volume
                    for p in positions)
 
-    def market_order(self, symbol: str, lots: float, deviation: int = 20) -> None:
-        """Signed lots: positive buys, negative sells."""
+    def _send(self, request: dict) -> None:
+        result = mt5.order_send(request)
+        if result is None or result.retcode != mt5.TRADE_RETCODE_DONE:
+            raise MT5Error(f"order_send failed: {getattr(result, 'retcode', None)} "
+                           f"{getattr(result, 'comment', '')} {mt5.last_error()}")
+
+    def _min_stop_dist(self, symbol: str) -> float:
+        info = mt5.symbol_info(symbol)
+        return float(info.trade_stops_level * info.point) if info else 0.0
+
+    def market_order(self, symbol: str, lots: float, deviation: int = 20,
+                     sl: float = 0.0, tp: float = 0.0,
+                     position_ticket: int | None = None) -> None:
+        """Signed lots: positive buys, negative sells. sl/tp are absolute
+        prices (0 = none). position_ticket closes/reduces that position
+        (required on hedging accounts, else a counter-order opens a new one)."""
         tick = mt5.symbol_info_tick(symbol)
         if tick is None:
             raise MT5Error(f"no tick for {symbol}")
@@ -110,24 +124,81 @@ class MT5Gateway:
             "type_time": mt5.ORDER_TIME_GTC,
             "type_filling": mt5.ORDER_FILLING_IOC,
         }
-        result = mt5.order_send(request)
-        if result is None or result.retcode != mt5.TRADE_RETCODE_DONE:
-            raise MT5Error(f"order_send failed: {getattr(result, 'retcode', None)} "
-                           f"{getattr(result, 'comment', '')} {mt5.last_error()}")
+        if sl:
+            request["sl"] = sl
+        if tp:
+            request["tp"] = tp
+        if position_ticket is not None:
+            request["position"] = position_ticket
+        self._send(request)
 
-    def reconcile(self, symbol: str, target_lots: float) -> float:
-        """Trade the difference between current and target net lots.
-        Returns the delta actually sent (0.0 if within one lot step)."""
+    def limit_order(self, symbol: str, lots: float, price: float,
+                    sl: float = 0.0, tp: float = 0.0,
+                    expire_minutes: int | None = None) -> None:
+        """Pending limit order, signed lots. Optional expiry (minutes from now)."""
+        request = {
+            "action": mt5.TRADE_ACTION_PENDING,
+            "symbol": symbol,
+            "volume": abs(lots),
+            "type": mt5.ORDER_TYPE_BUY_LIMIT if lots > 0 else mt5.ORDER_TYPE_SELL_LIMIT,
+            "price": price,
+            "type_time": mt5.ORDER_TIME_GTC,
+            "type_filling": mt5.ORDER_FILLING_RETURN,
+        }
+        if sl:
+            request["sl"] = sl
+        if tp:
+            request["tp"] = tp
+        if expire_minutes:
+            tick = mt5.symbol_info_tick(symbol)
+            request["type_time"] = mt5.ORDER_TIME_SPECIFIED
+            request["expiration"] = tick.time + expire_minutes * 60
+        self._send(request)
+
+    def cancel_pending(self, symbol: str) -> int:
+        """Remove all pending orders on symbol. Returns count cancelled."""
+        orders = mt5.orders_get(symbol=symbol) or []
+        for o in orders:
+            self._send({"action": mt5.TRADE_ACTION_REMOVE, "order": o.ticket})
+        return len(orders)
+
+    def set_position_sltp(self, symbol: str, sl: float = 0.0, tp: float = 0.0) -> None:
+        """Attach/replace SL/TP on every open position for symbol."""
+        for p in mt5.positions_get(symbol=symbol) or []:
+            if abs(p.sl - sl) > 1e-9 or abs(p.tp - tp) > 1e-9:
+                self._send({"action": mt5.TRADE_ACTION_SLTP, "symbol": symbol,
+                            "position": p.ticket, "sl": sl, "tp": tp})
+
+    def reconcile(self, symbol: str, target_lots: float,
+                  sl: float = 0.0, tp: float = 0.0) -> float:
+        """Trade the difference between current and target net lots; closes
+        opposing positions by ticket first (hedging-account safe), then opens
+        the remainder with optional protective sl/tp (absolute prices).
+        Returns the net delta actually sent (0.0 if within one lot step)."""
         spec = self.symbol_spec(symbol)
         step = spec["lot_step"]
         delta = target_lots - self.position_lots(symbol)
         delta = round(delta / step) * step
-        if abs(delta) < step:
+        if abs(delta) < max(step, spec["lot_min"]):
             return 0.0
         delta = max(-spec["lot_max"], min(spec["lot_max"], delta))
-        if abs(delta) < spec["lot_min"]:
-            return 0.0
-        self.market_order(symbol, delta)
+
+        remaining = delta
+        positions = mt5.positions_get(symbol=symbol) or []
+        for p in positions:
+            if remaining == 0:
+                break
+            signed = p.volume if p.type == mt5.POSITION_TYPE_BUY else -p.volume
+            if signed * remaining < 0:  # position opposes the delta -> close it
+                close = min(p.volume, abs(remaining))
+                self.market_order(symbol, close if remaining > 0 else -close,
+                                  position_ticket=p.ticket)
+                remaining += close if remaining < 0 else -close
+
+        if abs(remaining) >= max(step, spec["lot_min"]):
+            self.market_order(symbol, remaining, sl=sl, tp=tp)
+        if (sl or tp) and self.position_lots(symbol) != 0:
+            self.set_position_sltp(symbol, sl, tp)
         return delta
 
     def flatten(self, symbol: str) -> None:
