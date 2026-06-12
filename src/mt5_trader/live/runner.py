@@ -77,10 +77,20 @@ class LiveRunner:
     def run(self) -> None:
         self._log(event="START", symbol=self.cfg.symbol,
                   strategy=type(self.strategy).__name__)
+        consec_errors = 0
         while not self.halted:
             try:
                 self.step()
+                consec_errors = 0
             except Exception as e:  # log and keep the loop alive
                 self._log(event="ERROR", error=repr(e))
+                consec_errors += 1
+                if consec_errors >= 3:  # terminal likely restarted — re-attach
+                    try:
+                        self.gw.reconnect()
+                        self._log(event="RECONNECT_OK")
+                    except Exception as re_err:
+                        self._log(event="RECONNECT_FAILED", error=repr(re_err))
+                    consec_errors = 0
             time.sleep(self.cfg.poll_seconds)
         self._log(event="HALTED")

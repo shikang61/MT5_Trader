@@ -30,8 +30,16 @@ class MT5Gateway:
         }
 
     def connect(self, login: int, password: str, server: str) -> None:
-        if not mt5.initialize(login=login, password=password, server=server):
+        self._creds = {"login": login, "password": password, "server": server}
+        if not mt5.initialize(**self._creds):
             raise MT5Error(f"initialize failed: {mt5.last_error()}")
+
+    def reconnect(self) -> None:
+        """Re-attach after the terminal restarted (e.g. auto-update) — the
+        IPC pipe dies with (-10001, 'IPC send failed')."""
+        mt5.shutdown()
+        if not mt5.initialize(**self._creds):
+            raise MT5Error(f"reconnect failed: {mt5.last_error()}")
 
     def shutdown(self) -> None:
         mt5.shutdown()
