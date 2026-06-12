@@ -94,6 +94,26 @@ spreads properly). Ride trends at full size; scalp the range.
   already exist. Gate: only deploy if the fill-model backtest survives
   pessimistic queue assumptions.
 
+## 7. VWAP Stretch Continuation — Gold (`vwap_trend`)
+
+**Idea:** price 2σ beyond the session VWAP (tick-count weighted) *continues*
+rather than reverts on gold — found by inverting a failed VWAP-reversion
+study. Enter with the stretch after the first 2h of the session, exit when
+|z| ≤ 0.5 or session end.
+
+**Evidence (May 12 – Jun 11 2026 ticks):** event study +3.5 to +5.6bp/trade
+after costs, 70 deduped episodes, positive 4 of 5 weeks; full engine
+backtest **+3.5%/month, Sharpe 3.3, max DD −4.7%, turnover 85**. Caveats:
+parameters chosen on the same month (in-sample risk); re-validate on the
+competition dump and paper fills before sizing it. Candidate for the
+Round 1–2 book alongside london_orb.
+
+**Volume studies that failed (same data):** activity-conditioned breakout
+continuation (breakouts faded regardless of volume), L1 quote-imbalance
+direction (Dukascopy sizes carry no signal). FX triangle on real data:
+consistent (the only "deviations" were stale weekend-open quotes) — rerun
+`scripts/research_hf.py triangle` against the sim feed in paper week.
+
 ## Portfolio per round (initial plan)
 
 | Round | Book | Vol budget |
