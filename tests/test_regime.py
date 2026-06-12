@@ -49,7 +49,7 @@ def test_switch_rides_trend():
 
 def test_switch_fades_range_extremes():
     bars = make_bars(sideways())
-    strat = REGISTRY["regime_switch"]()
+    strat = REGISTRY["regime_switch"](fade_size=0.7)  # off by default
     sig = strat.signal(bars)
     close = bars["close"].to_numpy()
     active = sig[500:][sig[500:] != 0]
