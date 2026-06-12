@@ -74,6 +74,26 @@ environment may not enforce it. Check on the dump:
 If persistent misalignments exist → near-arbitrage, the safest money in the
 competition. If not, costs you one research hour.
 
+## 6. Regime Switch — Gold (`regime_switch`)
+
+**Idea:** classify gold into trend-up / trend-down / range via Kaufman
+efficiency ratio (computed on 15m-coarsened closes — M1 noise kills ER;
+empirically max ER(240×M1) was 0.28 on a month of real ticks while 15m ER
+spreads properly). Ride trends at full size; scalp the range.
+
+**Empirical status (May 12 – Jun 11 2026 Dukascopy XAUUSD ticks):**
+- Detector: 10% trend-up / 74% range / 17% trend-down — plausible.
+- Trend leg: ~breakeven-positive (+0.2%, Sharpe 0.3). Needs a better month
+  or parameter work before earning a portfolio weight.
+- Fade (range-scalp) leg as a *taker*: **−3.4% to −5.8% after costs**, with
+  and without stops, turnover ~350. Dead as implemented — costs eat it.
+- **Open research idea:** the same scalp as a *maker* (resting limit orders
+  at the range edges, collecting spread instead of paying it) flips the cost
+  sign. Requires a passive-fill backtest against the competition dump's
+  5-level depth. Gateway primitives (`limit_order`, `cancel_pending`)
+  already exist. Gate: only deploy if the fill-model backtest survives
+  pessimistic queue assumptions.
+
 ## Portfolio per round (initial plan)
 
 | Round | Book | Vol budget |
