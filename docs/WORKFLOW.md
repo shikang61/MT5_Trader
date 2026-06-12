@@ -125,6 +125,39 @@ within the stressed backtest assumption; zero unexplained errors.
 
 ---
 
+## Appendix: driving the VPS over SSH (no RDP needed)
+
+One-time setup already done by `scripts/setup_ssh_azure.sh` (OpenSSH on the VM,
+your key, port 22 from your IP, `mt5-vps` alias) plus a read-only GitHub deploy
+key on the VPS so `git pull` works headless. Daily commands, all from the Mac:
+
+```bash
+ssh mt5-vps                                            # interactive PowerShell on the VPS
+ssh mt5-vps "cd Desktop/MT5_Trader; git pull"          # deploy latest code/config
+ssh mt5-vps "cd Desktop/MT5_Trader; git log --oneline -1"   # what's deployed?
+
+# monitor the runner
+ssh mt5-vps "cd Desktop/MT5_Trader; Get-Content logs\live_XAUUSD_donchian.jsonl -Tail 10"
+
+# pull logs home for post-round review
+scp "mt5-vps:Desktop/MT5_Trader/logs/*.jsonl" reports/
+
+# restart the runner after a deploy (then relaunch it — see below)
+ssh mt5-vps "Stop-Process -Name python -ErrorAction SilentlyContinue"
+```
+
+Caveats:
+- **MT5 terminal is GUI-only.** It survives RDP disconnects, but to (re)start
+  it you need one RDP session: launch terminal, log in, *disconnect* (close the
+  window on the Mac side) — never "Sign out", which kills the session.
+- **Starting the runner over SSH works** (`python scripts\run_live.py ...`)
+  but dies with the SSH session; for unattended runs start it from an RDP
+  session (or a scheduled task) so it outlives the connection.
+- **Home IP changed?** RDP/SSH stop connecting:
+  `bash scripts/provision_azure.sh ip`
+- VPS can `git pull` but not push (read-only deploy key, deliberate —
+  one-way code flow).
+
 ## Rules that keep you out of trouble
 
 1. **One-way code flow.** Mac → GitHub → VPS. The VPS is a dumb executor.
