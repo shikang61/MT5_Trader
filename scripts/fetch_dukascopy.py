@@ -20,8 +20,9 @@ from pathlib import Path
 import polars as pl
 
 URL = "https://datafeed.dukascopy.com/datafeed/{sym}/{y}/{m:02d}/{d:02d}/{h:02d}h_ticks.bi5"
-# Dukascopy price ints: metals 3 decimals, these FX pairs 5
-SCALE = {"XAUUSD": 1e3, "XAGUSD": 1e3, "EURUSD": 1e5, "GBPUSD": 1e5, "EURGBP": 1e5}
+# Dukascopy price ints: metals 3 decimals, these FX pairs 5, BTC 1
+SCALE = {"XAUUSD": 1e3, "XAGUSD": 1e3, "EURUSD": 1e5, "GBPUSD": 1e5, "EURGBP": 1e5,
+         "BTCUSD": 10.0}
 REC = struct.Struct(">IIIff")  # ms_offset, ask, bid, ask_vol, bid_vol
 
 

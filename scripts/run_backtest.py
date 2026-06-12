@@ -29,6 +29,7 @@ def build_bars(data_dir: Path, symbol: str, every: str) -> pl.DataFrame:
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--data", type=Path, default=Path("data/processed"))
+    p.add_argument("--bars-file", type=Path, help="pre-built bars parquet (skips tick ingestion)")
     p.add_argument("--strategy", required=True, choices=sorted(REGISTRY))
     p.add_argument("--symbol", required=True)
     p.add_argument("--symbol2", help="second leg for pair strategies")
@@ -39,7 +40,8 @@ def main():
     p.add_argument("--out", type=Path, default=Path("reports"))
     args = p.parse_args()
 
-    bars = build_bars(args.data, args.symbol, args.every)
+    bars = (pl.read_parquet(args.bars_file) if args.bars_file
+            else build_bars(args.data, args.symbol, args.every))
     if args.symbol2:
         bars = spread_bars(bars, build_bars(args.data, args.symbol2, args.every), args.beta)
 

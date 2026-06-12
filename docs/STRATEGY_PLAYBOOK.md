@@ -114,6 +114,23 @@ direction (Dukascopy sizes carry no signal). FX triangle on real data:
 consistent (the only "deviations" were stale weekend-open quotes) — rerun
 `scripts/research_hf.py triangle` against the sim feed in paper week.
 
+## 8. Cross-asset results (May 12 – Jun 11 2026)
+
+Both validated gold strategies are **gold-specific**: on EURUSD/GBPUSD,
+london_orb ≈ −0.9% and vwap_trend −0.1 to −2.5%. FX majors are too
+efficient/mean-reverting for these mechanics — do not deploy them there.
+
+**BTC (Binance 1m klines, synthetic 2bp spread):** london_orb +0.4% but
+Sharpe 0.3 with −10% DD; vwap_trend/donchian/regime_switch all negative.
+No crypto deployment on current evidence.
+
+**Open crypto lead: taker-flow following.** Volume-weighted taker-buy
+imbalance (real flow — crypto has it, FX doesn't), z>2 vs 1-day baseline,
+4h horizon: +17bp/trade, 57% hit, positive 4/5 weeks. Caveats: threshold
+cliff at z>1.5 (+1.3bp) fails the wiggle gate; n=95; and live use needs a
+Binance feed beside MT5 (taker flow isn't in MT5 data). Revisit in prep
+week if the main book is stable.
+
 ## Portfolio per round (initial plan)
 
 | Round | Book | Vol budget |
