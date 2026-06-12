@@ -46,8 +46,18 @@ that survives a look at week-by-week splits — not just the full-sample average
 
 **Goal:** the edge survives costs, walk-forward, and parameter wiggle.
 
-Implement as a class in `src/mt5_trader/strategies/` (registry pattern — copy
-an existing one). The engine enforces signal-on-close → fill-next-bar.
+### Writing a new strategy
+
+1. `cp src/mt5_trader/strategies/strategy_template.py src/mt5_trader/strategies/<name>.py`
+   — the template documents the full contract in its docstring.
+2. Rename the class, set a unique `name`, params as dataclass fields.
+3. Implement `signal(bars) -> np.ndarray` in [-1, 1]. Signal on bar t's close,
+   filled next bar (engine + live runner both enforce this). Rolling windows
+   and `.shift(1)` fine; `.shift(-1)` = lookahead = broken.
+4. Uncomment `@register`, add `from . import <name>` to `strategies/__init__.py`.
+5. `uv run pytest` — the registry test auto-covers the new strategy
+   (length, NaN, range checks).
+6. Same class runs in backtest and live — no porting step, ever.
 
 ```bash
 uv run pytest                                            # must stay green
