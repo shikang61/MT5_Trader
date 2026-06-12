@@ -6,6 +6,8 @@ imports but MT5Gateway() raises, so research code can import the package tree.
 """
 from __future__ import annotations
 
+import time
+
 import polars as pl
 
 try:
@@ -50,13 +52,22 @@ class MT5Gateway:
             raise MT5Error(f"account_info failed: {mt5.last_error()}")
         return float(info.equity)
 
+    def server_offset_s(self, symbol: str) -> int:
+        """Broker server clock minus UTC, rounded to 30 min. MT5 timestamps are
+        server time (often UTC+2/+3); strategies need true UTC for session logic."""
+        tick = mt5.symbol_info_tick(symbol)
+        if tick is None or tick.time == 0:
+            return 0
+        return round((tick.time - time.time()) / 1800) * 1800
+
     def bars(self, symbol: str, timeframe: str = "M1", n: int = 3000) -> pl.DataFrame:
         rates = mt5.copy_rates_from_pos(symbol, self._tf[timeframe], 0, n)
         if rates is None:
             raise MT5Error(f"copy_rates failed for {symbol}: {mt5.last_error()}")
+        offset = self.server_offset_s(symbol)
         df = pl.from_numpy(rates)
         return df.with_columns(
-            ts=pl.from_epoch("time", time_unit="s").dt.replace_time_zone("UTC"),
+            ts=pl.from_epoch(pl.col("time") - offset, time_unit="s").dt.replace_time_zone("UTC"),
             spread_mean=pl.col("spread") * self.point(symbol),
         ).select("ts", "open", "high", "low", "close", "spread_mean", "tick_volume")
 
