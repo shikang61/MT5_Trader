@@ -83,6 +83,8 @@ git pull
 pytest                                   # green on Windows too
 set MT5_LOGIN=... & set MT5_PASSWORD=... & set MT5_SERVER=...
 python scripts\run_live.py --strategy <name> --symbol XAUUSD
+# pair strategies trade both legs:
+python scripts\run_live.py --strategy ratio_mr --symbol XAUUSD --symbol2 XAGUSD --beta 1.0
 ```
 
 Verify in `logs\live_*.jsonl`:
@@ -138,6 +140,9 @@ ssh mt5-vps "cd Desktop/MT5_Trader; git log --oneline -1"   # what's deployed?
 
 # monitor the runner
 ssh mt5-vps "cd Desktop/MT5_Trader; Get-Content logs\live_XAUUSD_donchian.jsonl -Tail 10"
+
+# or let the watchdog do it (macOS notification + sound on stale log / ERROR / KILL)
+uv run scripts/watchdog.py --loop 300
 
 # pull logs home for post-round review
 scp "mt5-vps:Desktop/MT5_Trader/logs/*.jsonl" reports/
