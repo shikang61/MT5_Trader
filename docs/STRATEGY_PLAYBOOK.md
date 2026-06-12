@@ -124,12 +124,11 @@ efficient/mean-reverting for these mechanics — do not deploy them there.
 Sharpe 0.3 with −10% DD; vwap_trend/donchian/regime_switch all negative.
 No crypto deployment on current evidence.
 
-**Open crypto lead: taker-flow following.** Volume-weighted taker-buy
-imbalance (real flow — crypto has it, FX doesn't), z>2 vs 1-day baseline,
-4h horizon: +17bp/trade, 57% hit, positive 4/5 weeks. Caveats: threshold
-cliff at z>1.5 (+1.3bp) fails the wiggle gate; n=95; and live use needs a
-Binance feed beside MT5 (taker flow isn't in MT5 data). Revisit in prep
-week if the main book is stable.
+**Crypto taker-flow following: downgraded to noise-probable.** The
+headline cell (30m flow window, z>2, 4h hold: +17bp/trade) sits alone in
+a grid where neighbors are +3-5bp (vs 2.5bp cost) and every horizon
+≤60m is flat-to-negative — a hot cell, not a plateau. Threshold cliff at
+z>1.5 too. Only worth revisiting with more months of data.
 
 ## Portfolio per round (initial plan)
 
