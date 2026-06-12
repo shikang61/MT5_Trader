@@ -87,15 +87,21 @@ names, lot rounding, server quirks.
 git add -A && git commit && git push
 ```
 
-```powershell
-# VPS: pull and run against the demo / competition paper account
-git pull
-pytest                                   # green on Windows too
-set MT5_LOGIN=... & set MT5_PASSWORD=... & set MT5_SERVER=...
-python scripts\run_live.py --strategy <name> --symbol XAUUSD
-# pair strategies trade both legs:
-python scripts\run_live.py --strategy ratio_mr --symbol XAUUSD --symbol2 XAGUSD --beta 1.0
+Add the strategy to `config/portfolio.yaml` (weight = share of risk budget,
+total ≈ 1; pairs set `symbol2`/`beta`), then deploy from the Mac:
+
+```bash
+ssh mt5-vps "cd Desktop/MT5_Trader; git pull; pytest -q"
+ssh mt5-vps "Stop-Process -Name python -ErrorAction SilentlyContinue"
+ssh mt5-vps "schtasks /run /tn MT5Portfolio"     # starts scripts/run_portfolio.py detached
+bash scripts/fetch_logs.sh tail                  # confirm the new book in STEP events
 ```
+
+The portfolio runner is the single deployment unit: all books in one process,
+risk budget split by weight, same-symbol targets netted, one kill switch,
+ATR disaster-SL on every net position. (`run_live.py` still exists for
+isolated single-strategy tests — never run both on overlapping symbols.)
+Credentials live in user env vars on the VPS (`setx MT5_LOGIN ...`).
 
 Verify in `logs\live_*.jsonl`:
 - `STEP` every minute, no repeating `ERROR`, `RECONNECT_OK` after terminal
