@@ -183,8 +183,10 @@ class Book:
         self._last_bar_ts = bar_ts
 
         sig = float(self.strategy.signal(sig_bars)[-1])
+        tf_minutes = {"M1": 1, "M5": 5, "M15": 15, "H1": 60}[self.timeframe]
         vol = float(sig_bars.select(
-            realized_vol(vol_window, BTConfig().bars_per_year)).to_series()[-1])
+            realized_vol(vol_window, BTConfig().bars_per_year / tf_minutes)
+        ).to_series()[-1])
         frac = risk.size(sig, vol, now) * self.weight
 
         price_a = float(bars_a["close"][-1])
