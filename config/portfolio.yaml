@@ -6,6 +6,8 @@
 #   donchian@5m  +5.1%/mo Sharpe 4.2, 4/5 weeks positive, param plateau
 #   vwap_trend@5m +5.7%/mo Sharpe 7.7 (lumpy: trend weeks carry it)
 #   london_orb@1m +2.0%/mo Sharpe 1.8 (timeframe-insensitive, original form)
+#   sweep_fade@1m +0.9%/mo Sharpe 5.3, +0.35% at 4x costs, wiggle plateau
+#     (PDH/PDL stop-run fade; lumpy/back-loaded — paper verdict by Jun 20)
 # Benched: ratio_mr (-0.95%, DD -8.9%), regime_switch (duplicates donchian),
 # ofi (needs real depth), all FX/BTC books (negative cross-asset evidence).
 sl_atr_mult: 3.0      # broker-side disaster stop on net positions (0 = off)
@@ -14,12 +16,16 @@ books:
   - strategy: donchian
     symbol: XAUUSD
     timeframe: M5
-    weight: 0.35
+    weight: 0.3
   - strategy: vwap_trend
     symbol: XAUUSD
     timeframe: M5
-    weight: 0.35
+    weight: 0.3
   - strategy: london_orb
     symbol: XAUUSD
     timeframe: M1
-    weight: 0.3
+    weight: 0.25
+  - strategy: sweep_fade
+    symbol: XAUUSD
+    timeframe: M1
+    weight: 0.15
