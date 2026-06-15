@@ -32,4 +32,11 @@ books:
   - strategy: sweep_fade
     symbol: XAUUSD
     timeframe: M1
-    weight: 0.2    # clean low-DD diversifier (cost-sensitive, kept small)
+    weight: 0.1    # clean low-DD diversifier (cost-sensitive); trimmed to fund ratio_mr
+  - strategy: ratio_mr        # XAU/XAG decorrelator: +3.7% Sharpe 3.0, -0.13 corr vs donchian
+    symbol: XAUUSD            # (range-regime filter on; z_n=288 = 1 trading day on M5)
+    symbol2: XAGUSD
+    beta: 1.0
+    timeframe: M5
+    weight: 0.1
+    params: {z_n: 288}

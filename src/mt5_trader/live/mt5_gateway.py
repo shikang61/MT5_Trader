@@ -61,6 +61,7 @@ class MT5Gateway:
         return round((tick.time - time.time()) / 1800) * 1800
 
     def bars(self, symbol: str, timeframe: str = "M1", n: int = 3000) -> pl.DataFrame:
+        mt5.symbol_select(symbol, True)  # add to Market Watch (non-visible symbols, e.g. XAGUSD)
         rates = mt5.copy_rates_from_pos(symbol, self._tf[timeframe], 0, n)
         if rates is None:
             raise MT5Error(f"copy_rates failed for {symbol}: {mt5.last_error()}")
