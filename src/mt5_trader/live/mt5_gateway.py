@@ -89,9 +89,18 @@ class MT5Gateway:
             "lot_max": float(info.volume_max),
         }
 
-    def position_lots(self, symbol: str) -> float:
-        """Net signed lots (buy positive)."""
-        positions = mt5.positions_get(symbol=symbol) or []
+    @staticmethod
+    def _mine(positions, magic: int | None):
+        """Filter broker positions/orders to this strategy's magic. magic=None
+        means manage everything on the symbol (single-strategy / legacy)."""
+        positions = positions or []
+        if magic is None:
+            return list(positions)
+        return [p for p in positions if getattr(p, "magic", 0) == magic]
+
+    def position_lots(self, symbol: str, magic: int | None = None) -> float:
+        """Net signed lots (buy positive) for this magic (None = all)."""
+        positions = self._mine(mt5.positions_get(symbol=symbol), magic)
         return sum(p.volume if p.type == mt5.POSITION_TYPE_BUY else -p.volume
                    for p in positions)
 
@@ -107,10 +116,12 @@ class MT5Gateway:
 
     def market_order(self, symbol: str, lots: float, deviation: int = 20,
                      sl: float = 0.0, tp: float = 0.0,
-                     position_ticket: int | None = None) -> None:
+                     position_ticket: int | None = None,
+                     magic: int | None = None) -> None:
         """Signed lots: positive buys, negative sells. sl/tp are absolute
         prices (0 = none). position_ticket closes/reduces that position
-        (required on hedging accounts, else a counter-order opens a new one)."""
+        (required on hedging accounts, else a counter-order opens a new one).
+        magic tags the deal so multiple strategies can share one account."""
         tick = mt5.symbol_info_tick(symbol)
         if tick is None:
             raise MT5Error(f"no tick for {symbol}")
@@ -131,12 +142,16 @@ class MT5Gateway:
             request["tp"] = tp
         if position_ticket is not None:
             request["position"] = position_ticket
+        if magic is not None:
+            request["magic"] = int(magic)
         self._send(request)
 
     def limit_order(self, symbol: str, lots: float, price: float,
                     sl: float = 0.0, tp: float = 0.0,
-                    expire_minutes: int | None = None) -> None:
-        """Pending limit order, signed lots. Optional expiry (minutes from now)."""
+                    expire_minutes: int | None = None,
+                    magic: int | None = None) -> None:
+        """Pending limit order, signed lots. Optional expiry (minutes from now).
+        magic tags the order so strategies can share one account."""
         request = {
             "action": mt5.TRADE_ACTION_PENDING,
             "symbol": symbol,
@@ -150,42 +165,49 @@ class MT5Gateway:
             request["sl"] = sl
         if tp:
             request["tp"] = tp
+        if magic is not None:
+            request["magic"] = int(magic)
         if expire_minutes:
             tick = mt5.symbol_info_tick(symbol)
             request["type_time"] = mt5.ORDER_TIME_SPECIFIED
             request["expiration"] = tick.time + expire_minutes * 60
         self._send(request)
 
-    def cancel_pending(self, symbol: str) -> int:
-        """Remove all pending orders on symbol. Returns count cancelled."""
-        orders = mt5.orders_get(symbol=symbol) or []
+    def cancel_pending(self, symbol: str, magic: int | None = None) -> int:
+        """Remove this magic's pending orders on symbol (None = all). Returns
+        count cancelled."""
+        orders = self._mine(mt5.orders_get(symbol=symbol), magic)
         for o in orders:
             self._send({"action": mt5.TRADE_ACTION_REMOVE, "order": o.ticket})
         return len(orders)
 
-    def set_position_sltp(self, symbol: str, sl: float = 0.0, tp: float = 0.0) -> None:
-        """Attach/replace SL/TP on every open position for symbol."""
-        for p in mt5.positions_get(symbol=symbol) or []:
+    def set_position_sltp(self, symbol: str, sl: float = 0.0, tp: float = 0.0,
+                          magic: int | None = None) -> None:
+        """Attach/replace SL/TP on this magic's open positions for symbol."""
+        for p in self._mine(mt5.positions_get(symbol=symbol), magic):
             if abs(p.sl - sl) > 1e-9 or abs(p.tp - tp) > 1e-9:
                 self._send({"action": mt5.TRADE_ACTION_SLTP, "symbol": symbol,
                             "position": p.ticket, "sl": sl, "tp": tp})
 
     def reconcile(self, symbol: str, target_lots: float,
-                  sl: float = 0.0, tp: float = 0.0) -> float:
-        """Trade the difference between current and target net lots; closes
-        opposing positions by ticket first (hedging-account safe), then opens
-        the remainder with optional protective sl/tp (absolute prices).
-        Returns the net delta actually sent (0.0 if within one lot step)."""
+                  sl: float = 0.0, tp: float = 0.0,
+                  magic: int | None = None) -> float:
+        """Trade the difference between current and target net lots for this
+        magic; closes opposing positions by ticket first (hedging-account safe),
+        then opens the remainder with optional protective sl/tp (absolute prices).
+        With a magic set, only this strategy's positions are seen/touched, so
+        several strategies can share one account without netting against each
+        other. Returns the net delta actually sent (0.0 if within one lot step)."""
         spec = self.symbol_spec(symbol)
         step = spec["lot_step"]
-        delta = target_lots - self.position_lots(symbol)
+        delta = target_lots - self.position_lots(symbol, magic)
         delta = round(delta / step) * step
         if abs(delta) < max(step, spec["lot_min"]):
             return 0.0
         delta = max(-spec["lot_max"], min(spec["lot_max"], delta))
 
         remaining = delta
-        positions = mt5.positions_get(symbol=symbol) or []
+        positions = self._mine(mt5.positions_get(symbol=symbol), magic)
         for p in positions:
             if remaining == 0:
                 break
@@ -193,14 +215,14 @@ class MT5Gateway:
             if signed * remaining < 0:  # position opposes the delta -> close it
                 close = min(p.volume, abs(remaining))
                 self.market_order(symbol, close if remaining > 0 else -close,
-                                  position_ticket=p.ticket)
+                                  position_ticket=p.ticket, magic=magic)
                 remaining += close if remaining < 0 else -close
 
         if abs(remaining) >= max(step, spec["lot_min"]):
-            self.market_order(symbol, remaining, sl=sl, tp=tp)
-        if (sl or tp) and self.position_lots(symbol) != 0:
-            self.set_position_sltp(symbol, sl, tp)
+            self.market_order(symbol, remaining, sl=sl, tp=tp, magic=magic)
+        if (sl or tp) and self.position_lots(symbol, magic) != 0:
+            self.set_position_sltp(symbol, sl, tp, magic=magic)
         return delta
 
-    def flatten(self, symbol: str) -> None:
-        self.reconcile(symbol, 0.0)
+    def flatten(self, symbol: str, magic: int | None = None) -> None:
+        self.reconcile(symbol, 0.0, magic=magic)

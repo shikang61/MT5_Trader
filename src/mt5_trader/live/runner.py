@@ -30,6 +30,7 @@ class RunnerCfg:
     sl_atr_mult: float = 3.0   # broker-side disaster stop, 0 = off
     tp_atr_mult: float = 0.0   # broker-side take profit, 0 = off
     atr_window: int = 60
+    magic: int | None = None   # tag orders so strategies can share one account
     log_path: Path = Path("logs/live.jsonl")
 
 
@@ -139,7 +140,8 @@ class LiveRunner:
         _, atr_entry, entry_price, _ = self._trail
         _, tp = protective_levels(target_lots, entry_price, atr_entry,
                                   0.0, self.cfg.tp_atr_mult)
-        delta = self.gw.reconcile(self.cfg.symbol, target_lots, sl=sl, tp=tp)
+        delta = self.gw.reconcile(self.cfg.symbol, target_lots, sl=sl, tp=tp,
+                                  magic=self.cfg.magic)
 
         self._log(event="STEP", bar_ts=bar_ts, equity=equity, signal=sig,
                   realized_vol=vol, target_frac=target_frac, vol_halt=halt,
@@ -147,7 +149,7 @@ class LiveRunner:
                   sl=sl, tp=tp)
 
     def flatten_all(self) -> None:
-        self.gw.flatten(self.cfg.symbol)
+        self.gw.flatten(self.cfg.symbol, magic=self.cfg.magic)
 
     def run(self) -> None:
         self._log(event="START", symbol=self.cfg.symbol,
@@ -277,7 +279,7 @@ class PortfolioRunner(LiveRunner):
 
     def flatten_all(self) -> None:
         for s in self.symbols:
-            self.gw.flatten(s)
+            self.gw.flatten(s, magic=self.cfg.magic)
 
     def step(self) -> None:
         now = datetime.now(timezone.utc)
@@ -322,7 +324,8 @@ class PortfolioRunner(LiveRunner):
             fills[sym] = {"target_lots": lots, "sl": sl, "tp": tp,
                           "price": price, "vol_halt": halt,
                           "contract_size": self._cache.spec(sym)["contract_size"],
-                          "traded_lots": self.gw.reconcile(sym, lots, sl=sl, tp=tp)}
+                          "traded_lots": self.gw.reconcile(sym, lots, sl=sl, tp=tp,
+                                                           magic=self.cfg.magic)}
 
         self._log(event="STEP", equity=equity, books=infos, fills=fills)
 
@@ -365,8 +368,8 @@ class PairRunner(LiveRunner):
         super().__init__(gateway, strategy, risk, cfg)
 
     def flatten_all(self) -> None:
-        self.gw.flatten(self.cfg.symbol)
-        self.gw.flatten(self.cfg.symbol_b)
+        self.gw.flatten(self.cfg.symbol, magic=self.cfg.magic)
+        self.gw.flatten(self.cfg.symbol_b, magic=self.cfg.magic)
 
     def step(self) -> None:
         from ..strategies.meanrev_pairs import spread_bars
@@ -404,8 +407,8 @@ class PairRunner(LiveRunner):
             target_frac, self.cfg.beta, equity, price_a, price_b,
             spec_a["contract_size"], spec_b["contract_size"],
         )
-        traded_a = self.gw.reconcile(self.cfg.symbol, lots_a)
-        traded_b = self.gw.reconcile(self.cfg.symbol_b, lots_b)
+        traded_a = self.gw.reconcile(self.cfg.symbol, lots_a, magic=self.cfg.magic)
+        traded_b = self.gw.reconcile(self.cfg.symbol_b, lots_b, magic=self.cfg.magic)
 
         self._log(event="STEP", bar_ts=bar_ts, equity=equity, signal=sig,
                   realized_vol=vol, target_frac=target_frac,

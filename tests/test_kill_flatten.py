@@ -17,7 +17,7 @@ class FakeGW:
     def equity(self):
         return self._eq
 
-    def flatten(self, symbol):
+    def flatten(self, symbol, magic=None):
         self.flattened.append(symbol)
 
     def bars(self, *a, **k):           # must never be reached once kill trips

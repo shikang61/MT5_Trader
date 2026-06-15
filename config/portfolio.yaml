@@ -10,6 +10,9 @@
 #     (PDH/PDL stop-run fade; lumpy/back-loaded — paper verdict by Jun 20)
 # Benched: ratio_mr (-0.95%, DD -8.9%), regime_switch (duplicates donchian),
 # ofi (needs real depth), all FX/BTC books (negative cross-asset evidence).
+magic: 1001           # order tag for this portfolio bot; lets a second strategy
+                      # (e.g. run_passive_paper.py, magic 2002) share one account
+                      # without netting against these positions. null = manage all.
 sl_atr_mult: 0.0      # OFF — backtest (engine intrabar model) shows a trailing
                       # stop bleeds every book even at 3x ATR (donchian +5.1%->
                       # -2.2%, london_orb +2%->-18%): it fires on normal pullbacks,
