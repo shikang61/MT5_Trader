@@ -23,7 +23,7 @@ def load_books(path: Path) -> tuple[list[Book], dict]:
     with open(path) as f:
         cfg = yaml.safe_load(f)
     books = [
-        Book(strategy=REGISTRY[b["strategy"]](),
+        Book(strategy=REGISTRY[b["strategy"]](**b.get("params", {})),
              symbol=b["symbol"],
              weight=float(b.get("weight", 1.0)),
              symbol_b=b.get("symbol2", ""),
