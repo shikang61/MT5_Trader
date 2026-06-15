@@ -16,10 +16,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "jupyterlab>=4.0"]
+dev = ["pytest>=8.0", "jupyterlab>=4.0", "nbstripout>=0.7"]
 
 [dependency-groups]
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "nbstripout>=0.7"]
 
 [build-system]
 requires = ["hatchling"]
