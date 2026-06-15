@@ -37,7 +37,10 @@ class FakeMT5:
     def symbol_info(self, symbol):
         return types.SimpleNamespace(trade_contract_size=100.0, volume_step=0.01,
                                      volume_min=0.01, volume_max=10.0, point=0.01,
-                                     trade_stops_level=0)
+                                     digits=2, trade_stops_level=0)
+
+    def orders_get(self, symbol=None):
+        return []
 
     def symbol_info_tick(self, symbol):
         return types.SimpleNamespace(bid=4000.0, ask=4000.1, time=1_700_000_000)
@@ -105,3 +108,12 @@ def test_flatten_only_its_own_magic(monkeypatch, gw):
     fake = _install(monkeypatch, [Pos(1, 0.10, BUY, 1001), Pos(2, 0.05, SELL, 2002)])
     gw.flatten("XAUUSD", magic=2002)
     assert 1 in fake.positions and 2 not in fake.positions
+
+
+def test_limit_order_rounds_price_to_digits(monkeypatch, gw):
+    fake = _install(monkeypatch, [])
+    # 3-decimal mid-derived price + sub-tick sl/tp must snap to 2 digits (10015 fix)
+    gw.limit_order("XAUUSD", 0.05, price=4321.457, sl=4312.463, tp=4326.248, magic=2002)
+    req = fake.sent[-1]
+    assert req["price"] == 4321.46 and req["sl"] == 4312.46 and req["tp"] == 4326.25
+    assert req["magic"] == 2002

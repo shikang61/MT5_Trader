@@ -57,6 +57,14 @@ def sides_for_regime(regime: int) -> tuple[float, ...]:
     return (1.0, -1.0)
 
 
+def restable(side: float, level: float, bid: float, ask: float) -> bool:
+    """A passive limit can only rest on the far side of the market: a buy limit
+    below the ask, a sell limit above the bid. If the level is already breached
+    (price has traded through it) the limit can't rest there -> skip it, else the
+    broker rejects it (10015 Invalid price)."""
+    return level < ask if side > 0 else level > bid
+
+
 def desired_sides(level_source: str, regime: int, regime_gate: bool) -> tuple[float, ...]:
     """Sides to have resting now, by mode.
       consolidation: the bounds only mean-revert inside a range — post BOTH in
@@ -155,16 +163,22 @@ class PassiveLimitRunner:
         when the consolidation regime breaks."""
         self.gw.cancel_pending(self.cfg.symbol, magic=self.cfg.magic)
         exp = self._minutes_to_midnight(now)
+        bid, ask = self.gw.quote(self.cfg.symbol)
+        posted, skipped = [], []
         for side in sides:
             level = buy_level if side > 0 else sell_level
+            if not restable(side, level, bid, ask):
+                skipped.append(side)  # level already breached — can't rest here
+                continue
             price, sl, tp = limit_params(side, level, self.cfg.tp_bp, self.cfg.sl_bp)
             self.gw.limit_order(self.cfg.symbol, side * self.cfg.lots,
                                 price=price, sl=sl, tp=tp, expire_minutes=exp,
                                 magic=self.cfg.magic)
+            posted.append(side)
         self._log(event="ARM", sell_level=sell_level, buy_level=buy_level,
-                  level_source=self.cfg.level_source, sides=list(sides),
-                  lots=self.cfg.lots, tp_bp=self.cfg.tp_bp, sl_bp=self.cfg.sl_bp,
-                  expire_min=exp)
+                  level_source=self.cfg.level_source, sides=posted, skipped=skipped,
+                  bid=bid, ask=ask, lots=self.cfg.lots, tp_bp=self.cfg.tp_bp,
+                  sl_bp=self.cfg.sl_bp, expire_min=exp)
 
     def step(self) -> None:
         now = datetime.now(timezone.utc)

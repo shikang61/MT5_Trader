@@ -5,7 +5,7 @@ import polars as pl
 from mt5_trader.features.regime import RANGE, TREND_DOWN, TREND_UP
 from mt5_trader.live.passive_limits import (
     consolidation_levels, desired_sides, limit_params, prior_day_levels,
-    sides_for_regime,
+    restable, sides_for_regime,
 )
 
 
@@ -80,3 +80,12 @@ def test_consolidation_levels_none_until_window_full():
           for i in range(5)]
     bars = pl.DataFrame({"ts": ts, "close": [4000.0] * 5})
     assert consolidation_levels(bars, range_n=20) is None
+
+
+def test_restable_skips_breached_levels():
+    bid, ask = 4321.41, 4321.50
+    # buy limit must sit below ask; sell limit above bid
+    assert restable(1.0, 4300.0, bid, ask)        # buy support below market -> ok
+    assert not restable(1.0, 4330.0, bid, ask)    # buy level above market -> breached
+    assert restable(-1.0, 4340.0, bid, ask)       # sell resistance above market -> ok
+    assert not restable(-1.0, 4310.0, bid, ask)   # sell level below market -> breached

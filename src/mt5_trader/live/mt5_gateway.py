@@ -78,6 +78,21 @@ class MT5Gateway:
             raise MT5Error(f"symbol_info failed for {symbol}")
         return float(info.point)
 
+    def quote(self, symbol: str) -> tuple[float, float]:
+        """Current (bid, ask)."""
+        tick = mt5.symbol_info_tick(symbol)
+        if tick is None:
+            raise MT5Error(f"no tick for {symbol}")
+        return float(tick.bid), float(tick.ask)
+
+    def _round_price(self, symbol: str, price: float) -> float:
+        """Snap a price to the symbol's tick precision. Computed levels (mids,
+        ATR offsets) carry sub-tick decimals the broker rejects (10015)."""
+        if not price:
+            return price
+        info = mt5.symbol_info(symbol)
+        return round(float(price), info.digits) if info else float(price)
+
     def symbol_spec(self, symbol: str) -> dict:
         info = mt5.symbol_info(symbol)
         if info is None:
@@ -137,9 +152,9 @@ class MT5Gateway:
             "type_filling": mt5.ORDER_FILLING_IOC,
         }
         if sl:
-            request["sl"] = sl
+            request["sl"] = self._round_price(symbol, sl)
         if tp:
-            request["tp"] = tp
+            request["tp"] = self._round_price(symbol, tp)
         if position_ticket is not None:
             request["position"] = position_ticket
         if magic is not None:
@@ -157,14 +172,14 @@ class MT5Gateway:
             "symbol": symbol,
             "volume": abs(lots),
             "type": mt5.ORDER_TYPE_BUY_LIMIT if lots > 0 else mt5.ORDER_TYPE_SELL_LIMIT,
-            "price": price,
+            "price": self._round_price(symbol, price),
             "type_time": mt5.ORDER_TIME_GTC,
             "type_filling": mt5.ORDER_FILLING_RETURN,
         }
         if sl:
-            request["sl"] = sl
+            request["sl"] = self._round_price(symbol, sl)
         if tp:
-            request["tp"] = tp
+            request["tp"] = self._round_price(symbol, tp)
         if magic is not None:
             request["magic"] = int(magic)
         if expire_minutes:
