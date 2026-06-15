@@ -12,6 +12,9 @@ from pathlib import Path
 
 import yaml
 
+from ..features.calendar import BlackoutCfg, blackout_mask, load_events
+from ..features.vol_guard import VolGuardCfg, vol_spike_mask
+
 
 @dataclass
 class RoundCfg:
@@ -33,9 +36,16 @@ def _parse_dt(v) -> datetime | None:
 
 
 class RiskManager:
-    def __init__(self, rounds: list[RoundCfg], default: RoundCfg):
+    def __init__(self, rounds: list[RoundCfg], default: RoundCfg,
+                 blackout: BlackoutCfg | None = None, events=None,
+                 vol_guard: VolGuardCfg | None = None):
         self.rounds = rounds
         self.default = default
+        self._blackout = blackout or BlackoutCfg()
+        self._events = (events if events is not None
+                        else load_events(self._blackout.calendar) if self._blackout.enabled
+                        else None)
+        self._vol_guard = vol_guard or VolGuardCfg()
         self._round_start_equity: dict[str, float] = {}
         self._round_peak_equity: dict[str, float] = {}
 
@@ -57,7 +67,26 @@ class RiskManager:
 
         default = mk(cfg["default"], "default")
         rounds = [mk(r, f"round{i}") for i, r in enumerate(cfg.get("rounds", []), 1)]
-        return cls(rounds, default)
+
+        b = cfg.get("blackout") or {}
+        blackout = BlackoutCfg(
+            enabled=bool(b.get("enabled", False)),
+            calendar=b.get("calendar", BlackoutCfg.calendar),
+            before_min=int(b.get("before_min", BlackoutCfg.before_min)),
+            after_min=int(b.get("after_min", BlackoutCfg.after_min)),
+            min_impact=str(b.get("min_impact", BlackoutCfg.min_impact)),
+            currencies=list(b.get("currencies", ["USD"])),
+        )
+
+        vg = cfg.get("vol_guard") or {}
+        vol_guard = VolGuardCfg(
+            enabled=bool(vg.get("enabled", False)),
+            atr_n=int(vg.get("atr_n", VolGuardCfg.atr_n)),
+            atr_base_n=int(vg.get("atr_base_n", VolGuardCfg.atr_base_n)),
+            atr_mult=float(vg.get("atr_mult", VolGuardCfg.atr_mult)),
+            ret_limit_bps=float(vg.get("ret_limit_bps", VolGuardCfg.ret_limit_bps)),
+        )
+        return cls(rounds, default, blackout, vol_guard=vol_guard)
 
     def round_at(self, now: datetime) -> RoundCfg:
         for r in self.rounds:
@@ -65,8 +94,25 @@ class RiskManager:
                 return r
         return self.default
 
+    def in_blackout(self, now: datetime) -> bool:
+        """Inside an economic-calendar event window (defensive mute)?"""
+        if not self._blackout.enabled:
+            return False
+        return bool(blackout_mask([now], self._events, self._blackout)[0])
+
+    def vol_halt(self, bars) -> bool:
+        """True if the latest bar is an abnormal-volatility spike (fast circuit
+        breaker) -> caller forces flat. No-op when vol_guard is disabled. Takes
+        bars (not `now`) because the trip is price-derived, not time-derived."""
+        if not self._vol_guard.enabled:
+            return False
+        return bool(vol_spike_mask(bars, self._vol_guard)[-1])
+
     def size(self, signal: float, realized_vol_ann: float, now: datetime) -> float:
-        """Target position as a leverage multiple of equity (signed)."""
+        """Target position as a leverage multiple of equity (signed).
+        Forced flat inside an event blackout window."""
+        if self.in_blackout(now):
+            return 0.0
         r = self.round_at(now)
         lev = min(r.target_vol / max(realized_vol_ann, 1e-4), r.max_leverage)
         return float(signal) * lev

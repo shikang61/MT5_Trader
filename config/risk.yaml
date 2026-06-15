@@ -34,3 +34,26 @@ rounds:
     loss_limit: 0.10
     target_vol: 0.70   # push round: ~4.4%/day vol vs 10% kill (~2.3 sigma); was 0.50
     give_back: 0.07    # let the push run, but lock in a big lead if it reverses
+
+# Economic-calendar event mute (defensive overlay). Forces flat from before_min
+# before to after_min after any matching event. OFF until a calendar file is
+# populated AND backtested with scripts/eval_blackout.py.
+blackout:
+  enabled: true
+  calendar: data/calendar/events.parquet   # cols: ts(UTC), impact, currency, title
+  before_min: 15
+  after_min: 15
+  min_impact: high          # high | medium | low (this level and above)
+  currencies: [USD]         # gold tracks USD; widen if your feed tags others
+
+# Fast volatility circuit breaker (defensive overlay). Forces flat on bars whose
+# 1-bar return or short-ATR/baseline ratio is abnormally large — the fast gate
+# the (slow, 240-bar) realized-vol sizer can't react to. Bar-count windows
+# assume M5. OFF until backtested with scripts/eval_vol_guard.py (may churn like
+# the trailing stop did — enable only if the eval shows it helps).
+vol_guard:
+  enabled: false
+  atr_n: 14
+  atr_base_n: 288           # ~1 trading day on M5
+  atr_mult: 3.0             # short ATR > 3x its baseline median = spike
+  ret_limit_bps: 50.0       # |1-bar return| > 0.5% = spike

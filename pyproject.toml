@@ -10,6 +10,7 @@ dependencies = [
     "matplotlib>=3.8",
     "pyyaml>=6.0",
     "scipy>=1.12",
+    "certifi>=2024.6",   # CA bundle for fetch_calendar TLS verify on Windows
     "MetaTrader5>=5.0.45; sys_platform == 'win32'",
 ]
 

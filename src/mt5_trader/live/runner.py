@@ -123,6 +123,9 @@ class LiveRunner:
             realized_vol(self.cfg.vol_window, BTConfig().bars_per_year)
         ).to_series()[-1])
         target_frac = self.risk.size(sig, vol, now)
+        halt = self.risk.vol_halt(bars)
+        if halt:
+            target_frac = 0.0  # fast vol circuit breaker -> force flat
 
         spec = self.gw.symbol_spec(self.cfg.symbol)
         price = float(bars["close"][-1])
@@ -139,7 +142,7 @@ class LiveRunner:
         delta = self.gw.reconcile(self.cfg.symbol, target_lots, sl=sl, tp=tp)
 
         self._log(event="STEP", bar_ts=bar_ts, equity=equity, signal=sig,
-                  realized_vol=vol, target_frac=target_frac,
+                  realized_vol=vol, target_frac=target_frac, vol_halt=halt,
                   target_lots=target_lots, traded_lots=delta, price=price,
                   sl=sl, tp=tp)
 
@@ -304,6 +307,9 @@ class PortfolioRunner(LiveRunner):
         fills = {}
         for sym, lots in net.items():
             bars = self._cache(sym, self._stop_tf[sym])  # stop ATR on coarsest book TF
+            halt = self.risk.vol_halt(bars)
+            if halt:
+                lots = 0.0  # fast vol circuit breaker -> force flat this symbol
             price = float(bars["close"][-1])
             high, low = float(bars["high"][-1]), float(bars["low"][-1])
             atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
@@ -314,7 +320,7 @@ class PortfolioRunner(LiveRunner):
             _, tp = protective_levels(lots, entry_price, atr_entry,
                                       0.0, self.cfg.tp_atr_mult)
             fills[sym] = {"target_lots": lots, "sl": sl, "tp": tp,
-                          "price": price,
+                          "price": price, "vol_halt": halt,
                           "contract_size": self._cache.spec(sym)["contract_size"],
                           "traded_lots": self.gw.reconcile(sym, lots, sl=sl, tp=tp)}
 
