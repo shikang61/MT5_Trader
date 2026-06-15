@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 
 import yaml
+from dotenv import load_dotenv
 
 from mt5_trader.live.mt5_gateway import MT5Gateway
 from mt5_trader.live.runner import Book, PortfolioRunner, RunnerCfg
@@ -39,6 +40,7 @@ def load_books(path: Path) -> tuple[list[Book], dict]:
 
 
 def main():
+    load_dotenv()  # MT5_LOGIN/PASSWORD/SERVER from a .env if present
     p = argparse.ArgumentParser()
     p.add_argument("--portfolio", type=Path, default=Path("config/portfolio.yaml"))
     p.add_argument("--risk-config", type=Path, default=Path("config/risk.yaml"))

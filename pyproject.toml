@@ -9,6 +9,7 @@ dependencies = [
     "pyarrow>=15.0",
     "matplotlib>=3.8",
     "pyyaml>=6.0",
+    "python-dotenv>=1.0",
     "scipy>=1.12",
     "certifi>=2024.6",   # CA bundle for fetch_calendar TLS verify on Windows
     "tzdata>=2024.1",    # polars timezone db on Windows (no system tz database)

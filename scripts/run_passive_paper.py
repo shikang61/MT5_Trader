@@ -22,12 +22,15 @@ import argparse
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from mt5_trader.live.mt5_gateway import MT5Gateway
 from mt5_trader.live.passive_limits import PassiveCfg, PassiveLimitRunner
 from mt5_trader.live.single_instance import acquire_or_exit
 
 
 def main():
+    load_dotenv()  # MT5_LOGIN/PASSWORD/SERVER from a .env if present
     ap = argparse.ArgumentParser()
     ap.add_argument("--level-source", choices=["pdhl", "consolidation"], default="pdhl")
     ap.add_argument("--magic", type=int, default=None)

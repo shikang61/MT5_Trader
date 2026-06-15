@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """Live/paper trading entrypoint — run on the Windows VPS next to the MT5 terminal.
 
-Credentials via environment variables (never commit them):
+Credentials via environment variables or a gitignored .env file (auto-loaded;
+see .env.example). Never commit real credentials.
     set MT5_LOGIN=12345678
     set MT5_PASSWORD=...
     set MT5_SERVER=CompetitionBroker-Server
@@ -13,6 +14,8 @@ import argparse
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from mt5_trader.live.mt5_gateway import MT5Gateway
 from mt5_trader.live.runner import LiveRunner, PairRunner, PairRunnerCfg, RunnerCfg
 from mt5_trader.risk.manager import RiskManager
@@ -20,6 +23,7 @@ from mt5_trader.strategies import REGISTRY
 
 
 def main():
+    load_dotenv()  # MT5_LOGIN/PASSWORD/SERVER from a .env if present
     p = argparse.ArgumentParser()
     p.add_argument("--strategy", required=True, choices=sorted(REGISTRY))
     p.add_argument("--symbol", required=True)
