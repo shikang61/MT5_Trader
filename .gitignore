@@ -11,6 +11,14 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 .ipynb_checkpoints/
+.ruff_cache/
+
+# macOS
+.DS_Store
+
+# pipeline runtime state (research/stash.yaml is curated + committed)
+/research/verdicts.json
+/research/trials.jsonl
 
 # secrets
 .env

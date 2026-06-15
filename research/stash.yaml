@@ -1,0 +1,43 @@
+# Strategy stash — candidates that backtested BELOW PAR but are worth iterating
+# on. Each records which validation gate(s) fell short and a concrete improvement
+# idea. Managed by scripts/strategy.py (stash add/list/show/rm). NOT the live
+# config — promotion to live goes through config/portfolio.yaml. See WORKFLOW.md.
+fast_mr:
+  file: fast_meanrev.py
+  params: {z_n: 60, z_entry: 2.0, z_exit: 0.5}
+  failed_gates: [cost_stress]
+  metrics: {note: "taker fade lost ~3-6%/mo after costs (May-Jun 2026 XAUUSD)"}
+  improve: "Taker fade — costs eat the ~0.5bp edge. Revisit as a PASSIVE/limit entry
+    (earn the spread instead of paying it), or raise the timeframe to cut turnover."
+  stashed: 2026-06-15
+
+ofi:
+  file: orderflow_imbalance.py
+  params: {}
+  failed_gates: [out_of_sample]
+  metrics: {note: "OFI on quoted sizes is noisy; hot-cell, not a plateau"}
+  improve: "Needs a real L2 depth feed — OFI built from quoted sizes is unreliable.
+    Re-test when the depth dump arrives; judge regions, not single cells."
+  stashed: 2026-06-15
+
+regime_switch:
+  file: regime_switch.py
+  params: {er_n: 16, coarsen: 15, range_n: 240}
+  failed_gates: [param_wiggle, out_of_sample]
+  metrics: {note: "duplicates donchian; range-fade leg lost to costs (fade_size=0)"}
+  improve: "Range-fade leg is a taker fade that bleeds. Now that regime_series is
+    causal (start-anchored grid, fixed 2026-06-15), re-validate the TREND leg
+    standalone vs donchian for genuine decorrelation; only run the fade leg in a
+    confirmed RANGE with a wider exit, or as a passive entry."
+  stashed: 2026-06-15
+
+passive_limits:
+  file: live/passive_limits.py
+  params: {tp_bp: 15, sl_bp: 15, max_hold_min: 30, lots: 0.05}
+  failed_gates: [live_fills]
+  metrics: {note: "lost money in live paper trading — adverse selection on fills"}
+  improve: "The move that fills a resting limit tends to keep going against it
+    (adverse selection). Try: post only in a confirmed RANGE with a tighter regime
+    gate; asymmetric TP/SL; or a queue-position-aware entry. Live harness kept,
+    not launched by start_all.bat. (Not a registered REGISTRY strategy.)"
+  stashed: 2026-06-15
