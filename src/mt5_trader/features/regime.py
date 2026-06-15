@@ -32,7 +32,11 @@ def regime_series(bars: pl.DataFrame, er_n: int = 16,
     Enters a trend when ER >= enter_trend, exits when ER <= exit_trend."""
     n = len(bars)
     close = bars["close"].to_numpy()
-    anchors = np.arange((n - 1) % coarsen, n, coarsen)  # last bar always included
+    # Anchor the sampling grid to the START, not the end: appending bars only
+    # adds anchors, never shifts existing ones, so the regime at any past bar is
+    # independent of how many bars come after it (causal — backtest == the
+    # incremental live path). The latest regime can lag up to coarsen-1 bars.
+    anchors = np.arange(0, n, coarsen)
     c = close[anchors]
 
     er = pl.DataFrame({"close": c}).select(er=efficiency_ratio(er_n))["er"].to_numpy()

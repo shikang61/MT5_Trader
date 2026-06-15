@@ -31,6 +31,21 @@ def test_all_strategies_produce_valid_signals():
         assert np.all(np.abs(sig) <= 1.0), f"{name}: signal outside [-1, 1]"
 
 
+def test_no_lookahead():
+    """Causality guard: appending future bars must not change past signals.
+    signal(bars)[:k] must equal signal(bars[:k]) for every registered strategy.
+    A strategy that peeks at future data (.shift(-1), a centered window, a
+    non-causal groupby) breaks this — the cardinal sin base.py warns about and
+    the bug class that silently inflates every backtest."""
+    bars = make_bars(n=2000, seed=1)
+    k = 1500  # well past every default warmup window
+    for name, cls in REGISTRY.items():
+        full = cls().signal(bars)
+        trunc = cls().signal(bars[:k])
+        assert np.allclose(full[:k], trunc, equal_nan=True), \
+            f"{name}: signal[:{k}] changed when future bars appended — lookahead"
+
+
 def test_donchian_goes_long_in_uptrend():
     n = 3000
     t0 = datetime(2026, 5, 1, tzinfo=timezone.utc)

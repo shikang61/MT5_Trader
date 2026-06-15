@@ -9,7 +9,7 @@ How to use:
   6. Check + backtest:
        uv run pytest
        uv run scripts/run_backtest.py --strategy my_name --symbol XAUUSD
-  7. Gates before trusting it (docs/WORKFLOW.md §2): walk-forward,
+  7. Gates before trusting it (docs/WORKFLOW.md Stage 3): walk-forward,
      --slippage-bps 2 stress, params ±25%.
 
 Contract:

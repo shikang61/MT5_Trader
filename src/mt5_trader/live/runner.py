@@ -79,6 +79,28 @@ def pair_leg_lots(target_frac: float, beta: float, equity: float,
     return lots_a, lots_b
 
 
+def resilient_loop(step, log, reconnect, poll_seconds, should_halt) -> None:
+    """Shared live loop: call step() until should_halt(), surviving transient
+    errors. After 3 consecutive failures, try to re-attach to the terminal (it
+    likely restarted). Used by every runner and the passive-limit book."""
+    consec_errors = 0
+    while not should_halt():
+        try:
+            step()
+            consec_errors = 0
+        except Exception as e:  # log and keep the loop alive
+            log(event="ERROR", error=repr(e))
+            consec_errors += 1
+            if consec_errors >= 3:  # terminal likely restarted — re-attach
+                try:
+                    reconnect()
+                    log(event="RECONNECT_OK")
+                except Exception as re_err:
+                    log(event="RECONNECT_FAILED", error=repr(re_err))
+                consec_errors = 0
+        time.sleep(poll_seconds)
+
+
 class LiveRunner:
     def __init__(self, gateway: MT5Gateway, strategy, risk: RiskManager, cfg: RunnerCfg):
         self.gw = gateway
@@ -101,6 +123,19 @@ class LiveRunner:
         if time.monotonic() - self._last_log_t >= self.cfg.heartbeat_seconds:
             self._log(event="HEARTBEAT", equity=self.gw.equity())
 
+    def _kill_check(self, now: datetime) -> tuple[float, bool]:
+        """Snapshot equity, anchor the round, test the kill switch. On a trip:
+        flatten everything, halt, log, and return (equity, True) so the caller's
+        step() returns immediately. Shared by every runner's step()."""
+        equity = self.gw.equity()
+        self.risk.mark_round_start(now, equity)
+        if self.risk.kill(equity, now):
+            self.flatten_all()
+            self.halted = True
+            self._log(event="KILL_SWITCH", equity=equity)
+            return equity, True
+        return equity, False
+
     def step(self) -> None:
         now = datetime.now(timezone.utc)
         bars = self.gw.bars(self.cfg.symbol, "M1", self.cfg.lookback_bars)
@@ -110,13 +145,8 @@ class LiveRunner:
             return  # no new bar yet
         self._last_bar_ts = bar_ts
 
-        equity = self.gw.equity()
-        self.risk.mark_round_start(now, equity)
-
-        if self.risk.kill(equity, now):
-            self.flatten_all()
-            self.halted = True
-            self._log(event="KILL_SWITCH", equity=equity)
+        equity, killed = self._kill_check(now)
+        if killed:
             return
 
         sig = float(self.strategy.signal(bars)[-1])
@@ -154,22 +184,8 @@ class LiveRunner:
     def run(self) -> None:
         self._log(event="START", symbol=self.cfg.symbol,
                   strategy=type(self.strategy).__name__)
-        consec_errors = 0
-        while not self.halted:
-            try:
-                self.step()
-                consec_errors = 0
-            except Exception as e:  # log and keep the loop alive
-                self._log(event="ERROR", error=repr(e))
-                consec_errors += 1
-                if consec_errors >= 3:  # terminal likely restarted — re-attach
-                    try:
-                        self.gw.reconnect()
-                        self._log(event="RECONNECT_OK")
-                    except Exception as re_err:
-                        self._log(event="RECONNECT_FAILED", error=repr(re_err))
-                    consec_errors = 0
-            time.sleep(self.cfg.poll_seconds)
+        resilient_loop(self.step, self._log, self.gw.reconnect,
+                       self.cfg.poll_seconds, lambda: self.halted)
         self._log(event="HALTED")
 
 
@@ -284,13 +300,8 @@ class PortfolioRunner(LiveRunner):
     def step(self) -> None:
         now = datetime.now(timezone.utc)
         self._cache.new_cycle()
-        equity = self.gw.equity()
-        self.risk.mark_round_start(now, equity)
-
-        if self.risk.kill(equity, now):
-            self.flatten_all()
-            self.halted = True
-            self._log(event="KILL_SWITCH", equity=equity)
+        equity, killed = self._kill_check(now)
+        if killed:
             return
 
         net: dict[str, float] = {s: 0.0 for s in self.symbols}
@@ -332,22 +343,8 @@ class PortfolioRunner(LiveRunner):
     def run(self) -> None:
         self._log(event="START", books=[b._name() for b in self.books],
                   symbols=self.symbols)
-        consec_errors = 0
-        while not self.halted:
-            try:
-                self.step()
-                consec_errors = 0
-            except Exception as e:
-                self._log(event="ERROR", error=repr(e))
-                consec_errors += 1
-                if consec_errors >= 3:
-                    try:
-                        self.gw.reconnect()
-                        self._log(event="RECONNECT_OK")
-                    except Exception as re_err:
-                        self._log(event="RECONNECT_FAILED", error=repr(re_err))
-                    consec_errors = 0
-            time.sleep(self.cfg.poll_seconds)
+        resilient_loop(self.step, self._log, self.gw.reconnect,
+                       self.cfg.poll_seconds, lambda: self.halted)
         self._log(event="HALTED")
 
 
@@ -384,13 +381,8 @@ class PairRunner(LiveRunner):
             return
         self._last_bar_ts = bar_ts
 
-        equity = self.gw.equity()
-        self.risk.mark_round_start(now, equity)
-
-        if self.risk.kill(equity, now):
-            self.flatten_all()
-            self.halted = True
-            self._log(event="KILL_SWITCH", equity=equity)
+        equity, killed = self._kill_check(now)
+        if killed:
             return
 
         sig = float(self.strategy.signal(spread)[-1])

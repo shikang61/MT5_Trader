@@ -8,8 +8,10 @@
 #   london_orb@1m +2.0%/mo Sharpe 1.8 (timeframe-insensitive, original form)
 #   sweep_fade@1m +0.9%/mo Sharpe 5.3, +0.35% at 4x costs, wiggle plateau
 #     (PDH/PDL stop-run fade; lumpy/back-loaded — paper verdict by Jun 20)
-# Benched: ratio_mr (-0.95%, DD -8.9%), regime_switch (duplicates donchian),
-# ofi (needs real depth), all FX/BTC books (negative cross-asset evidence).
+# Benched: regime_switch (duplicates donchian), ofi (needs real depth), fast_mr
+# (taker fade, costs eat it), all FX/BTC books (negative cross-asset evidence).
+# ratio_mr was -0.95% raw but promoted once the RANGE-regime filter (z_n=288)
+# turned it positive — see its book entry below.
 magic: 1001           # order tag for this portfolio bot; lets a second strategy
                       # (e.g. run_passive_paper.py, magic 2002) share one account
                       # without netting against these positions. null = manage all.
