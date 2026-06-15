@@ -22,9 +22,11 @@ Three refinements over the raw screen (addressing its caveats):
     the screen's forward edge had decayed (even reversed) by ~60m.
 We only post + log; fills, TP/SL outcomes, and P&L come from the broker.
 
-ISOLATION: run this on a SEPARATE demo account from the live portfolio bot.
-Both trade XAUUSD; on one account the portfolio runner's reconcile() would net
-against these positions and fight them. Different MT5_LOGIN = clean experiment.
+ISOLATION: positions are segregated by magic (this book vs the portfolio bot's
+1001) — reconcile/flatten only touch matching tickets, so the two never net or
+fight, even on one account. Equity is shared by design: the portfolio risk
+manager sees combined account equity, bounded by the small fixed lots (remedy C
+below). A separate MT5_LOGIN would also isolate equity, but isn't required.
 
 Pure helpers (prior_day_levels, limit_params) are unit-tested; the runner loop
 is a thin broker wrapper.
@@ -41,6 +43,7 @@ import polars as pl
 
 from ..features.regime import RANGE, TREND_DOWN, TREND_UP, regime_series
 from .mt5_gateway import MT5Gateway
+from .runner import resilient_loop
 
 
 def sides_for_regime(regime: int) -> tuple[float, ...]:
@@ -231,19 +234,5 @@ class PassiveLimitRunner:
     def run(self) -> None:
         self._log(event="START", symbol=self.cfg.symbol, lots=self.cfg.lots,
                   tp_bp=self.cfg.tp_bp, sl_bp=self.cfg.sl_bp)
-        consec = 0
-        while True:
-            try:
-                self.step()
-                consec = 0
-            except Exception as e:
-                self._log(event="ERROR", error=repr(e))
-                consec += 1
-                if consec >= 3:
-                    try:
-                        self.gw.reconnect()
-                        self._log(event="RECONNECT_OK")
-                    except Exception as re_err:
-                        self._log(event="RECONNECT_FAILED", error=repr(re_err))
-                    consec = 0
-            time.sleep(self.cfg.poll_seconds)
+        resilient_loop(self.step, self._log, self.gw.reconnect,
+                       self.cfg.poll_seconds, lambda: False)
