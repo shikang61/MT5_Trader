@@ -20,7 +20,7 @@ books:
   - strategy: donchian
     symbol: XAUUSD
     timeframe: M5
-    weight: 0.3
+    weight: 0.4    # most robust book (4x-cost survivor, smooth wiggle) -> anchor
   - strategy: vwap_trend
     symbol: XAUUSD
     timeframe: M5
@@ -28,8 +28,8 @@ books:
   - strategy: london_orb
     symbol: XAUUSD
     timeframe: M1
-    weight: 0.25
+    weight: 0.1    # weak link: param cliff (flat_hour=14 -> -3%), barely survives 4x cost
   - strategy: sweep_fade
     symbol: XAUUSD
     timeframe: M1
-    weight: 0.15
+    weight: 0.2    # clean low-DD diversifier (cost-sensitive, kept small)

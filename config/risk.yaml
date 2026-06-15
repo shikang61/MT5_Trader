@@ -28,4 +28,4 @@ rounds:
     end: 2026-06-24T21:00:00Z
     max_leverage: 6
     loss_limit: 0.10
-    target_vol: 0.50
+    target_vol: 0.70   # push round: ~4.4%/day vol vs 10% kill (~2.3 sigma); was 0.50
