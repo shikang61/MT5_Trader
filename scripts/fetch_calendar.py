@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import ssl
 import time
 import urllib.error
 import urllib.request
@@ -29,12 +30,22 @@ FEED = "https://nfs.faireconomy.media/ff_calendar_thisweek.json"
 OUT = Path("data/calendar/events.parquet")
 RANK = {"low": 0, "medium": 1, "high": 2}
 
+# Windows Python's ssl can't always build the feed's cert chain (no system CA
+# integration), so verification fails there; certifi's CA bundle fixes it. Fall
+# back to the default context where certifi isn't installed (e.g. macOS, where
+# verification already works). Never disable verification — this feeds live risk.
+try:
+    import certifi
+    _SSL_CTX = ssl.create_default_context(cafile=certifi.where())
+except ModuleNotFoundError:
+    _SSL_CTX = ssl.create_default_context()
+
 
 def fetch(url: str, retries: int = 3, backoff: int = 20) -> list[dict]:
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (calendar-fetch)"})
     for attempt in range(retries):
         try:
-            with urllib.request.urlopen(req, timeout=30) as r:
+            with urllib.request.urlopen(req, timeout=30, context=_SSL_CTX) as r:
                 return json.loads(r.read().decode())
         except urllib.error.HTTPError as e:
             if e.code == 429 and attempt < retries - 1:
