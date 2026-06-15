@@ -1,0 +1,66 @@
+"""Shared backtest-data helpers: build bars from ticks, annualize a bar size,
+and a deterministic synthetic fallback. One home for the build chain that was
+duplicated in scripts/run_backtest.py and scripts/validate_books.py.
+
+`synthetic_bars` lets `diagnose`/`validate` run before the real tick dump lands
+(and backs the unit tests) — same columns the engine + strategies expect.
+"""
+from __future__ import annotations
+
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+import numpy as np
+import polars as pl
+
+from ..data.bars import time_bars
+from ..data.ingest import load_ticks
+from ..features.microstructure import with_micro_features
+
+DEFAULT_DATA = Path("data/processed")
+
+_EVERY_MINUTES = {"m": 1, "h": 60}
+
+
+def bars_per_year(every: str) -> float:
+    """Annualization factor for a bar size like '5m' or '1h'."""
+    unit, n = every[-1].lower(), float(every[:-1])
+    return 365 * 24 * 60 / (_EVERY_MINUTES[unit] * n)
+
+
+def build_bars(symbol: str, every: str = "5m",
+               data_dir: Path | str = DEFAULT_DATA) -> pl.DataFrame:
+    """Ticks → micro features → OHLC bars with the OFI aggregation."""
+    ticks = with_micro_features(load_ticks(data_dir, symbol))
+    return time_bars(ticks, every, extra={"ofi": pl.col("ofi").sum()})
+
+
+def synthetic_bars(n: int = 8000, every: str = "5m", seed: int = 0,
+                   start: datetime | None = None) -> pl.DataFrame:
+    """Deterministic random-walk bars for tests and for running the pipeline
+    before real data exists. ~28 days of 5m bars by default (enough for
+    week-by-week / hold-out splits). Columns: ts, open/high/low/close,
+    spread_mean, n_ticks, ofi."""
+    rng = np.random.default_rng(seed)
+    close = 2000.0 * np.cumprod(1.0 + rng.normal(0, 0.0006, n))
+    step = timedelta(minutes=_EVERY_MINUTES[every[-1].lower()] * float(every[:-1]))
+    t0 = start or datetime(2026, 5, 1, tzinfo=timezone.utc)
+    return pl.DataFrame({
+        "ts": [t0 + step * i for i in range(n)],
+        "open": close,
+        "high": close * (1 + rng.uniform(0, 0.0004, n)),
+        "low": close * (1 - rng.uniform(0, 0.0004, n)),
+        "close": close,
+        "spread_mean": np.full(n, 0.02),
+        "n_ticks": np.full(n, 50, dtype=np.int64),
+        "ofi": rng.normal(0, 100, n),
+    })
+
+
+def load_or_synthetic(symbol: str, every: str = "5m",
+                      data_dir: Path | str = DEFAULT_DATA) -> tuple[pl.DataFrame, bool]:
+    """Real bars if the tick dump exists, else synthetic. Returns (bars, is_real)
+    so callers can warn that results are illustrative, not tradeable."""
+    if (Path(data_dir) / symbol).exists():
+        return build_bars(symbol, every, data_dir), True
+    return synthetic_bars(every=every), False

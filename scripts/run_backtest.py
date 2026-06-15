@@ -14,23 +14,9 @@ import matplotlib.pyplot as plt
 import polars as pl
 
 from mt5_trader.backtest.engine import BTConfig, run
-from mt5_trader.data.bars import time_bars
-from mt5_trader.data.ingest import load_ticks
-from mt5_trader.features.microstructure import with_micro_features
+from mt5_trader.pipeline.data import bars_per_year, build_bars
 from mt5_trader.strategies import REGISTRY
 from mt5_trader.strategies.meanrev_pairs import spread_bars
-
-
-def build_bars(data_dir: Path, symbol: str, every: str) -> pl.DataFrame:
-    ticks = with_micro_features(load_ticks(data_dir, symbol))
-    return time_bars(ticks, every, extra={"ofi": pl.col("ofi").sum()})
-
-
-def bars_per_year(every: str) -> float:
-    """Annualization factor for the bar size, e.g. '5m' -> 365*24*12."""
-    unit, n = every[-1].lower(), float(every[:-1])
-    minutes = {"m": 1, "h": 60}[unit] * n
-    return 365 * 24 * 60 / minutes
 
 
 def main():
@@ -51,9 +37,9 @@ def main():
     args = p.parse_args()
 
     bars = (pl.read_parquet(args.bars_file) if args.bars_file
-            else build_bars(args.data, args.symbol, args.every))
+            else build_bars(args.symbol, args.every, args.data))
     if args.symbol2:
-        bars = spread_bars(bars, build_bars(args.data, args.symbol2, args.every), args.beta)
+        bars = spread_bars(bars, build_bars(args.symbol2, args.every, args.data), args.beta)
 
     strategy = REGISTRY[args.strategy]()
     result = run(bars, strategy.signal(bars),

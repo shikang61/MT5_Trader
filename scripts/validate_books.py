@@ -13,30 +13,15 @@ aggregate that run's per-bar pnl. Costs/wiggle re-run the full sample.
 """
 from __future__ import annotations
 
-from pathlib import Path
-
 import numpy as np
 import polars as pl
 import yaml
 
 from mt5_trader.backtest.engine import BTConfig, run
 from mt5_trader.backtest.metrics import summary
-from mt5_trader.data.bars import time_bars
-from mt5_trader.data.ingest import load_ticks
-from mt5_trader.features.microstructure import with_micro_features
+from mt5_trader.pipeline.data import bars_per_year, build_bars
 from mt5_trader.strategies import REGISTRY
 
-DATA = Path("data/processed")
-
-
-def build_bars(symbol: str, every: str) -> pl.DataFrame:
-    ticks = with_micro_features(load_ticks(DATA, symbol))
-    return time_bars(ticks, every, extra={"ofi": pl.col("ofi").sum()})
-
-
-def bars_per_year(every: str) -> float:
-    minutes = {"m": 1, "h": 60}[every[-1]] * float(every[:-1])
-    return 365 * 24 * 60 / minutes
 SYMBOL = "XAUUSD"
 TF_EVERY = {"M1": "1m", "M5": "5m", "M15": "15m", "H1": "1h"}
 # primary param to wiggle (lookbacks +/-25%; session books shift the time knob)
