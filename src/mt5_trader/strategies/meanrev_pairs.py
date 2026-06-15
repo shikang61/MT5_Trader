@@ -11,6 +11,7 @@ from dataclasses import dataclass
 import numpy as np
 import polars as pl
 
+from ..features.regime import RANGE, regime_series
 from .base import register
 
 
@@ -39,6 +40,7 @@ class RatioMeanRev:
     z_n: int = 1440
     z_entry: float = 2.0
     z_exit: float = 0.5
+    regime_filter: bool = True   # only fade the spread in a RANGE regime
 
     name = "ratio_mr"
 
@@ -62,4 +64,7 @@ class RatioMeanRev:
             elif abs(z[t]) <= self.z_exit:
                 state = 0.0
             pos[t] = state
+        # Pairs blow up when the spread trends; fade only when it ranges.
+        if self.regime_filter:
+            pos = np.where(regime_series(bars) == RANGE, pos, 0.0)
         return pos

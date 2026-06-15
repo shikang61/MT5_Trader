@@ -2,6 +2,8 @@
 # Posture: survive rounds 1-2 (clear the cutoff, don't blow up), push round 3.
 # target_vol = annualized vol budget; sizing = min(target_vol / realized_vol, max_leverage).
 # loss_limit = kill switch as a fraction of round-start equity.
+# give_back = trailing kill: flatten if equity falls this fraction from the
+#   round's peak (protects an intra-round lead; 0 = off).
 
 default:            # prep phase / outside rounds (paper trading)
   max_leverage: 2
@@ -15,6 +17,7 @@ rounds:
     max_leverage: 3
     loss_limit: 0.05
     target_vol: 0.25
+    give_back: 0.05
 
   - name: round2    # -> Jun 23 10pm BST, top 150 advance
     start: 2026-06-22T21:00:00Z
@@ -22,6 +25,7 @@ rounds:
     max_leverage: 3
     loss_limit: 0.05
     target_vol: 0.25
+    give_back: 0.05
 
   - name: round3    # -> Jun 24 10pm BST, top 100 to Finals — push
     start: 2026-06-23T21:00:00Z
@@ -29,3 +33,4 @@ rounds:
     max_leverage: 6
     loss_limit: 0.10
     target_vol: 0.70   # push round: ~4.4%/day vol vs 10% kill (~2.3 sigma); was 0.50
+    give_back: 0.07    # let the push run, but lock in a big lead if it reverses

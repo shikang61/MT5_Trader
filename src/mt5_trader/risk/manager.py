@@ -19,8 +19,9 @@ class RoundCfg:
     start: datetime | None
     end: datetime | None
     max_leverage: float
-    loss_limit: float      # kill switch: fraction of round-start equity
+    loss_limit: float      # kill switch: drawdown fraction from round-START equity
     target_vol: float      # annualized vol budget
+    give_back: float = 0.0  # kill switch: drawdown fraction from round PEAK (0 = off)
 
 
 def _parse_dt(v) -> datetime | None:
@@ -36,6 +37,7 @@ class RiskManager:
         self.rounds = rounds
         self.default = default
         self._round_start_equity: dict[str, float] = {}
+        self._round_peak_equity: dict[str, float] = {}
 
     @classmethod
     def from_yaml(cls, path: Path | str) -> "RiskManager":
@@ -50,6 +52,7 @@ class RiskManager:
                 max_leverage=float(d["max_leverage"]),
                 loss_limit=float(d["loss_limit"]),
                 target_vol=float(d["target_vol"]),
+                give_back=float(d.get("give_back", 0.0)),
             )
 
         default = mk(cfg["default"], "default")
@@ -71,11 +74,18 @@ class RiskManager:
     def mark_round_start(self, now: datetime, equity: float) -> None:
         r = self.round_at(now)
         self._round_start_equity.setdefault(r.name, equity)
+        self._round_peak_equity.setdefault(r.name, equity)
 
     def kill(self, equity: float, now: datetime) -> bool:
-        """True -> flatten everything and stop trading for this round."""
+        """True -> flatten everything and stop trading for this round. Trips on
+        either drawdown from round-start (loss_limit) or, once give_back is set,
+        drawdown from the round's peak equity (protects an intra-round lead)."""
         r = self.round_at(now)
         start_eq = self._round_start_equity.get(r.name)
         if start_eq is None:
             return False
-        return equity / start_eq - 1.0 <= -r.loss_limit
+        peak = max(self._round_peak_equity.get(r.name, start_eq), equity)
+        self._round_peak_equity[r.name] = peak
+        hit_floor = equity / start_eq - 1.0 <= -r.loss_limit
+        gave_back = r.give_back > 0 and equity / peak - 1.0 <= -r.give_back
+        return hit_floor or gave_back
