@@ -10,7 +10,11 @@
 #     (PDH/PDL stop-run fade; lumpy/back-loaded — paper verdict by Jun 20)
 # Benched: ratio_mr (-0.95%, DD -8.9%), regime_switch (duplicates donchian),
 # ofi (needs real depth), all FX/BTC books (negative cross-asset evidence).
-sl_atr_mult: 3.0      # broker-side disaster stop on net positions (0 = off)
+sl_atr_mult: 0.0      # OFF — backtest (engine intrabar model) shows a trailing
+                      # stop bleeds every book even at 3x ATR (donchian +5.1%->
+                      # -2.2%, london_orb +2%->-18%): it fires on normal pullbacks,
+                      # re-enters, churns. Kill switch (risk.yaml) is the real
+                      # safety net. Use >=15 only as a pure gap/dead-runner backstop.
 tp_atr_mult: 0.0      # broker-side take profit (0 = off; strategy exits first)
 books:
   - strategy: donchian

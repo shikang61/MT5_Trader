@@ -17,6 +17,8 @@ from ..features.technicals import atr, realized_vol
 from ..risk.manager import RiskManager
 from .mt5_gateway import MT5Gateway
 
+TF_MINUTES = {"M1": 1, "M5": 5, "M15": 15, "H1": 60}
+
 
 @dataclass
 class RunnerCfg:
@@ -43,15 +45,27 @@ def protective_levels(side: float, price: float, atr_value: float,
     return sl, tp
 
 
-def ratchet_sl(side: float, sl: float, prev_side: float, prev_sl: float) -> float:
-    """Trailing stop: while the position direction is unchanged, the SL only
-    tightens (up for longs, down for shorts), never loosens. Direction flip
-    or flat resets the ratchet."""
-    if side == 0 or sl == 0.0:
-        return sl
-    if prev_side == 0 or prev_sl == 0.0 or (side > 0) != (prev_side > 0):
-        return sl
-    return max(sl, prev_sl) if side > 0 else min(sl, prev_sl)
+def chandelier_sl(side: float, price: float, high: float, low: float,
+                  atr_value: float, sl_mult: float,
+                  prev: tuple | None) -> tuple[float, tuple]:
+    """Trailing disaster stop anchored to the favorable extreme reached since
+    entry, at a distance fixed from the ATR *at entry*. While the position side
+    is unchanged the stop only moves favorably (up for longs, down for shorts)
+    as new extremes print; a later volatility contraction can no longer tighten
+    an existing stop. A flip or flat resets the anchor. 0/NaN ATR, sl_mult<=0 or
+    flat -> off. Returns (sl, state) with state=(side, atr_entry, entry, extreme)
+    to feed back as `prev` next bar."""
+    if side == 0 or sl_mult <= 0 or atr_value <= 0 or atr_value != atr_value:
+        return 0.0, (0.0, 0.0, 0.0, 0.0)
+    direction = 1.0 if side > 0 else -1.0
+    held = prev is not None and prev[0] != 0 and (prev[0] > 0) == (side > 0)
+    if held:
+        _, atr_entry, entry, extreme = prev
+        extreme = max(extreme, high) if side > 0 else min(extreme, low)
+    else:  # fresh entry or flip: lock the trail distance to entry ATR/price
+        atr_entry, entry, extreme = atr_value, price, price
+    sl = extreme - direction * sl_mult * atr_entry
+    return sl, (side, atr_entry, entry, extreme)
 
 
 def pair_leg_lots(target_frac: float, beta: float, equity: float,
@@ -115,11 +129,13 @@ class LiveRunner:
         target_lots = target_frac * equity / (spec["contract_size"] * price)
 
         atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
-        sl, tp = protective_levels(target_lots, price, atr_val,
-                                   self.cfg.sl_atr_mult, self.cfg.tp_atr_mult)
-        prev_side, prev_sl = getattr(self, "_trail", (0.0, 0.0))
-        sl = ratchet_sl(target_lots, sl, prev_side, prev_sl)
-        self._trail = (target_lots, sl)
+        high, low = float(bars["high"][-1]), float(bars["low"][-1])
+        sl, self._trail = chandelier_sl(target_lots, price, high, low, atr_val,
+                                        self.cfg.sl_atr_mult,
+                                        getattr(self, "_trail", None))
+        _, atr_entry, entry_price, _ = self._trail
+        _, tp = protective_levels(target_lots, entry_price, atr_entry,
+                                  0.0, self.cfg.tp_atr_mult)
         delta = self.gw.reconcile(self.cfg.symbol, target_lots, sl=sl, tp=tp)
 
         self._log(event="STEP", bar_ts=bar_ts, equity=equity, signal=sig,
@@ -183,7 +199,7 @@ class Book:
         self._last_bar_ts = bar_ts
 
         sig = float(self.strategy.signal(sig_bars)[-1])
-        tf_minutes = {"M1": 1, "M5": 5, "M15": 15, "H1": 60}[self.timeframe]
+        tf_minutes = TF_MINUTES[self.timeframe]
         vol = float(sig_bars.select(
             realized_vol(vol_window, BTConfig().bars_per_year / tf_minutes)
         ).to_series()[-1])
@@ -245,7 +261,16 @@ class PortfolioRunner(LiveRunner):
         self.books = books
         self.symbols = sorted({s for b in books for s in (b.symbol, b.symbol_b) if s})
         self._cache = _BarCache(gateway, cfg.lookback_bars)
-        self._trail: dict[str, tuple[float, float]] = {}
+        self._trail: dict[str, tuple] = {}
+        # Net position spans every book on a symbol, so size its disaster stop
+        # on the COARSEST timeframe any of those books trade — wide enough that
+        # the slowest book is not knocked out by faster-timeframe bar noise.
+        self._stop_tf: dict[str, str] = {}
+        for b in books:
+            for s in (b.symbol, b.symbol_b):
+                cur = self._stop_tf.get(s)
+                if s and (cur is None or TF_MINUTES[b.timeframe] > TF_MINUTES[cur]):
+                    self._stop_tf[s] = b.timeframe
 
     def flatten_all(self) -> None:
         for s in self.symbols:
@@ -278,14 +303,16 @@ class PortfolioRunner(LiveRunner):
 
         fills = {}
         for sym, lots in net.items():
-            bars = self._cache(sym, "M1")  # execution-level price/ATR always M1
+            bars = self._cache(sym, self._stop_tf[sym])  # stop ATR on coarsest book TF
             price = float(bars["close"][-1])
+            high, low = float(bars["high"][-1]), float(bars["low"][-1])
             atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
-            sl, tp = protective_levels(lots, price, atr_val,
-                                       self.cfg.sl_atr_mult, self.cfg.tp_atr_mult)
-            prev_side, prev_sl = self._trail.get(sym, (0.0, 0.0))
-            sl = ratchet_sl(lots, sl, prev_side, prev_sl)
-            self._trail[sym] = (lots, sl)
+            sl, self._trail[sym] = chandelier_sl(lots, price, high, low, atr_val,
+                                                 self.cfg.sl_atr_mult,
+                                                 self._trail.get(sym))
+            _, atr_entry, entry_price, _ = self._trail[sym]
+            _, tp = protective_levels(lots, entry_price, atr_entry,
+                                      0.0, self.cfg.tp_atr_mult)
             fills[sym] = {"target_lots": lots, "sl": sl, "tp": tp,
                           "price": price,
                           "contract_size": self._cache.spec(sym)["contract_size"],

@@ -6,7 +6,7 @@
 default:            # prep phase / outside rounds (paper trading)
   max_leverage: 2
   loss_limit: 0.04
-  target_vol: 0.15
+  target_vol: 0.30   # gold runs ~0.40 ann vol -> lev ~0.75; was 0.15 (~0.09 lots)
 
 rounds:
   - name: round1    # Jun 21 11pm -> Jun 22 10pm BST, top 200 advance

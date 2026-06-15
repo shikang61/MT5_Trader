@@ -1,5 +1,7 @@
+import math
+
 from mt5_trader.backtest.attribution import attribute
-from mt5_trader.live.runner import ratchet_sl
+from mt5_trader.live.runner import chandelier_sl
 
 
 def step(equity, books, fills):
@@ -51,13 +53,24 @@ def test_turnover_counted():
     assert attribute(steps)["A"]["turnover_lots"] == 3.0  # 0->1 then 1->-1
 
 
-def test_ratchet_long_only_tightens():
-    assert ratchet_sl(1.0, 105.0, 1.0, 100.0) == 105.0   # tighten ok
-    assert ratchet_sl(1.0, 95.0, 1.0, 100.0) == 100.0    # loosen blocked
-    assert ratchet_sl(-1.0, 110.0, -1.0, 105.0) == 105.0  # short mirrored
+def test_chandelier_anchors_distance_and_trails_on_new_extreme():
+    # fresh long: distance locked to entry ATR (2), sl = 100 - 3*2
+    sl, st = chandelier_sl(1.0, 100.0, 100.0, 100.0, 2.0, 3.0, None)
+    assert sl == 94.0 and st == (1.0, 2.0, 100.0, 100.0)
+    # new high to 106, ATR contracts to 1 -> sl trails up but distance stays 3*2
+    sl, st = chandelier_sl(1.0, 105.0, 106.0, 104.0, 1.0, 3.0, st)
+    assert sl == 100.0 and st == (1.0, 2.0, 100.0, 106.0)
+    # no new high + further ATR drop must NOT tighten the existing stop
+    sl, _ = chandelier_sl(1.0, 103.0, 105.0, 102.0, 0.5, 3.0, st)
+    assert sl == 100.0
 
 
-def test_ratchet_resets_on_flip_or_flat():
-    assert ratchet_sl(-1.0, 120.0, 1.0, 100.0) == 120.0  # direction flip
-    assert ratchet_sl(0.0, 0.0, 1.0, 100.0) == 0.0       # flat
-    assert ratchet_sl(1.0, 95.0, 0.0, 0.0) == 95.0       # fresh position
+def test_chandelier_resets_on_flip_and_is_off_when_invalid():
+    prev = (1.0, 2.0, 100.0, 106.0)
+    sl, st = chandelier_sl(-1.0, 103.0, 104.0, 102.0, 4.0, 3.0, prev)  # flip
+    assert sl == 115.0 and st == (-1.0, 4.0, 103.0, 103.0)
+    off = (0.0, 0.0, 0.0, 0.0)
+    assert chandelier_sl(0.0, 100.0, 100.0, 100.0, 2.0, 3.0, None) == (0.0, off)
+    assert chandelier_sl(1.0, 100.0, 100.0, 100.0, 0.0, 3.0, None) == (0.0, off)
+    assert chandelier_sl(1.0, 100.0, 100.0, 100.0, 2.0, 0.0, None) == (0.0, off)
+    assert chandelier_sl(1.0, 100.0, 100.0, 100.0, math.nan, 3.0, None) == (0.0, off)
