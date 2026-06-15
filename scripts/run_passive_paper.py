@@ -24,6 +24,7 @@ from pathlib import Path
 
 from mt5_trader.live.mt5_gateway import MT5Gateway
 from mt5_trader.live.passive_limits import PassiveCfg, PassiveLimitRunner
+from mt5_trader.live.single_instance import acquire_or_exit
 
 
 def main():
@@ -38,6 +39,7 @@ def main():
     if args.magic is not None:
         kw["magic"] = args.magic
 
+    _lock = acquire_or_exit(f"passive_{args.level_source}")  # one per level source
     gw = MT5Gateway()
     gw.connect(
         login=int(os.environ["MT5_LOGIN"]),

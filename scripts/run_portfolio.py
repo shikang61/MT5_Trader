@@ -15,6 +15,7 @@ import yaml
 
 from mt5_trader.live.mt5_gateway import MT5Gateway
 from mt5_trader.live.runner import Book, PortfolioRunner, RunnerCfg
+from mt5_trader.live.single_instance import acquire_or_exit
 from mt5_trader.risk.manager import RiskManager
 from mt5_trader.strategies import REGISTRY
 
@@ -44,6 +45,7 @@ def main():
     args = p.parse_args()
 
     books, cfg = load_books(args.portfolio)
+    _lock = acquire_or_exit("portfolio")  # refuse a duplicate portfolio bot
     gw = MT5Gateway()
     gw.connect(
         login=int(os.environ["MT5_LOGIN"]),
