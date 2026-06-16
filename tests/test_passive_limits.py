@@ -4,8 +4,8 @@ import polars as pl
 
 from mt5_trader.features.regime import RANGE, TREND_DOWN, TREND_UP
 from mt5_trader.live.passive_limits import (
-    consolidation_levels, desired_sides, limit_params, prior_day_levels,
-    restable, sides_for_regime,
+    PassiveCfg, PassiveLimitRunner, consolidation_levels, desired_sides,
+    limit_params, prior_day_levels, restable, sides_for_regime,
 )
 
 
@@ -63,6 +63,15 @@ def test_consolidation_only_trades_in_range():
 def test_pdhl_uses_regime_gate():
     assert desired_sides("pdhl", TREND_UP, True) == (1.0,)
     assert set(desired_sides("pdhl", TREND_UP, False)) == {1.0, -1.0}  # gate off
+
+
+def test_broke_out_cancels_outside_band():
+    # band: ceiling 4350, floor 4300; sl_bp=15 -> breakout margin 0.15%
+    r = PassiveLimitRunner(None, PassiveCfg(sl_bp=15.0))
+    assert r._broke_out(4360.0, 4350.0, 4300.0)        # above ceiling+margin -> broke up
+    assert r._broke_out(4290.0, 4350.0, 4300.0)        # below floor-margin -> broke down
+    assert not r._broke_out(4355.0, 4350.0, 4300.0)    # within margin of ceiling -> inside
+    assert not r._broke_out(4325.0, 4350.0, 4300.0)    # mid-band -> inside
 
 
 def test_consolidation_levels_rolling_minmax():

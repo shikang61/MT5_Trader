@@ -35,9 +35,12 @@ def main():
     ap.add_argument("--level-source", choices=["pdhl", "consolidation"], default="pdhl")
     ap.add_argument("--magic", type=int, default=None)
     ap.add_argument("--range-n", type=int, default=PassiveCfg.range_n)
+    ap.add_argument("--relevel-bp", type=float, default=PassiveCfg.relevel_bp,
+                    help="re-post resting limits when the band drifts this far (bp); 0 = off")
     args = ap.parse_args()
 
     kw = dict(level_source=args.level_source, range_n=args.range_n,
+              relevel_bp=args.relevel_bp,
               log_path=Path(f"logs/passive_{args.level_source}.jsonl"))
     if args.magic is not None:
         kw["magic"] = args.magic

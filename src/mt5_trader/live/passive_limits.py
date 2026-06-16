@@ -129,6 +129,13 @@ class PassiveCfg:
                                # has not fired — the screen's edge decayed by ~60m
     level_source: str = "pdhl"  # "pdhl" (prior-day high/low) | "consolidation"
     range_n: int = 48          # consolidation window in bars (M5: 48 = 4h)
+    relevel_bp: float = 10.0   # re-post the resting limits once the band (sell/buy
+                               # level) drifts more than this (bp of level) from where
+                               # they were armed, so consolidation orders track the
+                               # moving ceiling/floor instead of sitting stale until
+                               # midnight. Only re-levels while flat (a fill is then
+                               # managed by TP/SL/time-exit). 0 = off. pdhl levels are
+                               # fixed intraday, so this is a no-op there.
     regime_gate: bool = True   # pdhl: only post the with-regime side (sides_for_regime)
     regime_coarsen: int = 15   # regime ER sampling on the bars' timeframe
     magic: int = 2002          # order tag; distinct from the portfolio bot's so
@@ -146,6 +153,7 @@ class PassiveLimitRunner:
         self.cfg = cfg
         self._day = None
         self._armed_sides = None  # sides currently resting, to detect regime changes
+        self._armed_levels = None  # (sell, buy) the resting limits were armed at
         self._last_pos = 0.0
         self._fill_t = None  # monotonic time the current position was opened
         self._last_log_t = 0.0
@@ -162,8 +170,32 @@ class PassiveLimitRunner:
         nxt = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
         return max(1, int((nxt - now).total_seconds() // 60))
 
+    def _broke_out(self, price: float, sell_level: float, buy_level: float) -> bool:
+        """Price closed beyond the consolidation band (by sl_bp) — the range has
+        broken, so the bounds no longer mean-revert. The slow ER regime can lag a
+        short-term trend and keep saying RANGE; this cancels the resting limits
+        directly instead of letting them sit into the breakout (adverse fills)."""
+        brk = self.cfg.sl_bp * 1e-4
+        return price > sell_level * (1 + brk) or price < buy_level * (1 - brk)
+
+    def _band_drifted(self, sell_level: float, buy_level: float,
+                      sides: tuple[float, ...]) -> bool:
+        """True if a side we're resting has moved more than relevel_bp (of the
+        level) from where it was armed. Only the posted sides count, and only
+        while flat — a fill is managed by TP/SL/time-exit, not re-chased."""
+        if (self.cfg.relevel_bp <= 0 or not sides or self._armed_levels is None
+                or self._last_pos != 0):
+            return False
+        old_sell, old_buy = self._armed_levels
+        tol = self.cfg.relevel_bp * 1e-4
+        if -1.0 in sides and old_sell and abs(sell_level - old_sell) / old_sell > tol:
+            return True
+        if 1.0 in sides and old_buy and abs(buy_level - old_buy) / old_buy > tol:
+            return True
+        return False
+
     def arm(self, sell_level: float, buy_level: float,
-            sides: tuple[float, ...], now: datetime) -> None:
+            sides: tuple[float, ...], now: datetime, reason: str = "day/regime") -> None:
         """Cancel this strategy's stale pendings, then post `sides` (decided by
         the caller per regime/mode). buy rests at buy_level (support/floor),
         sell at sell_level (resistance/ceiling). sides=() just cancels — used
@@ -182,7 +214,7 @@ class PassiveLimitRunner:
                                 price=price, sl=sl, tp=tp, expire_minutes=exp,
                                 magic=self.cfg.magic)
             posted.append(side)
-        self._log(event="ARM", sell_level=sell_level, buy_level=buy_level,
+        self._log(event="ARM", reason=reason, sell_level=sell_level, buy_level=buy_level,
                   level_source=self.cfg.level_source, sides=posted, skipped=skipped,
                   bid=bid, ask=ask, lots=self.cfg.lots, tp_bp=self.cfg.tp_bp,
                   sl_bp=self.cfg.sl_bp, expire_min=exp)
@@ -200,13 +232,26 @@ class PassiveLimitRunner:
 
         regime = int(regime_series(bars, coarsen=self.cfg.regime_coarsen)[-1])
         sides = desired_sides(self.cfg.level_source, regime, self.cfg.regime_gate)
-        # Re-arm on a new day (refresh levels) OR when the regime changes the
-        # desired sides — the latter cancels pendings once a range stops
-        # consolidating (sides -> ()), and re-posts when conditions return.
-        if now.date() != self._day or sides != self._armed_sides:
+        # "Not consolidating" guard: if price has broken out of the band, cancel
+        # both sides now rather than wait for the slow ER regime to flip out of
+        # RANGE (it can lag a short-term trend and leave limits resting into it).
+        if (sides and self.cfg.level_source == "consolidation"
+                and self._broke_out(float(bars["close"][-1]), sell_level, buy_level)):
+            sides = ()
+        # Re-arm on a new day (refresh levels), when the regime changes the desired
+        # sides (cancels pendings once a range stops consolidating, re-posts when it
+        # returns), OR when the consolidation band has drifted past relevel_bp from
+        # where the resting limits were armed (so they track the moving ceiling/floor
+        # instead of sitting stale until midnight).
+        new_day = now.date() != self._day
+        sides_changed = sides != self._armed_sides
+        drifted = self._band_drifted(sell_level, buy_level, sides)
+        if new_day or sides_changed or drifted:
             self._day = now.date()
-            self.arm(sell_level, buy_level, sides, now)
+            reason = "new_day" if new_day else "sides" if sides_changed else "relevel"
+            self.arm(sell_level, buy_level, sides, now, reason=reason)
             self._armed_sides = sides
+            self._armed_levels = (sell_level, buy_level)
 
         pos = self.gw.position_lots(self.cfg.symbol, magic=self.cfg.magic)
         if pos != self._last_pos:  # a limit filled, or a TP/SL closed a position
