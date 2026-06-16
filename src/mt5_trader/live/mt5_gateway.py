@@ -7,6 +7,7 @@ imports but MT5Gateway() raises, so research code can import the package tree.
 from __future__ import annotations
 
 import time
+from datetime import datetime, timezone
 
 import polars as pl
 
@@ -71,6 +72,33 @@ class MT5Gateway:
             ts=pl.from_epoch(pl.col("time") - offset, time_unit="s").dt.replace_time_zone("UTC"),
             spread_mean=pl.col("spread") * self.point(symbol),
         ).select("ts", "open", "high", "low", "close", "spread_mean", "tick_volume")
+
+    def ticks_range(self, symbol: str, start_utc: datetime, end_utc: datetime) -> pl.DataFrame:
+        """Broker ticks in [start_utc, end_utc] as canonical rows: ts (UTC, us),
+        symbol, bid, ask, bid_sz/ask_sz (null — MT5 L1 ticks carry no per-side
+        size), volume (last-trade). Tick times are server-tz like bars(); the
+        same server_offset_s correction maps them (and the request bounds) to
+        true UTC. Over-fetch and filter in the caller: the offset rounds to
+        30 min, so request a margin wider than your flush interval."""
+        mt5.symbol_select(symbol, True)
+        offset = self.server_offset_s(symbol)
+        frm = datetime.utcfromtimestamp(start_utc.timestamp() + offset)  # server wall clock
+        to = datetime.utcfromtimestamp(end_utc.timestamp() + offset)
+        ticks = mt5.copy_ticks_range(symbol, frm, to, mt5.COPY_TICKS_ALL)
+        if ticks is None:
+            raise MT5Error(f"copy_ticks_range failed for {symbol}: {mt5.last_error()}")
+        df = pl.from_numpy(ticks)
+        if df.is_empty():
+            return df
+        vol = "volume_real" if "volume_real" in df.columns else "volume"
+        return df.with_columns(
+            ts=(pl.from_epoch(pl.col("time_msc") - offset * 1000, time_unit="ms")
+                .dt.replace_time_zone("UTC").dt.cast_time_unit("us")),
+            symbol=pl.lit(symbol),
+            bid_sz=pl.lit(None, dtype=pl.Float64),
+            ask_sz=pl.lit(None, dtype=pl.Float64),
+            volume=pl.col(vol).cast(pl.Float64),
+        ).select("ts", "symbol", "bid", "ask", "bid_sz", "ask_sz", "volume").sort("ts")
 
     def point(self, symbol: str) -> float:
         info = mt5.symbol_info(symbol)
