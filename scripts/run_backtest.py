@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import polars as pl
 
 from mt5_trader.backtest.engine import BTConfig, run
+from mt5_trader.backtest.segment import segmented_signal
 from mt5_trader.pipeline.data import bars_per_year, build_bars
 from mt5_trader.strategies import REGISTRY
 from mt5_trader.strategies.meanrev_pairs import spread_bars
@@ -21,7 +22,8 @@ from mt5_trader.strategies.meanrev_pairs import spread_bars
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--data", type=Path, default=Path("data/processed"))
+    p.add_argument("--data", type=Path, nargs="+", default=[Path("data/processed")],
+                   help="one or more tick source dirs, merged (e.g. data/real data/ticks)")
     p.add_argument("--bars-file", type=Path, help="pre-built bars parquet (skips tick ingestion)")
     p.add_argument("--strategy", required=True, choices=sorted(REGISTRY))
     p.add_argument("--symbol", required=True)
@@ -42,7 +44,9 @@ def main():
         bars = spread_bars(bars, build_bars(args.symbol2, args.every, args.data), args.beta)
 
     strategy = REGISTRY[args.strategy]()
-    result = run(bars, strategy.signal(bars),
+    # signal per contiguous segment so a stitched-feed gap (real + live) can't
+    # whipsaw a rolling indicator; a no-op on a continuous single feed.
+    result = run(bars, segmented_signal(bars, strategy),
                  BTConfig(leverage=args.leverage, slippage_bps=args.slippage_bps,
                           bars_per_year=bars_per_year(args.every),
                           sl_atr_mult=args.sl_atr_mult, tp_atr_mult=args.tp_atr_mult,

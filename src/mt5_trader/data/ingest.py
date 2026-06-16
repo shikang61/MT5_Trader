@@ -12,7 +12,7 @@ from pathlib import Path
 import polars as pl
 import yaml
 
-from .schema import ALL_COLUMNS
+from .schema import ALL_COLUMNS, CORE_COLUMNS
 
 
 def load_schema_map(path: Path | str) -> dict[str, str]:
@@ -69,9 +69,20 @@ def ingest_csv_dir(csv_dir: Path | str, out_dir: Path | str,
     return written
 
 
-def load_ticks(processed_dir: Path | str, symbol: str,
+def load_ticks(processed_dir: Path | str | list, symbol: str,
                start: datetime | None = None, end: datetime | None = None) -> pl.DataFrame:
-    lf = pl.scan_parquet(Path(processed_dir) / symbol / "*.parquet")
+    """Load a symbol's canonical ticks from one or many source dirs, merged on
+    time. Pass a list to combine feeds (e.g. real historical + live capture):
+        load_ticks(["data/real", "data/ticks"], "XAUUSD")
+    Each source is projected to CORE_COLUMNS before the merge, so a feed whose
+    files carry extra columns (the live logger writes a `volume` col) still
+    concats cleanly into one schema."""
+    dirs = processed_dir if isinstance(processed_dir, (list, tuple)) else [processed_dir]
+    frames = [pl.scan_parquet(Path(d) / symbol / "*.parquet").select(CORE_COLUMNS)
+              for d in dirs if (Path(d) / symbol).exists()]
+    if not frames:
+        raise FileNotFoundError(f"no tick parquet for {symbol} under {[str(d) for d in dirs]}")
+    lf = pl.concat(frames, how="vertical")
     if start is not None:
         lf = lf.filter(pl.col("ts") >= start)
     if end is not None:
