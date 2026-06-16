@@ -91,6 +91,18 @@ Timeframe: M1 (matches the research and `sweep_fade`).
 Then a `run_backtest` check on `data/real` XAUUSD to confirm it reproduces the
 ~+10bp/60m event-study edge (sanity, not a unit test).
 
+## Backtest result (sanity, 2026-06-16)
+
+`run_backtest --strategy asian_sweep --symbol XAUUSD --data data/real --every 1m`
+(full month, **0.5bp default slippage**): total_return +2.98%, Sharpe 7.17,
+maxDD −1.72%, hit 51.6%, turnover 56, in-market ~5% (1646/31613 bars). Sign/scale
+consistent with the +10bp/60m event study; low turnover matches the 60-bar hold.
+
+**Not a gate, and flattered:** 0.5bp slippage is far below the realistic ~4.65bp
+gold cost, and it is one in-sample month (n≈28). Sharpe 7 is not believable
+forward. Stays backtest-only pending more months / forward comp data and a
+realistic-cost re-run.
+
 ## Out of scope (YAGNI)
 
 - Not in `portfolio.yaml`; no live or paper deployment (gated on more data).
