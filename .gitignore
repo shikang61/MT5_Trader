@@ -23,3 +23,6 @@ __pycache__/
 # secrets
 .env
 config/credentials.yaml
+
+# dashboard pulled-log cache
+dashboard/.cache/
