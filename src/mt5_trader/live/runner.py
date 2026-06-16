@@ -139,31 +139,32 @@ class LiveRunner:
     def step(self) -> None:
         now = datetime.now(timezone.utc)
         bars = self.gw.bars(self.cfg.symbol, "M1", self.cfg.lookback_bars)
-        bar_ts = bars["ts"][-1]
+        closed = bars[:-1]  # decide on the last COMPLETED bar, not the forming
+        bar_ts = closed["ts"][-1]  # one at [-1] (see Book.targets); price stays live
         if bar_ts == self._last_bar_ts:
             self._heartbeat()
-            return  # no new bar yet
+            return  # no new completed bar yet
         self._last_bar_ts = bar_ts
 
         equity, killed = self._kill_check(now)
         if killed:
             return
 
-        sig = float(self.strategy.signal(bars)[-1])
-        vol = float(bars.select(
+        sig = float(self.strategy.signal(closed)[-1])
+        vol = float(closed.select(
             realized_vol(self.cfg.vol_window, BTConfig().bars_per_year)
         ).to_series()[-1])
         target_frac = self.risk.size(sig, vol, now)
-        halt = self.risk.vol_halt(bars)
+        halt = self.risk.vol_halt(bars)  # safety breaker stays on the live bar
         if halt:
             target_frac = 0.0  # fast vol circuit breaker -> force flat
 
         spec = self.gw.symbol_spec(self.cfg.symbol)
-        price = float(bars["close"][-1])
+        price = float(bars["close"][-1])  # current price for sizing
         target_lots = target_frac * equity / (spec["contract_size"] * price)
 
-        atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
-        high, low = float(bars["high"][-1]), float(bars["low"][-1])
+        atr_val = float(closed.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
+        high, low = float(closed["high"][-1]), float(closed["low"][-1])
         sl, self._trail = chandelier_sl(target_lots, price, high, low, atr_val,
                                         self.cfg.sl_atr_mult,
                                         getattr(self, "_trail", None))
@@ -217,14 +218,19 @@ class Book:
             sig_bars = spread_bars(bars_a, bars_of(self.symbol_b, self.timeframe), self.beta)
         else:
             sig_bars = bars_a
-        bar_ts = sig_bars["ts"][-1]
+        # Decide on the last COMPLETED bar. copy_rates_from_pos returns the
+        # in-progress bar at [-1]; signalling off it computes the decision at
+        # bar-open on a near-stale close and mistimes every entry vs the
+        # completed-bar backtest. Sizing below still uses the live forming price.
+        closed = sig_bars[:-1]
+        bar_ts = closed["ts"][-1]
         if bar_ts == self._last_bar_ts and self._targets is not None:
             return self._targets, {}
         self._last_bar_ts = bar_ts
 
-        sig = float(self.strategy.signal(sig_bars)[-1])
+        sig = float(self.strategy.signal(closed)[-1])
         tf_minutes = TF_MINUTES[self.timeframe]
-        vol = float(sig_bars.select(
+        vol = float(closed.select(
             realized_vol(vol_window, BTConfig().bars_per_year / tf_minutes)
         ).to_series()[-1])
         frac = risk.size(sig, vol, now) * self.weight
@@ -383,7 +389,8 @@ class PairRunner(LiveRunner):
         bars_a = self.gw.bars(self.cfg.symbol, "M1", self.cfg.lookback_bars)
         bars_b = self.gw.bars(self.cfg.symbol_b, "M1", self.cfg.lookback_bars)
         spread = spread_bars(bars_a, bars_b, self.cfg.beta)
-        bar_ts = spread["ts"][-1]
+        closed = spread[:-1]  # decide on the last COMPLETED bar (see Book.targets)
+        bar_ts = closed["ts"][-1]
         if bar_ts == self._last_bar_ts:
             self._heartbeat()
             return
@@ -393,8 +400,8 @@ class PairRunner(LiveRunner):
         if killed:
             return
 
-        sig = float(self.strategy.signal(spread)[-1])
-        vol = float(spread.select(
+        sig = float(self.strategy.signal(closed)[-1])
+        vol = float(closed.select(
             realized_vol(self.cfg.vol_window, BTConfig().bars_per_year)
         ).to_series()[-1])
         target_frac = self.risk.size(sig, vol, now)
