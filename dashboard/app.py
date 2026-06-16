@@ -83,13 +83,16 @@ def _cls(x: float) -> str:
 
 
 def _pnl_style(df: pl.DataFrame, cols: list[str]):
-    """polars -> pandas Styler with green/red P&L cells, mono, 2dp."""
+    """polars -> pandas Styler with green/red P&L cells, mono, 2dp; win% shaded
+    against a 50% coin-flip."""
     pdf = df.to_pandas()
     num = [c for c in pdf.columns if pdf[c].dtype.kind in "fi"]
-    return (pdf.style
-            .map(lambda v: f"color:{UP}" if v > 0 else f"color:{DOWN}" if v < 0 else f"color:{MUTED}",
-                 subset=[c for c in cols if c in pdf.columns])
-            .format({c: "{:,.2f}" for c in num if pdf[c].dtype.kind == "f"}))
+    sty = pdf.style.map(
+        lambda v: f"color:{UP}" if v > 0 else f"color:{DOWN}" if v < 0 else f"color:{MUTED}",
+        subset=[c for c in cols if c in pdf.columns])
+    if "win%" in pdf.columns:
+        sty = sty.map(lambda v: f"color:{UP}" if v >= 50 else f"color:{DOWN}", subset=["win%"])
+    return sty.format({c: "{:,.2f}" for c in num if pdf[c].dtype.kind == "f"})
 
 
 @st.fragment(run_every=refresh)

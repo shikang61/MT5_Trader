@@ -34,6 +34,15 @@ def attribute(steps: list[dict]) -> dict:
     held: dict[str, dict[str, float]] = {}   # book -> {symbol: lots} after prev step
     prev_prices: dict[str, float] = {}
     contract: dict[str, float] = {}
+    cur_pnl: dict[str, float] = {}           # running P&L of each book's open trade
+    cur_sign: dict[str, int] = {}            # direction of that trade (0 = flat)
+
+    def close_trade(name: str) -> None:
+        if cur_sign.get(name, 0):
+            books[name]["trades"] += 1
+            if cur_pnl.get(name, 0.0) > 0:
+                books[name]["wins"] += 1
+        cur_pnl[name] = 0.0
 
     for ev in steps:
         prices = {s: f["price"] for s, f in ev["fills"].items() if "price" in f}
@@ -48,19 +57,30 @@ def attribute(steps: list[dict]) -> dict:
                 if sym in prices and sym in prev_prices and sym in contract:
                     pnl += lots * (prices[sym] - prev_prices[sym]) * contract[sym]
             books[name]["gross_pnl"] += pnl
+            cur_pnl[name] = cur_pnl.get(name, 0.0) + pnl    # accrue to the open trade
 
         # update holdings from this step's book targets
         for info in ev["books"]:
             name = info["book"]
-            books.setdefault(name, {"gross_pnl": 0.0, "turnover_lots": 0.0, "steps": 0})
+            books.setdefault(name, {"gross_pnl": 0.0, "turnover_lots": 0.0,
+                                    "steps": 0, "trades": 0, "wins": 0})
             books[name]["steps"] += 1
             new = info.get("targets", {})
             old = held.get(name, {})
             books[name]["turnover_lots"] += sum(
                 abs(new.get(s, 0.0) - old.get(s, 0.0)) for s in set(new) | set(old))
             held[name] = dict(new)
+            # a "trade" is a contiguous same-sign signal run
+            sig = info.get("signal", 0.0)
+            ns = (sig > 0) - (sig < 0)
+            if ns != cur_sign.get(name, 0):
+                close_trade(name)
+                cur_sign[name] = ns
 
         prev_prices.update(prices)
+
+    for name in list(cur_sign):              # close trades still open at the end
+        close_trade(name)
 
     out: dict = dict(books)
     if steps:

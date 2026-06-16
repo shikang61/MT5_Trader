@@ -40,15 +40,17 @@ def main() -> None:
     ]
 
     agg: dict[int, dict] = defaultdict(
-        lambda: {"net": 0.0, "gross": 0.0, "swap": 0.0, "n": 0, "symbols": set()})
+        lambda: {"net": 0.0, "gross": 0.0, "swap": 0.0, "n": 0, "wins": 0, "symbols": set()})
     for d in (m.history_deals_get(frm, to) or []):
         if d.entry != m.DEAL_ENTRY_OUT:        # only closing deals carry realized P&L
             continue
+        net_d = d.profit + d.commission + d.swap
         a = agg[d.magic]
-        a["net"] += d.profit + d.commission + d.swap
+        a["net"] += net_d
         a["gross"] += d.profit
         a["swap"] += d.swap
         a["n"] += 1
+        a["wins"] += 1 if net_d > 0 else 0
         a["symbols"].add(d.symbol)
     deals = {str(k): {**v, "symbols": sorted(v["symbols"])} for k, v in agg.items()}
 

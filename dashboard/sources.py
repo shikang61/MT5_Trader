@@ -83,6 +83,8 @@ def attribution_table(log_path: Path) -> pl.DataFrame:
     res.pop("_account", None)
     return pl.DataFrame([
         {"book": k, "gross_pnl": v["gross_pnl"], "turnover": v["turnover_lots"],
+         "trades": v.get("trades", 0),
+         "win%": round(100 * v.get("wins", 0) / v["trades"]) if v.get("trades") else 0,
          "steps": v["steps"]} for k, v in res.items()
     ]).sort("gross_pnl", descending=True)
 
@@ -102,7 +104,9 @@ def latest_signals(log_path: Path) -> pl.DataFrame:
 def deals_table(probe_data: dict) -> pl.DataFrame:
     name = {"0": "untagged", "1001": "portfolio", "2002": "pdhl", "2003": "consolidation"}
     rows = [{"magic": name.get(k, k), "net": v["net"], "gross": v["gross"],
-             "swap": v["swap"], "closes": v["n"], "symbols": ",".join(v["symbols"])}
+             "swap": v["swap"], "closes": v["n"],
+             "win%": round(100 * v.get("wins", 0) / v["n"]) if v["n"] else 0,
+             "symbols": ",".join(v["symbols"])}
             for k, v in probe_data["deals"].items()]
     return pl.DataFrame(rows).sort("net") if rows else pl.DataFrame()
 
