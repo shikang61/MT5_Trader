@@ -25,9 +25,9 @@ import polars as pl
 
 from mt5_trader.data.bars import time_bars
 from mt5_trader.data.ingest import load_ticks
+from mt5_trader.research import cost_bp, fwd_returns, report, sweep_events
 
 DATA = Path("data/processed")
-SLIP_BP = 0.5
 ROUND_GRID = {"EURUSD": 0.0050, "GBPUSD": 0.0050, "EURGBP": 0.0050,
               "XAUUSD": 10.0, "XAGUSD": 0.50, "BTCUSD": 500.0}
 QUIET_BARS = 60          # bars a level must sit untouched before a cross counts
@@ -42,54 +42,6 @@ def build(symbol: str) -> pl.DataFrame:
         date=pl.col("ts").dt.date(),
         week=pl.col("ts").dt.week(),
     )
-
-
-def cost_bp(bars: pl.DataFrame) -> float:
-    return float((bars["spread_mean"] / bars["close"]).mean() * 1e4 + SLIP_BP)
-
-
-def fwd_returns(close: np.ndarray, horizon: int) -> np.ndarray:
-    fwd = np.full(len(close), np.nan)
-    fwd[: len(close) - horizon - 1] = (
-        np.log(close[horizon + 1:]) - np.log(close[1: len(close) - horizon]))
-    return fwd
-
-
-def _report(label: str, signed_fwd_bp: np.ndarray, hurdle: float) -> None:
-    ok = ~np.isnan(signed_fwd_bp)
-    if ok.sum() == 0:
-        print(f"  {label}: no events")
-        return
-    e = signed_fwd_bp[ok]
-    verdict = "PASS" if e.mean() > hurdle else "FAIL"
-    print(f"  {label}: {verdict} edge {e.mean():+.2f} bp (cost {hurdle:.2f}), "
-          f"n={ok.sum()}, hit {np.mean(e > 0):.1%}")
-
-
-def sweep_events(bars: pl.DataFrame, levels: np.ndarray, side: int,
-                 quiet: int = QUIET_BARS,
-                 confirm: int = CONFIRM) -> tuple[np.ndarray, np.ndarray]:
-    """First bar where price crosses `levels` (per-bar level array) after
-    sitting on one side for `quiet` bars. side=+1: up through a high-side level
-    (buy stops above), side=-1: down through a low-side level (sell stops).
-    Returns (event bar indices, reclaim flags at `confirm` bars later)."""
-    high, low = bars["high"].to_numpy(), bars["low"].to_numpy()
-    close = bars["close"].to_numpy()
-    beyond = high > levels if side > 0 else low < levels
-    idx, reclaim = [], []
-    last = -10**9
-    for t in np.flatnonzero(beyond):
-        if np.isnan(levels[t]) or t - last < quiet or t + confirm >= len(close):
-            continue
-        s = max(0, t - quiet)
-        prior = beyond[s:t] & (levels[s:t] == levels[t])
-        if prior.any():
-            continue
-        idx.append(t)
-        c = close[t + confirm]
-        reclaim.append(c < levels[t] if side > 0 else c > levels[t])
-        last = t
-    return np.array(idx, dtype=int), np.array(reclaim, dtype=bool)
 
 
 def _study(bars: pl.DataFrame, level_sets: list[tuple[str, np.ndarray, int]],
@@ -122,21 +74,21 @@ def _study(bars: pl.DataFrame, level_sets: list[tuple[str, np.ndarray, int]],
 
     for horizon in HORIZONS:
         fwd = fwd_returns(close, horizon)
-        _report(f"reclaim-fade  fwd {horizon:>2}m",
+        report(f"reclaim-fade  fwd {horizon:>2}m",
                 pos[reclaim] * fwd[entry[reclaim]] * 1e4, hurdle)
-        _report(f"hold-follow   fwd {horizon:>2}m",
+        report(f"hold-follow   fwd {horizon:>2}m",
                 pos[~reclaim] * fwd[entry[~reclaim]] * 1e4, hurdle)
 
     fwd = fwd_returns(close, 30)
     edge = pos * fwd[entry] * 1e4
     h = hours[t]
     print("  -- kill-zone split (all events, fwd 30m) --")
-    _report("London 07-10 UTC", edge[(h >= 7) & (h < 10)], hurdle)
-    _report("NY     12-15 UTC", edge[(h >= 12) & (h < 15)], hurdle)
-    _report("other  hours    ", edge[(h < 7) | (h >= 15) & (h < 12)], hurdle)
+    report("London 07-10 UTC", edge[(h >= 7) & (h < 10)], hurdle)
+    report("NY     12-15 UTC", edge[(h >= 12) & (h < 15)], hurdle)
+    report("other  hours    ", edge[(h < 7) | (h >= 15) & (h < 12)], hurdle)
     print("  -- week-by-week (all events, fwd 30m) --")
     for w in np.unique(weeks[t]):
-        _report(f"week {w}", edge[weeks[t] == w], hurdle)
+        report(f"week {w}", edge[weeks[t] == w], hurdle)
     print()
 
 

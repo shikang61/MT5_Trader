@@ -21,9 +21,9 @@ import polars as pl
 from mt5_trader.data.bars import time_bars
 from mt5_trader.data.ingest import load_ticks
 from mt5_trader.features.microstructure import with_micro_features
+from mt5_trader.research import cost_bp, fwd_returns, report
 
 DATA = Path("data/processed")
-SLIP_BP = 0.5
 
 
 def build(symbol="XAUUSD") -> pl.DataFrame:
@@ -41,28 +41,6 @@ def build(symbol="XAUUSD") -> pl.DataFrame:
         vwap=(pl.col("close") * pl.col("n_ticks")).cum_sum().over("date")
              / pl.col("n_ticks").cum_sum().over("date"))
     return bars
-
-
-def cost_bp(bars: pl.DataFrame) -> float:
-    return float((bars["spread_mean"] / bars["close"]).mean() * 1e4 + SLIP_BP)
-
-
-def fwd_returns(close: np.ndarray, horizon: int) -> np.ndarray:
-    fwd = np.full(len(close), np.nan)
-    fwd[: len(close) - horizon - 1] = (
-        np.log(close[horizon + 1:]) - np.log(close[1: len(close) - horizon]))
-    return fwd
-
-
-def _report(label: str, signed_fwd_bp: np.ndarray, hurdle: float) -> None:
-    ok = ~np.isnan(signed_fwd_bp)
-    if ok.sum() == 0:
-        print(f"  {label}: no events")
-        return
-    e = signed_fwd_bp[ok]
-    verdict = "PASS" if e.mean() > hurdle else "FAIL"
-    print(f"  {label}: {verdict} edge {e.mean():+.2f} bp (cost {hurdle:.2f}), "
-          f"n={ok.sum()}, hit {np.mean(e > 0):.1%}")
 
 
 def study_breakout_vol(symbol="XAUUSD") -> None:
@@ -88,7 +66,7 @@ def study_breakout_vol(symbol="XAUUSD") -> None:
         ("normal breakouts               ", events & (act > terciles[0]) & (act <= terciles[1])),
         ("high-activity breakouts        ", events & (act > terciles[1])),
     ]:
-        _report(label, sig[mask] * fwd[mask] * 1e4, hurdle)
+        report(label, sig[mask] * fwd[mask] * 1e4, hurdle)
     print()
 
 
@@ -102,7 +80,7 @@ def study_imbalance(symbol="XAUUSD") -> None:
     events = np.abs(imb) > 2 * sd
     for horizon in (5, 30):
         fwd = fwd_returns(close, horizon)
-        _report(f"|imb|>2sd, fwd {horizon:>2}m", np.sign(imb[events]) * fwd[events] * 1e4, hurdle)
+        report(f"|imb|>2sd, fwd {horizon:>2}m", np.sign(imb[events]) * fwd[events] * 1e4, hurdle)
     print()
 
 
@@ -121,7 +99,7 @@ def study_vwap(symbol="XAUUSD") -> None:
     events &= minute > 120
     for horizon in (30, 60, 120):
         fwd = fwd_returns(close, horizon)
-        _report(f"|z|>2, fade, fwd {horizon:>3}m",
+        report(f"|z|>2, fade, fwd {horizon:>3}m",
                 -np.sign(z[events]) * fwd[events] * 1e4, hurdle)
     print()
 
