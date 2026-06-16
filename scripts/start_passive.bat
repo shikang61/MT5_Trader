@@ -1,8 +1,8 @@
 @echo off
 REM Launch the consolidation passive-limit paper book, detached, with its own log.
-REM --magic keeps it from netting against the portfolio bot (magic 1001). Safe to
-REM run only if no passive book is already running -- there is no singleton guard
-REM yet (a second run = duplicate books).
+REM --magic keeps it from netting against the portfolio bot (magic 1001). Single-
+REM instance locked per level source (acquire_or_exit("passive_consolidation")), so
+REM a second run is refused, not duplicated.
 REM
 REM pdhl (magic 2002) was RETIRED: over 24h live paper it never filled once -- its
 REM prior-day high/low levels sit too far OTM, and most arms failed order_send with
