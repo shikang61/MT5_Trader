@@ -42,7 +42,7 @@ books:
     symbol: XAUUSD            # XAG forms the ratio (signal input) but is NOT traded — the
     symbol2: XAGUSD          #  XAG leg was dead weight (wide spread, no edge): on May12-Jun11
     beta: 1.0                #  pair +1.2%/Sh1.1 vs XAU-only +4.4%/Sh3.8 (4/5 wks +, cost-robust).
-    timeframe: M5            #  regime gate OFF — it hurt XAU-only (gated +2.3% < raw +4.4%).
-    weight: 0.1              #  z_n=288 = 1 trading day on M5. Still 1mo evidence; recheck OOS.
-    trade_symbol2: false
-    params: {z_n: 288, regime_filter: false}
+    timeframe: M5            #  regime gate ON as a DRAWDOWN lever: in-sample it costs return
+    weight: 0.1              #  (gated +2.3% < raw +4.4%) but cuts maxDD both windows (in-sample
+    trade_symbol2: false     #  -.039->-.034; OOS Jun12-16 -.0148->-.0059, cost-robust). Small
+    params: {z_n: 288, regime_filter: true}   # samples (OOS=3 trades) — revisit at >=20 OOS trades.
