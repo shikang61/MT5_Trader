@@ -199,6 +199,9 @@ class Book:
     weight: float = 1.0
     symbol_b: str = ""
     beta: float = 1.0
+    trade_symbol_b: bool = True  # False: symbol_b feeds the SIGNAL (e.g. the ratio)
+                                 # but only symbol (leg A) is traded — directional,
+                                 # not the market-neutral pair.
     timeframe: str = "M1"
     _last_bar_ts: object = None
     _targets: dict = None  # type: ignore[assignment]
@@ -227,7 +230,7 @@ class Book:
         frac = risk.size(sig, vol, now) * self.weight
 
         price_a = float(bars_a["close"][-1])
-        if self.symbol_b:
+        if self.symbol_b and self.trade_symbol_b:
             bars_b = bars_of(self.symbol_b, self.timeframe)
             price_b = float(bars_b["close"][-1])
             lots_a, lots_b = pair_leg_lots(
@@ -235,7 +238,7 @@ class Book:
                 bars_of.spec(self.symbol)["contract_size"],
                 bars_of.spec(self.symbol_b)["contract_size"])
             self._targets = {self.symbol: lots_a, self.symbol_b: lots_b}
-        else:
+        else:  # single leg: outright symbol (signal may still use symbol_b)
             spec = bars_of.spec(self.symbol)
             self._targets = {self.symbol: frac * equity / (spec["contract_size"] * price_a)}
         info = {"book": self._name(), "bar_ts": bar_ts, "signal": sig,
@@ -244,7 +247,12 @@ class Book:
         return self._targets, info
 
     def _name(self) -> str:
-        leg2 = f"+{self.symbol_b}" if self.symbol_b else ""
+        if self.symbol_b and not self.trade_symbol_b:
+            leg2 = f"(sig:{self.symbol_b})"  # symbol_b in the signal, not traded
+        elif self.symbol_b:
+            leg2 = f"+{self.symbol_b}"
+        else:
+            leg2 = ""
         return f"{type(self.strategy).__name__}:{self.symbol}{leg2}@{self.timeframe}"
 
 

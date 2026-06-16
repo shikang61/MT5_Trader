@@ -38,10 +38,11 @@ books:
     symbol: XAUUSD
     timeframe: M1
     weight: 0.1    # clean low-DD diversifier (cost-sensitive); trimmed to fund ratio_mr
-  - strategy: ratio_mr        # XAU/XAG decorrelator: +3.7% Sharpe 3.0, -0.13 corr vs donchian
-    symbol: XAUUSD            # (range-regime filter on; z_n=288 = 1 trading day on M5)
-    symbol2: XAGUSD
-    beta: 1.0
-    timeframe: M5
-    weight: 0.1
-    params: {z_n: 288}
+  - strategy: ratio_mr        # XAU traded off the gold/silver ratio z-score, XAU-ONLY.
+    symbol: XAUUSD            # XAG forms the ratio (signal input) but is NOT traded — the
+    symbol2: XAGUSD          #  XAG leg was dead weight (wide spread, no edge): on May12-Jun11
+    beta: 1.0                #  pair +1.2%/Sh1.1 vs XAU-only +4.4%/Sh3.8 (4/5 wks +, cost-robust).
+    timeframe: M5            #  regime gate OFF — it hurt XAU-only (gated +2.3% < raw +4.4%).
+    weight: 0.1              #  z_n=288 = 1 trading day on M5. Still 1mo evidence; recheck OOS.
+    trade_symbol2: false
+    params: {z_n: 288, regime_filter: false}

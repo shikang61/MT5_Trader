@@ -30,6 +30,7 @@ def load_books(path: Path) -> tuple[list[Book], dict]:
              weight=float(b.get("weight", 1.0)),
              symbol_b=b.get("symbol2", ""),
              beta=float(b.get("beta", 1.0)),
+             trade_symbol_b=bool(b.get("trade_symbol2", True)),
              timeframe=b.get("timeframe", "M1"))
         for b in cfg["books"]
     ]
