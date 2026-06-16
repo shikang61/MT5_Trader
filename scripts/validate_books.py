@@ -30,6 +30,7 @@ WIGGLE = {
     "vwap_trend": ("z_n", [180, 240, 300]),
     "london_orb": ("flat_hour", [14, 16, 18]),
     "sweep_fade": ("quiet_bars", [45, 60, 75]),
+    "asian_sweep": ("hold_bars", [45, 60, 75]),
 }
 
 _cache: dict[str, pl.DataFrame] = {}
@@ -71,6 +72,9 @@ def main():
             r = bt(name, every, slippage=slip).metrics
             print(f"   {slip:>4}: ret {r['total_return']:+.4f}  turn {r['total_turnover']:.0f}")
 
+        if name not in WIGGLE:
+            print(" param wiggle: (none configured)")
+            continue
         pkey, vals = WIGGLE[name]
         print(f" param wiggle ({pkey}):")
         for v in vals:

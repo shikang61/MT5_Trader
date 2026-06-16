@@ -33,11 +33,13 @@ books:
   - strategy: london_orb
     symbol: XAUUSD
     timeframe: M1
-    weight: 0.1    # weak link: param cliff (flat_hour=14 -> -3%), barely survives 4x cost
+    weight: 0.05   # weak link: param cliff (flat_hour=14 -> -3%), barely survives 4x cost;
+                   # trimmed 0.10->0.05 (lost -$19.79 live 2026-06-16) to fund asian_sweep
   - strategy: sweep_fade
     symbol: XAUUSD
     timeframe: M1
-    weight: 0.1    # clean low-DD diversifier (cost-sensitive); trimmed to fund ratio_mr
+    weight: 0.05   # clean low-DD diversifier (cost-sensitive); trimmed 0.10->0.05 (lowest
+                   # validated return +0.9%/mo) to fund asian_sweep
   - strategy: ratio_mr        # XAU traded off the gold/silver ratio z-score, XAU-ONLY.
     symbol: XAUUSD            # XAG forms the ratio (signal input) but is NOT traded — the
     symbol2: XAGUSD          #  XAG leg was dead weight (wide spread, no edge): on May12-Jun11
@@ -46,3 +48,8 @@ books:
     weight: 0.1              #  (gated +2.3% < raw +4.4%) but cuts maxDD both windows (in-sample
     trade_symbol2: false     #  -.039->-.034; OOS Jun12-16 -.0148->-.0059, cost-robust). Small
     params: {z_n: 288, regime_filter: true}   # samples (OOS=3 trades) — revisit at >=20 OOS trades.
+  - strategy: asian_sweep     # Asian-session (00-06 UTC) H/L sweep-reversal fade, taker, 60m hold.
+    symbol: XAUUSD            #  Liquidity-pool research: only new level source surviving costs on
+    timeframe: M1            #   gold besides PDH/PDL. Gate (2026-06-16): param plateau + survives
+    weight: 0.1              #   real-broker cost stress; null test sweep-specific p=0.005. CAVEAT:
+                             #   one in-sample month (n~25) -> forward-confirm before raising further.
