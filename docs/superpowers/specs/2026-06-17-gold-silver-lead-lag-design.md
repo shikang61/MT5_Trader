@@ -1,7 +1,26 @@
 # Gold→Silver Lead-Lag Taker — Design
 
 **Date:** 2026-06-17
-**Status:** design approved, pre-implementation
+**Status:** KILLED at Decision Gate A (cost pre-gate) — not implemented.
+
+## Outcome — KILLED at Gate A (2026-06-17)
+
+The XAG-spread pre-gate fails the taker form before any book is built:
+- **XAG spread = 1.88bp median** on the real feed (7.5× gold's 0.25bp). Taker
+  round-trip ≈ one full spread + slippage ≈ 2.5–2.9bp.
+- Silver's **total** `mean|move|`: 0.53bp (1s), 1.36bp (5s), 1.99bp (10s),
+  3.57bp (30s). At the 1–10s horizons where the lead lives, the total move
+  barely reaches silver's own spread.
+- A lead-lag taker captures only the *gold-predicted fraction* of that move
+  (low R²), in one direction — a small slice of the totals above — while paying
+  ~2.5–2.9bp round-trip. Underwater by a wide margin.
+
+The gold→silver lead **signal** is real, but silver's spread eats it as a taker.
+The only form that could pay is market-making silver (earn the spread), which was
+already abandoned (no trade prints to backtest MM PnL). **Do not re-attempt the
+taker; do not build this book.** The design below is retained for the record.
+
+---
 
 ## Motivation
 
