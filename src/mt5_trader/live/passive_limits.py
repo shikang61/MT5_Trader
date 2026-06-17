@@ -1,23 +1,21 @@
-"""Paper harness: rest passive limit orders at prior-day high/low and let the
-broker report real fills — the ground-truth test the tick screen
+"""Paper harness: rest passive limit orders at the consolidation ceiling/floor
+and let the broker report real fills — the ground-truth test the tick screen
 (scripts/eval_passive_limits.py) can't give (it assumes optimistic fills).
 
-Each UTC day: cancel yesterday's pendings, then post a buy-limit at the prior
-day's low (support) and/or a sell-limit at the prior day's high (resistance),
-each with a take-profit (the bounce) and stop (the level breaking) attached, so
-the broker manages the price exit. One order per side per day.
-
-Levels come from one of two sources (level_source):
-  - pdhl: prior-day high/low (zero params).
-  - consolidation: rolling ceiling/floor of the range, only while the regime is
-    RANGE (the "ceiling and floor of a consolidating regime").
+While the regime is RANGE, post a buy-limit at the range floor (support) and a
+sell-limit at the range ceiling (resistance) — the rolling min/max of close over
+range_n bars, the "floor and ceiling of a consolidating regime". Each carries a
+take-profit (the bounce) and stop (the level breaking) so the broker manages the
+price exit.
 
 Three refinements over the raw screen (addressing its caveats):
-  - regime-modulated: pdhl posts only the with-regime side (sides_for_regime);
-    consolidation posts both bounds but only while RANGE. The screen showed
-    counter-trend / non-range fades get adversely selected.
+  - regime-modulated: post both bounds only while RANGE — the screen showed
+    counter-trend / non-range fades get adversely selected. The regime gate
+    window must match the band (regime_coarsen=3 -> ~4h, like range_n=48 = 4h),
+    else the slow daily regime never arms during short-term consolidations.
   - regime exit: sides are re-evaluated every step, so when a range stops
-    consolidating the resting limits are cancelled (and re-posted if it returns).
+    consolidating (regime flips, or price breaks the band) the resting limits
+    are cancelled, and re-posted if it returns.
   - fast exit: a fill that misses its TP/SL is flattened after max_hold_min —
     the screen's forward edge had decayed (even reversed) by ~60m.
 We only post + log; fills, TP/SL outcomes, and P&L come from the broker.
@@ -28,8 +26,8 @@ fight, even on one account. Equity is shared by design: the portfolio risk
 manager sees combined account equity, bounded by the small fixed lots (remedy C
 below). A separate MT5_LOGIN would also isolate equity, but isn't required.
 
-Pure helpers (prior_day_levels, limit_params) are unit-tested; the runner loop
-is a thin broker wrapper.
+Pure helpers (consolidation_levels, limit_params) are unit-tested; the runner
+loop is a thin broker wrapper.
 """
 from __future__ import annotations
 
@@ -41,23 +39,9 @@ from pathlib import Path
 
 import polars as pl
 
-from ..features.regime import RANGE, TREND_DOWN, TREND_UP, regime_series
+from ..features.regime import RANGE, regime_series
 from .mt5_gateway import MT5Gateway
 from .runner import resilient_loop
-
-
-def sides_for_regime(regime: int) -> tuple[float, ...]:
-    """Which limit sides to post in the current regime — only fade the level
-    the trend is NOT running through (addresses the screen's adverse-selection
-    finding: counter-trend level fades break and bleed).
-      TREND_UP   -> buy@support only (pullbacks bounce; resistance breaks).
-      TREND_DOWN -> sell@resistance only (support breaks; rallies fade).
-      RANGE      -> both (mean-revert inside the range)."""
-    if regime == TREND_UP:
-        return (1.0,)
-    if regime == TREND_DOWN:
-        return (-1.0,)
-    return (1.0, -1.0)
 
 
 def restable(side: float, level: float, bid: float, ask: float) -> bool:
@@ -68,26 +52,11 @@ def restable(side: float, level: float, bid: float, ask: float) -> bool:
     return level < ask if side > 0 else level > bid
 
 
-def desired_sides(level_source: str, regime: int, regime_gate: bool) -> tuple[float, ...]:
-    """Sides to have resting now, by mode.
-      consolidation: the bounds only mean-revert inside a range — post BOTH in
-        RANGE, NOTHING otherwise (so a regime that stops consolidating cancels
-        the orders).
-      pdhl: with-regime side via sides_for_regime (or both if gate off)."""
-    if level_source == "consolidation":
-        return (1.0, -1.0) if regime == RANGE else ()
-    return sides_for_regime(regime) if regime_gate else (1.0, -1.0)
-
-
-def prior_day_levels(bars: pl.DataFrame) -> tuple[float, float] | None:
-    """(PDH, PDL) = high/low of the latest COMPLETE prior calendar day in bars.
-    None until at least two days are present. Uses only past data."""
-    df = bars.with_columns(d=pl.col("ts").dt.date())
-    days = df["d"].unique().sort()
-    if len(days) < 2:
-        return None
-    prior = df.filter(pl.col("d") == days[-2])
-    return float(prior["high"].max()), float(prior["low"].min())
+def desired_sides(regime: int) -> tuple[float, ...]:
+    """Sides to have resting now. The consolidation bounds only mean-revert
+    inside a range, so post BOTH in RANGE and NOTHING otherwise (a regime that
+    stops consolidating cancels the orders)."""
+    return (1.0, -1.0) if regime == RANGE else ()
 
 
 def consolidation_levels(bars: pl.DataFrame, range_n: int) -> tuple[float, float] | None:
@@ -127,18 +96,18 @@ class PassiveCfg:
                                # Screen edge band was ~11-22bp; tune both from fills.
     max_hold_min: int = 30     # fast exit: flatten a fill after this long if TP/SL
                                # has not fired — the screen's edge decayed by ~60m
-    level_source: str = "pdhl"  # "pdhl" (prior-day high/low) | "consolidation"
     range_n: int = 48          # consolidation window in bars (M5: 48 = 4h)
     relevel_bp: float = 10.0   # re-post the resting limits once the band (sell/buy
                                # level) drifts more than this (bp of level) from where
-                               # they were armed, so consolidation orders track the
-                               # moving ceiling/floor instead of sitting stale until
-                               # midnight. Only re-levels while flat (a fill is then
-                               # managed by TP/SL/time-exit). 0 = off. pdhl levels are
-                               # fixed intraday, so this is a no-op there.
-    regime_gate: bool = True   # pdhl: only post the with-regime side (sides_for_regime)
-    regime_coarsen: int = 15   # regime ER sampling on the bars' timeframe
-    magic: int = 2002          # order tag; distinct from the portfolio bot's so
+                               # they were armed, so the orders track the moving
+                               # ceiling/floor instead of sitting stale until midnight.
+                               # Only re-levels while flat (a fill is then managed by
+                               # TP/SL/time-exit). 0 = off.
+    regime_coarsen: int = 3    # regime ER sampling stride on the bars' timeframe;
+                               # gate window = er_n(16)*stride. M5*3 = ~4h, matched to
+                               # the 4h band so the gate arms during short-term ranges
+                               # (15 = ~20h only caught multi-half-day chop).
+    magic: int = 2003          # order tag; distinct from the portfolio bot's so
                                # the two don't net against each other on one account
     timeframe: str = "M5"
     lookback_bars: int = 3000
@@ -215,28 +184,24 @@ class PassiveLimitRunner:
                                 magic=self.cfg.magic)
             posted.append(side)
         self._log(event="ARM", reason=reason, sell_level=sell_level, buy_level=buy_level,
-                  level_source=self.cfg.level_source, sides=posted, skipped=skipped,
+                  sides=posted, skipped=skipped,
                   bid=bid, ask=ask, lots=self.cfg.lots, tp_bp=self.cfg.tp_bp,
                   sl_bp=self.cfg.sl_bp, expire_min=exp)
 
     def step(self) -> None:
         now = datetime.now(timezone.utc)
         bars = self.gw.bars(self.cfg.symbol, self.cfg.timeframe, self.cfg.lookback_bars)
-        if self.cfg.level_source == "consolidation":
-            lv = consolidation_levels(bars, self.cfg.range_n)
-        else:
-            lv = prior_day_levels(bars)
+        lv = consolidation_levels(bars, self.cfg.range_n)
         if lv is None:
             return
         sell_level, buy_level = lv  # (resistance/ceiling, support/floor)
 
         regime = int(regime_series(bars, coarsen=self.cfg.regime_coarsen)[-1])
-        sides = desired_sides(self.cfg.level_source, regime, self.cfg.regime_gate)
+        sides = desired_sides(regime)
         # "Not consolidating" guard: if price has broken out of the band, cancel
         # both sides now rather than wait for the slow ER regime to flip out of
         # RANGE (it can lag a short-term trend and leave limits resting into it).
-        if (sides and self.cfg.level_source == "consolidation"
-                and self._broke_out(float(bars["close"][-1]), sell_level, buy_level)):
+        if sides and self._broke_out(float(bars["close"][-1]), sell_level, buy_level):
             sides = ()
         # Re-arm on a new day (refresh levels), when the regime changes the desired
         # sides (cancels pendings once a range stops consolidating, re-posts when it
