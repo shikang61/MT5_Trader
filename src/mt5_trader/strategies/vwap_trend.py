@@ -14,6 +14,7 @@ from dataclasses import dataclass
 import numpy as np
 import polars as pl
 
+from ..features.regime import RANGE, regime_series
 from .base import register
 
 
@@ -24,6 +25,8 @@ class VwapTrend:
     z_exit: float = 0.5
     z_n: int = 240          # rolling window for stretch normalization
     warmup_min: int = 120   # skip the first 2h of each session (VWAP unstable)
+    regime_filter: bool = False   # opt-in; gate the signal to TREND regimes only
+    regime_coarsen: int = 4       # regime ER window ~ er_n(16) x coarsen x bar; 4 -> ~5h on M5
 
     name = "vwap_trend"
 
@@ -63,4 +66,9 @@ class VwapTrend:
             elif abs(z[t]) <= self.z_exit:
                 state = 0.0
             pos[t] = state
+        if self.regime_filter:
+            # continuation bleeds in chop: trade only when the intraday regime
+            # is a trend (inverse of ratio_mr, which trades only in RANGE).
+            regime = regime_series(bars, coarsen=self.regime_coarsen)
+            pos = np.where(regime != RANGE, pos, 0.0)
         return pos
