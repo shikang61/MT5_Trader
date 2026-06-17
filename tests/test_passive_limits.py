@@ -63,3 +63,36 @@ def test_restable_skips_breached_levels():
     assert not restable(1.0, 4330.0, bid, ask)    # buy level above market -> breached
     assert restable(-1.0, 4340.0, bid, ask)       # sell resistance above market -> ok
     assert not restable(-1.0, 4310.0, bid, ask)   # sell level below market -> breached
+
+
+from datetime import date
+
+from mt5_trader.live.passive_limits import daily_halt
+
+
+def test_daily_halt_trips_on_loss_past_cap():
+    today = date(2026, 6, 17)
+    active, hd = daily_halt(realized_today=-150.0, cap=150.0, halted_day=None, today=today)
+    assert active is True and hd == today
+    # just under the cap does not trip
+    active2, hd2 = daily_halt(-149.99, 150.0, None, today)
+    assert active2 is False and hd2 is None
+
+
+def test_daily_halt_stays_halted_rest_of_day():
+    today = date(2026, 6, 17)
+    # already halted earlier today; realized has since recovered above the cap
+    active, hd = daily_halt(realized_today=-10.0, cap=150.0, halted_day=today, today=today)
+    assert active is True and hd == today
+
+
+def test_daily_halt_resumes_next_day():
+    yesterday, today = date(2026, 6, 16), date(2026, 6, 17)
+    active, hd = daily_halt(realized_today=-5.0, cap=150.0, halted_day=yesterday, today=today)
+    assert active is False and hd == yesterday   # past halt cleared -> resume
+
+
+def test_daily_halt_off_when_cap_zero():
+    today = date(2026, 6, 17)
+    active, hd = daily_halt(realized_today=-9999.0, cap=0.0, halted_day=None, today=today)
+    assert active is False and hd is None

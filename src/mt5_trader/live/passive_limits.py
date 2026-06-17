@@ -59,6 +59,19 @@ def desired_sides(regime: int) -> tuple[float, ...]:
     return (1.0, -1.0) if regime == RANGE else ()
 
 
+def daily_halt(realized_today, cap, halted_day, today):
+    """Daily loss-cap decision. Returns (active_halt, new_halted_day).
+
+    Trips when today's realized P&L falls to -cap or below; once tripped, stays
+    active for the rest of `today`; a halted_day from a previous day clears
+    (auto-resume next UTC day). cap <= 0 disables the cap."""
+    if cap > 0 and realized_today <= -cap:
+        return True, today
+    if halted_day == today:
+        return True, today
+    return False, halted_day
+
+
 def consolidation_levels(bars: pl.DataFrame, range_n: int) -> tuple[float, float] | None:
     """(ceiling, floor) of the recent consolidation = prior rolling max/min of
     close over range_n bars, at the latest bar (mirrors regime_switch's range
