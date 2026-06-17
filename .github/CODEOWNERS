@@ -1,0 +1,21 @@
+# Review routing by area. Replace the placeholder @handles with real GitHub users.
+# Syntax: <path glob>   <owner...>
+
+# Signal research
+/src/mt5_trader/strategies/   @signal-owner
+/src/mt5_trader/features/     @signal-owner
+/src/mt5_trader/research.py   @signal-owner
+
+# Backtesting
+/src/mt5_trader/backtest/     @backtest-owner
+/scripts/run_backtest.py      @backtest-owner
+/scripts/validate_books.py    @backtest-owner
+
+# Post-analysis
+/src/mt5_trader/backtest/attribution.py  @postanalysis-owner
+/scripts/pnl_report.py                   @postanalysis-owner
+/dashboard/                              @postanalysis-owner
+
+# Live deploy (gated)
+/src/mt5_trader/live/   @live-owner
+/config/                @live-owner
