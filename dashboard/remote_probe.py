@@ -11,12 +11,12 @@ terms), so the dashboard's fill-quality check compares apples to apples.
 import json
 import os
 import sys
-from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
 import MetaTrader5 as m
 from dotenv import load_dotenv
 
+from mt5_trader.live.broker_pnl import realized_by_magic
 from mt5_trader.live.mt5_gateway import MT5Gateway
 
 
@@ -39,19 +39,7 @@ def main() -> None:
         for p in (m.positions_get() or [])
     ]
 
-    agg: dict[int, dict] = defaultdict(
-        lambda: {"net": 0.0, "gross": 0.0, "swap": 0.0, "n": 0, "wins": 0, "symbols": set()})
-    for d in (m.history_deals_get(frm, to) or []):
-        if d.entry != m.DEAL_ENTRY_OUT:        # only closing deals carry realized P&L
-            continue
-        net_d = d.profit + d.commission + d.swap
-        a = agg[d.magic]
-        a["net"] += net_d
-        a["gross"] += d.profit
-        a["swap"] += d.swap
-        a["n"] += 1
-        a["wins"] += 1 if net_d > 0 else 0
-        a["symbols"].add(d.symbol)
+    agg = realized_by_magic(m.history_deals_get(frm, to) or [], m.DEAL_ENTRY_OUT)
     deals = {str(k): {**v, "symbols": sorted(v["symbols"])} for k, v in agg.items()}
 
     # Same bars the bot signals on. XAU M1+M5 + XAG M5 cover every book.
