@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 import polars as pl
 
 from mt5_trader.features.calendar import BlackoutCfg, blackout_mask
-from mt5_trader.risk.manager import RiskManager, RoundCfg
+from mt5_trader.risk.manager import RiskManager, Posture
 
 
 def _events():
@@ -45,11 +45,10 @@ def test_impact_and_currency_filter():
 
 
 def _rm():
-    d = RoundCfg(name="default", start=None, end=None,
-                 max_leverage=2, loss_limit=0.04, target_vol=0.3)
+    p = Posture(max_leverage=2, loss_limit=0.04, target_vol=0.3)
     cfg = BlackoutCfg(enabled=True, before_min=15, after_min=15,
                       min_impact="high", currencies=["USD"])
-    return RiskManager([], d, cfg, _events())
+    return RiskManager(p, cfg, _events())
 
 
 def test_size_forced_flat_in_blackout():

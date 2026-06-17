@@ -1,39 +1,16 @@
-# Round-aware risk budgets. Times UTC (competition times are BST = UTC+1).
-# Posture: survive rounds 1-2 (clear the cutoff, don't blow up), push round 3.
+# Standing risk posture. Times UTC. Single always-on budget (no competition rounds).
 # target_vol = annualized vol budget; sizing = min(target_vol / realized_vol, max_leverage).
-# loss_limit = kill switch as a fraction of round-start equity.
-# give_back = trailing kill: flatten if equity falls this fraction from the
-#   round's peak (protects an intra-round lead; 0 = off).
+# loss_limit = daily kill switch: drawdown fraction from the day-START equity. On a
+#   trip the bot flattens and stands down flat for the rest of the UTC day, then
+#   auto-resumes the next UTC day (the loop keeps running — a kill is not a process exit).
+# give_back = daily trailing kill: flatten if equity falls this fraction from the
+#   day's PEAK (protects an intraday gain; 0 = off).
 
-default:            # prep phase / outside rounds (paper trading)
+posture:
   max_leverage: 2
-  loss_limit: 0.04
-  target_vol: 0.30   # gold runs ~0.40 ann vol -> lev ~0.75; was 0.15 (~0.09 lots)
-
-rounds:
-  - name: round1    # Jun 21 11pm -> Jun 22 10pm BST, top 200 advance
-    start: 2026-06-21T22:00:00Z
-    end: 2026-06-22T21:00:00Z
-    max_leverage: 3
-    loss_limit: 0.05
-    target_vol: 0.25
-    give_back: 0.05
-
-  - name: round2    # -> Jun 23 10pm BST, top 150 advance
-    start: 2026-06-22T21:00:00Z
-    end: 2026-06-23T21:00:00Z
-    max_leverage: 3
-    loss_limit: 0.05
-    target_vol: 0.25
-    give_back: 0.05
-
-  - name: round3    # -> Jun 24 10pm BST, top 100 to Finals — push
-    start: 2026-06-23T21:00:00Z
-    end: 2026-06-24T21:00:00Z
-    max_leverage: 6
-    loss_limit: 0.10
-    target_vol: 0.70   # push round: ~4.4%/day vol vs 10% kill (~2.3 sigma); was 0.50
-    give_back: 0.07    # let the push run, but lock in a big lead if it reverses
+  target_vol:   0.30   # gold runs ~0.40 ann vol -> lev ~0.75
+  loss_limit:   0.04   # 4% daily kill, auto-resume next UTC day
+  give_back:    0.0    # trailing daily kill off
 
 # Economic-calendar event mute (defensive overlay). Forces flat from before_min
 # before to after_min after any matching event. OFF until a calendar file is

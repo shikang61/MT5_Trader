@@ -4,7 +4,7 @@ import numpy as np
 import polars as pl
 
 from mt5_trader.features.vol_guard import VolGuardCfg, vol_spike_mask
-from mt5_trader.risk.manager import RiskManager, RoundCfg
+from mt5_trader.risk.manager import RiskManager, Posture
 
 
 def _bars(closes, highs=None, lows=None):
@@ -83,9 +83,8 @@ def test_incremental_equals_batch():
 
 
 def _rm(vg: VolGuardCfg) -> RiskManager:
-    d = RoundCfg(name="default", start=None, end=None,
-                 max_leverage=2, loss_limit=0.04, target_vol=0.3)
-    return RiskManager([], d, vol_guard=vg)
+    p = Posture(max_leverage=2, loss_limit=0.04, target_vol=0.3)
+    return RiskManager(p, vol_guard=vg)
 
 
 def test_vol_halt_reflects_last_bar():

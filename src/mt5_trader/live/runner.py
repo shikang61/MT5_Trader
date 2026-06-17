@@ -107,7 +107,7 @@ class LiveRunner:
         self.strategy = strategy
         self.risk = risk
         self.cfg = cfg
-        self.halted = False
+        self._stood_down = False   # currently flat for the day on a kill trip
         self._last_bar_ts = None
         self._last_log_t = 0.0
         self.cfg.log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -124,16 +124,22 @@ class LiveRunner:
             self._log(event="HEARTBEAT", equity=self.gw.equity())
 
     def _kill_check(self, now: datetime) -> tuple[float, bool]:
-        """Snapshot equity, anchor the round, test the kill switch. On a trip:
-        flatten everything, halt, log, and return (equity, True) so the caller's
-        step() returns immediately. Shared by every runner's step()."""
+        """Snapshot equity, roll the daily anchor, test the kill switch. On a
+        trip: flatten everything and stand down flat for the rest of the UTC day
+        (the loop keeps running; auto-resume next day). Returns (equity, killed)
+        so the caller's step() returns immediately when killed. Shared by every
+        runner's step()."""
         equity = self.gw.equity()
-        self.risk.mark_round_start(now, equity)
+        self.risk.roll_day(now, equity)
         if self.risk.kill(equity, now):
             self.flatten_all()
-            self.halted = True
-            self._log(event="KILL_SWITCH", equity=equity)
+            if not self._stood_down:                 # log once on the trip transition
+                self._stood_down = True
+                self._log(event="KILL_SWITCH", equity=equity)
             return equity, True
+        if self._stood_down:                         # a new UTC day cleared the stand-down
+            self._stood_down = False
+            self._log(event="RESUME", equity=equity)
         return equity, False
 
     def step(self) -> None:
@@ -186,7 +192,7 @@ class LiveRunner:
         self._log(event="START", symbol=self.cfg.symbol,
                   strategy=type(self.strategy).__name__)
         resilient_loop(self.step, self._log, self.gw.reconnect,
-                       self.cfg.poll_seconds, lambda: self.halted)
+                       self.cfg.poll_seconds, lambda: False)
         self._log(event="HALTED")
 
 
@@ -358,7 +364,7 @@ class PortfolioRunner(LiveRunner):
         self._log(event="START", books=[b._name() for b in self.books],
                   symbols=self.symbols)
         resilient_loop(self.step, self._log, self.gw.reconnect,
-                       self.cfg.poll_seconds, lambda: self.halted)
+                       self.cfg.poll_seconds, lambda: False)
         self._log(event="HALTED")
 
 
