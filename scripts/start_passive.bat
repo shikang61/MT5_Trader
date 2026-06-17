@@ -6,8 +6,8 @@ REM a second run is refused, not duplicated.
 REM
 REM pdhl (magic 2002) was RETIRED: over 24h live paper it never filled once -- its
 REM prior-day high/low levels sit too far OTM, and most arms failed order_send with
-REM 10015 "Invalid price". Code is kept (run_passive_paper.py --level-source pdhl,
-REM eval_passive_limits.py) for research but is no longer launched.
+REM 10015 "Invalid price". The runner is consolidation-only now; the pdhl tick
+REM screen (eval_passive_limits.py) is kept for research.
 cd /d C:\Users\shikang\Desktop\MT5_Trader
-start "passive_consol" /b cmd /c ".venv\Scripts\python.exe scripts\run_passive_paper.py --level-source consolidation --magic 2003 >> logs\passive_consolidation_stdout.log 2>&1"
+start "passive_consol" /b cmd /c ".venv\Scripts\python.exe scripts\run_passive_paper.py --magic 2003 >> logs\passive_consolidation_stdout.log 2>&1"
 echo Launched passive book: consolidation (magic 2003).
