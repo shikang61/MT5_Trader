@@ -49,6 +49,27 @@ def main():
             suppressed = (active & (gated == 0)).sum()
             show(f"gated c={coarsen} (-{suppressed} sig-bars)", run(bars, gated, btc).metrics)
 
+    # --- vwap_trend acceptance: gate vs plain, coarsen 3/4, cost stress, weekly ---
+    btc4x = BTConfig(slippage_bps=2.0, bars_per_year=bars_per_year(every))
+    sig = REGISTRY["vwap_trend"]().signal(bars)
+    plain = run(bars, sig, btc).metrics
+    print("\n=== vwap_trend acceptance (DD smaller AND Sharpe higher = PASS) ===")
+    show("plain", plain)
+    for coarsen in (3, 4):
+        gated = np.where(regime_series(bars, coarsen=coarsen) == RANGE, 0.0, sig)
+        m = run(bars, gated, btc).metrics
+        ok = (m["max_drawdown"] > plain["max_drawdown"]) and (m["sharpe"] > plain["sharpe"])
+        show(f"gated c={coarsen} {'PASS' if ok else 'FAIL'}", m)
+        show(f"gated c={coarsen} (4x cost)", run(bars, gated, btc4x).metrics)
+
+    gated4 = np.where(regime_series(bars, coarsen=4) == RANGE, 0.0, sig)
+    print("weekly net return (plain vs shipped gated c=4):")
+    for label, pos in (("plain   ", sig), ("gated c=4", gated4)):
+        wk = (run(bars, pos, btc).bars.with_columns(wk=pl.col("ts").dt.week())
+              .group_by("wk").agg(ret=pl.col("pnl").sum()).sort("wk"))
+        print(f"  {label}: " + "  ".join(
+            f"w{r['wk']}:{r['ret']:+.4f}" for r in wk.iter_rows(named=True)))
+
 
 if __name__ == "__main__":
     main()

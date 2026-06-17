@@ -133,6 +133,28 @@ Rollback = delete the `params` line (reverts to plain `vwap_trend`).
 - Default-off mitigates deploy risk: no live behavior change until the config
   opt-in lands and passes review.
 
+## Validation result (2026-06-17)
+
+`uv run scripts/eval_regime_gate.py` on `data/real`+`data/ticks` (May 11 – Jun 10):
+
+| variant | ret | Sharpe | maxDD | 4× ret |
+|---|---|---|---|---|
+| plain | −2.74% | −1.40 | −6.96% | −3.20% |
+| gated c=3 | +0.76% | +1.56 | −1.20% | +0.10% |
+| gated c=4 (shipped) | +1.12% | +2.17 | −2.18% | +0.49% |
+
+**Verdict: PASS** against the agreed bar (maxDD smaller AND Sharpe higher, both
+windows incl. 4× cost) for c=3 and c=4.
+
+**Caveat — benefit is concentrated in one week.** Weekly net (plain → gated c=4):
+w20 +1.51→+0.87, w21 −1.28→−0.84, w22 −0.17→−0.20, w23 +0.31→+0.20,
+w24 +3.68→+1.12, **w25 −6.56→+0.00**. The gate is essentially tail-risk
+insurance: it neutralizes the single disaster week (w25) and clips upside in
+the trend weeks, so it is *worse* in ~4 of 6 weeks but transforms the month's
+DD/Sharpe. This is thin evidence (one month, one week carries it; Lesson #8) —
+the config flip is **provisional** and must be re-confirmed on the competition
+dump before it earns trust at live size.
+
 ## Workflow
 
 Branch `feat/vwap-regime-gate` off `main` → TDD the gate → run the validation
