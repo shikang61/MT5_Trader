@@ -10,6 +10,6 @@ REM Every bot takes a single-instance lock (single_instance.acquire_or_exit), so
 REM re-running this is SAFE: a bot already up is refused, not double-launched.
 cd /d C:\Users\shikang\Desktop\MT5_Trader
 start "portfolio" /b cmd /c ".venv\Scripts\python.exe scripts\run_portfolio.py >> logs\portfolio_stdout.log 2>&1"
-start "passive_consol" /b cmd /c ".venv\Scripts\python.exe scripts\run_passive_paper.py --magic 2003 >> logs\passive_consolidation_stdout.log 2>&1"
+start "passive_consol" /b cmd /c ".venv\Scripts\python.exe scripts\run_passive_paper.py --magic 2003 --range-n 96 --regime-coarsen 6 >> logs\passive_consolidation_stdout.log 2>&1"
 start "ticks" /b cmd /c ".venv\Scripts\python.exe scripts\log_ticks.py --flush-seconds 60 >> logs\log_ticks_stdout.log 2>&1"
 echo Launched portfolio + consolidation passive + tick logger. Verify logs\*.jsonl
