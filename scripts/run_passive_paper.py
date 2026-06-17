@@ -45,6 +45,13 @@ def main():
     if args.magic is not None:
         kw["magic"] = args.magic
 
+    cfg = PassiveCfg(**kw)
+    print(f"[run_passive_paper] consolidation passive book | symbol={cfg.symbol} "
+          f"magic={cfg.magic} lots={cfg.lots} tp/sl={cfg.tp_bp:g}/{cfg.sl_bp:g}bp | "
+          f"band range_n={cfg.range_n} (~{cfg.range_n * 5 / 60:g}h) | "
+          f"gate coarsen={cfg.regime_coarsen} (~{16 * cfg.regime_coarsen * 5 / 60:g}h)",
+          flush=True)
+
     _lock = acquire_or_exit("passive_consolidation")
     gw = MT5Gateway()
     gw.connect(
@@ -53,7 +60,7 @@ def main():
         server=os.environ["MT5_SERVER"],
     )
     try:
-        PassiveLimitRunner(gw, PassiveCfg(**kw)).run()
+        PassiveLimitRunner(gw, cfg).run()
     finally:
         gw.shutdown()
 
