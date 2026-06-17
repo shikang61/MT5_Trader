@@ -17,7 +17,11 @@ from ..data.bars import time_bars
 from ..data.ingest import load_ticks
 from ..features.microstructure import with_micro_features
 
-DEFAULT_DATA = Path("data/processed")
+# Real broker feeds, merged: historical capture (data/real) + live tick logger
+# (data/ticks). These carry the TRUE competition spread (~0.3bp vs Dukascopy's
+# ~1.4bp in data/processed), so backtests cost against the real book. Pass an
+# explicit data_dir / --data to override (e.g. [Path("data/processed")]).
+DEFAULT_DATA = [Path("data/real"), Path("data/ticks")]
 
 _EVERY_MINUTES = {"m": 1, "h": 60}
 
@@ -61,6 +65,7 @@ def load_or_synthetic(symbol: str, every: str = "5m",
                       data_dir: Path | str = DEFAULT_DATA) -> tuple[pl.DataFrame, bool]:
     """Real bars if the tick dump exists, else synthetic. Returns (bars, is_real)
     so callers can warn that results are illustrative, not tradeable."""
-    if (Path(data_dir) / symbol).exists():
+    dirs = data_dir if isinstance(data_dir, (list, tuple)) else [data_dir]
+    if any((Path(d) / symbol).exists() for d in dirs):
         return build_bars(symbol, every, data_dir), True
     return synthetic_bars(every=every), False

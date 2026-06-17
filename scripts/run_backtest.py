@@ -15,15 +15,16 @@ import polars as pl
 
 from mt5_trader.backtest.engine import BTConfig, run
 from mt5_trader.backtest.segment import segmented_signal
-from mt5_trader.pipeline.data import bars_per_year, build_bars
+from mt5_trader.pipeline.data import DEFAULT_DATA, bars_per_year, build_bars
 from mt5_trader.strategies import REGISTRY
 from mt5_trader.strategies.meanrev_pairs import spread_bars
 
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--data", type=Path, nargs="+", default=[Path("data/processed")],
-                   help="one or more tick source dirs, merged (e.g. data/real data/ticks)")
+    p.add_argument("--data", type=Path, nargs="+", default=list(DEFAULT_DATA),
+                   help="one or more tick source dirs, merged (default: real broker "
+                        "feeds data/real+data/ticks; pass data/processed for Dukascopy)")
     p.add_argument("--bars-file", type=Path, help="pre-built bars parquet (skips tick ingestion)")
     p.add_argument("--strategy", required=True, choices=sorted(REGISTRY))
     p.add_argument("--symbol", required=True)

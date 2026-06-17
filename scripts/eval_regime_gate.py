@@ -16,11 +16,12 @@ import polars as pl
 from mt5_trader.backtest.engine import BTConfig, run
 from mt5_trader.data.bars import time_bars
 from mt5_trader.data.ingest import load_ticks
+from mt5_trader.pipeline.data import DEFAULT_DATA
 from mt5_trader.features.microstructure import with_micro_features
 from mt5_trader.features.regime import RANGE, regime_series
 from mt5_trader.strategies import REGISTRY
 
-DATA = Path("data/processed")
+DATA = DEFAULT_DATA
 
 
 def bars_per_year(every: str) -> float:

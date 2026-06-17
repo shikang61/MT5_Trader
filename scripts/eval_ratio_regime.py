@@ -18,10 +18,11 @@ import polars as pl
 from mt5_trader.backtest.engine import BTConfig, run
 from mt5_trader.data.bars import time_bars
 from mt5_trader.data.ingest import load_ticks
+from mt5_trader.pipeline.data import DEFAULT_DATA
 from mt5_trader.features.regime import RANGE, efficiency_ratio, regime_series
 from mt5_trader.strategies.meanrev_pairs import RatioMeanRev, spread_bars
 
-DATA = Path("data/processed")
+DATA = DEFAULT_DATA
 EVERY = "5m"
 BPY = 365 * 24 * 60 / 5            # 5-minute bars per year
 Z_N = 288

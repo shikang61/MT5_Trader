@@ -21,23 +21,20 @@ rate needs L2 or the paper run (scripts/run_passive_paper.py).
     uv run scripts/eval_passive_limits.py --range-n 24 48
 """
 import argparse
-import glob
-from pathlib import Path
 
 import polars as pl
 
 from mt5_trader.data.bars import time_bars
 from mt5_trader.data.ingest import load_ticks
 from mt5_trader.features.regime import RANGE, TREND_DOWN, TREND_UP, regime_series
+from mt5_trader.pipeline.data import DEFAULT_DATA
 
-DATA = Path("data/processed/XAUUSD")
 HORIZONS = (5, 15, 30, 60)  # minutes
 _REGIME_NAME = {TREND_UP: "trend_up", RANGE: "range", TREND_DOWN: "trend_down"}
 
 
 def load_tick_frame() -> pl.DataFrame:
-    files = sorted(glob.glob(str(DATA / "*.parquet")))
-    return (pl.concat([pl.read_parquet(f) for f in files]).sort("ts")
+    return (load_ticks(DEFAULT_DATA, "XAUUSD").sort("ts")
             .with_columns(mid=(pl.col("bid") + pl.col("ask")) / 2,
                           date=pl.col("ts").dt.date(),
                           spread_bp=(pl.col("ask") - pl.col("bid"))
@@ -48,7 +45,7 @@ def m5_levels(range_n: int, coarsen: int = 15) -> pl.DataFrame:
     """Per-bar consolidation floor/ceiling (prior rolling min/max of close) and
     regime, on M5 bars. shift(1) keeps levels causal; regime_series is causal.
     coarsen sets the regime gate window: 16*coarsen*5min (15 = ~20h, 3 = ~4h)."""
-    bars = time_bars(load_ticks(DATA.parent, "XAUUSD"), "5m")
+    bars = time_bars(load_ticks(DEFAULT_DATA, "XAUUSD"), "5m")
     reg = regime_series(bars, coarsen=coarsen)
     return bars.with_columns(
         floor=pl.col("close").rolling_min(range_n).shift(1),

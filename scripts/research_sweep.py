@@ -25,9 +25,10 @@ import polars as pl
 
 from mt5_trader.data.bars import time_bars
 from mt5_trader.data.ingest import load_ticks
+from mt5_trader.pipeline.data import DEFAULT_DATA
 from mt5_trader.research import cost_bp, fwd_returns, report, sweep_events
 
-DATA = Path("data/processed")
+DATA = DEFAULT_DATA
 ROUND_GRID = {"EURUSD": 0.0050, "GBPUSD": 0.0050, "EURGBP": 0.0050,
               "XAUUSD": 10.0, "XAGUSD": 0.50, "BTCUSD": 500.0}
 QUIET_BARS = 60          # bars a level must sit untouched before a cross counts

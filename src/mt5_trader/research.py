@@ -91,7 +91,7 @@ def _grid_1s(ticks: pl.DataFrame) -> pl.DataFrame:
     )
 
 
-def load_1s(symbol: str, sources=("data/processed",)) -> pl.DataFrame:
+def load_1s(symbol: str, sources=("data/real", "data/ticks")) -> pl.DataFrame:
     """1s mid/spread grid for `symbol` from one or more tick source dirs."""
     return _grid_1s(load_ticks(list(sources), symbol))
 
