@@ -17,11 +17,12 @@ import yaml
 from mt5_trader.backtest.engine import BTConfig, run
 from mt5_trader.data.bars import time_bars
 from mt5_trader.data.ingest import load_ticks
+from mt5_trader.pipeline.data import DEFAULT_DATA
 from mt5_trader.features.calendar import BlackoutCfg, blackout_mask, load_events
 from mt5_trader.features.microstructure import with_micro_features
 from mt5_trader.strategies import REGISTRY
 
-DATA = Path("data/processed")
+DATA = DEFAULT_DATA
 TF = {"M1": "1m", "M5": "5m", "M15": "15m", "H1": "1h"}
 
 

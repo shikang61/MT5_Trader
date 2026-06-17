@@ -20,10 +20,11 @@ import polars as pl
 
 from mt5_trader.data.bars import time_bars
 from mt5_trader.data.ingest import load_ticks
+from mt5_trader.pipeline.data import DEFAULT_DATA
 from mt5_trader.features.microstructure import with_micro_features
 from mt5_trader.research import cost_bp, fwd_returns, report
 
-DATA = Path("data/processed")
+DATA = DEFAULT_DATA
 
 
 def build(symbol="XAUUSD") -> pl.DataFrame:
