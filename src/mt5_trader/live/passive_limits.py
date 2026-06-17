@@ -122,6 +122,11 @@ class PassiveCfg:
                                # (15 = ~20h only caught multi-half-day chop).
     magic: int = 2003          # order tag; distinct from the portfolio bot's so
                                # the two don't net against each other on one account
+    daily_loss_cap: float = 150.0  # account-ccy realized-loss cap for THIS book's
+                               # magic over the UTC day; trip -> cancel+flatten+
+                               # stand down till next day. 0 = off. The book's
+                               # only aggregate circuit breaker (per-trade is
+                               # TP/SL+time-exit; account equity is shared).
     timeframe: str = "M5"
     lookback_bars: int = 3000
     poll_seconds: float = 5.0
@@ -137,6 +142,10 @@ class PassiveLimitRunner:
         self._armed_sides = None  # sides currently resting, to detect regime changes
         self._armed_levels = None  # (sell, buy) the resting limits were armed at
         self._last_pos = 0.0
+        self._halted_day = None    # UTC date the daily loss cap tripped (stand down)
+        self._cap_day = None       # UTC date of the last realized-pnl query
+        self._cap_realized = 0.0   # cached realized P&L for _cap_day
+        self._last_cap_check = 0.0 # monotonic time of the last realized-pnl query
         self._fill_t = None  # monotonic time the current position was opened
         self._last_log_t = 0.0
         self.cfg.log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -208,6 +217,32 @@ class PassiveLimitRunner:
         if lv is None:
             return
         sell_level, buy_level = lv  # (resistance/ceiling, support/floor)
+
+        # Daily loss cap (this book's own realized P&L, broker truth). Throttled
+        # to ~30s; force a refresh when the UTC day rolls over so a stale loss
+        # can't re-trip the new day.
+        today = now.date()
+        if self.cfg.daily_loss_cap > 0:
+            mono = time.monotonic()
+            if today != self._cap_day or mono - self._last_cap_check >= 30.0:
+                sod = now.replace(hour=0, minute=0, second=0, microsecond=0)
+                self._cap_realized = self.gw.realized_pnl(self.cfg.magic, sod)
+                self._cap_day, self._last_cap_check = today, mono
+            was_active = self._halted_day == today
+            active, self._halted_day = daily_halt(
+                self._cap_realized, self.cfg.daily_loss_cap, self._halted_day, today)
+            if active:
+                self.gw.cancel_pending(self.cfg.symbol, magic=self.cfg.magic)
+                if not was_active:                      # trip transition
+                    self.gw.flatten(self.cfg.symbol, magic=self.cfg.magic)
+                    self._log(event="KILL", scope="daily_loss_cap",
+                              realized=self._cap_realized, cap=self.cfg.daily_loss_cap)
+                    self._last_pos = 0.0
+                if time.monotonic() - self._last_log_t >= self.cfg.heartbeat_seconds:
+                    self._log(event="SNAP", equity=self.gw.equity(), position_lots=0.0,
+                              regime=int(regime_series(bars, coarsen=self.cfg.regime_coarsen)[-1]),
+                              sell_level=sell_level, buy_level=buy_level, halted=True)
+                return  # stand down: no arming this step
 
         regime = int(regime_series(bars, coarsen=self.cfg.regime_coarsen)[-1])
         sides = desired_sides(regime)

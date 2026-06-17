@@ -7,9 +7,11 @@ imports but MT5Gateway() raises, so research code can import the package tree.
 from __future__ import annotations
 
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import polars as pl
+
+from .broker_pnl import realized_by_magic
 
 try:
     import MetaTrader5 as mt5
@@ -52,6 +54,16 @@ class MT5Gateway:
         if info is None:
             raise MT5Error(f"account_info failed: {mt5.last_error()}")
         return float(info.equity)
+
+    def realized_pnl(self, magic: int, since_utc: datetime) -> float:
+        """Net realized P&L (profit+commission+swap) for `magic`'s CLOSED deals
+        since `since_utc`, from broker deal history. Broker truth, so it is
+        restart-safe (re-derived, not accumulated in-process). Mirrors the
+        deal-window pattern in dashboard/remote_probe.py."""
+        deals = mt5.history_deals_get(
+            since_utc, datetime.now(timezone.utc) + timedelta(days=1)) or []
+        agg = realized_by_magic(deals, mt5.DEAL_ENTRY_OUT)
+        return agg.get(magic, {}).get("net", 0.0)
 
     def server_offset_s(self, symbol: str) -> int:
         """Broker server clock minus UTC, rounded to 30 min. MT5 timestamps are

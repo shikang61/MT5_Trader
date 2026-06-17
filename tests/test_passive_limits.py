@@ -96,3 +96,12 @@ def test_daily_halt_off_when_cap_zero():
     today = date(2026, 6, 17)
     active, hd = daily_halt(realized_today=-9999.0, cap=0.0, halted_day=None, today=today)
     assert active is False and hd is None
+
+
+def test_passive_cfg_has_daily_loss_cap_default():
+    assert PassiveCfg().daily_loss_cap == 150.0
+
+
+def test_runner_initializes_halt_state():
+    r = PassiveLimitRunner(None, PassiveCfg())
+    assert r._halted_day is None
