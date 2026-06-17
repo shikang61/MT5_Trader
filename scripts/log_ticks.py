@@ -80,6 +80,8 @@ def main():
     args = p.parse_args()
 
     symbols = args.symbols or portfolio_symbols(args.portfolio)
+    print(f"[log_ticks] tick capture | symbols={','.join(symbols)} "
+          f"flush={args.flush_seconds:g}s -> {OUT}", flush=True)
     _lock = acquire_or_exit("log_ticks")
     import os
     gw = MT5Gateway()
