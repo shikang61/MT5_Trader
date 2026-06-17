@@ -44,11 +44,12 @@ def load_tick_frame() -> pl.DataFrame:
                           / ((pl.col("bid") + pl.col("ask")) / 2) * 1e4))
 
 
-def m5_levels(range_n: int) -> pl.DataFrame:
+def m5_levels(range_n: int, coarsen: int = 15) -> pl.DataFrame:
     """Per-bar consolidation floor/ceiling (prior rolling min/max of close) and
-    regime, on M5 bars. shift(1) keeps levels causal; regime_series is causal."""
+    regime, on M5 bars. shift(1) keeps levels causal; regime_series is causal.
+    coarsen sets the regime gate window: 16*coarsen*5min (15 = ~20h, 3 = ~4h)."""
     bars = time_bars(load_ticks(DATA.parent, "XAUUSD"), "5m")
-    reg = regime_series(bars, coarsen=15)
+    reg = regime_series(bars, coarsen=coarsen)
     return bars.with_columns(
         floor=pl.col("close").rolling_min(range_n).shift(1),
         ceiling=pl.col("close").rolling_max(range_n).shift(1),
@@ -71,8 +72,8 @@ def pdhl_fills(ticks: pl.DataFrame):
     return buys, sells
 
 
-def consolidation_fills(ticks: pl.DataFrame, range_n: int):
-    lv = m5_levels(range_n)
+def consolidation_fills(ticks: pl.DataFrame, range_n: int, coarsen: int = 15):
+    lv = m5_levels(range_n, coarsen)
     t = (ticks.sort("ts").join_asof(lv.sort("ts"), on="ts", strategy="backward")
          .filter(pl.col("regime") == RANGE).drop_nulls(["floor", "ceiling"]))
     buys = first_per_day(t.filter(pl.col("ask") <= pl.col("floor")).rename({"floor": "lvl"}), "lvl")
@@ -115,6 +116,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--range-n", type=int, nargs="+", default=[48],
                     help="consolidation window(s) in M5 bars (48 = 4h)")
+    ap.add_argument("--regime-coarsen", type=int, nargs="+", default=[15],
+                    help="regime gate ER stride(s) on M5 bars; window = 16*stride*5min "
+                         "(15 = ~20h, 3 = ~4h). Pass several to compare gate fill counts.")
     args = ap.parse_args()
 
     ticks = load_tick_frame()
@@ -129,10 +133,13 @@ def main():
     forward(sells, "sell", midser, regimes)
 
     for rn in args.range_n:
-        print(f"\n========== MODE: consolidation (range_n={rn} M5 = {rn*5/60:.1f}h, RANGE only) ==========")
-        buys, sells = consolidation_fills(ticks, rn)
-        forward(buys, "buy", midser)
-        forward(sells, "sell", midser)
+        for cz in args.regime_coarsen:
+            gate_h = 16 * cz * 5 / 60
+            print(f"\n========== MODE: consolidation (band range_n={rn} M5 = {rn*5/60:.1f}h, "
+                  f"gate ~{gate_h:.1f}h [coarsen={cz}], RANGE only) ==========")
+            buys, sells = consolidation_fills(ticks, rn, cz)
+            forward(buys, "buy", midser)
+            forward(sells, "sell", midser)
 
 
 if __name__ == "__main__":
