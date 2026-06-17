@@ -9,5 +9,5 @@ REM prior-day high/low levels sit too far OTM, and most arms failed order_send w
 REM 10015 "Invalid price". The runner is consolidation-only now; the pdhl tick
 REM screen (eval_passive_limits.py) is kept for research.
 cd /d C:\Users\shikang\Desktop\MT5_Trader
-start "passive_consol" /b cmd /c ".venv\Scripts\python.exe scripts\run_passive_paper.py --magic 2003 >> logs\passive_consolidation_stdout.log 2>&1"
+start "passive_consol" /b cmd /c ".venv\Scripts\python.exe scripts\run_passive_paper.py --magic 2003 --range-n 96 --regime-coarsen 6 >> logs\passive_consolidation_stdout.log 2>&1"
 echo Launched passive book: consolidation (magic 2003).
