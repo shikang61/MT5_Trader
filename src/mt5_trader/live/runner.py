@@ -144,6 +144,9 @@ class LiveRunner:
 
     def step(self) -> None:
         now = datetime.now(timezone.utc)
+        equity, killed = self._kill_check(now)  # every poll, before the new-bar gate
+        if killed:
+            return
         bars = self.gw.bars(self.cfg.symbol, "M1", self.cfg.lookback_bars)
         closed = bars[:-1]  # decide on the last COMPLETED bar, not the forming
         bar_ts = closed["ts"][-1]  # one at [-1] (see Book.targets); price stays live
@@ -151,10 +154,6 @@ class LiveRunner:
             self._heartbeat()
             return  # no new completed bar yet
         self._last_bar_ts = bar_ts
-
-        equity, killed = self._kill_check(now)
-        if killed:
-            return
 
         sig = float(self.strategy.signal(closed)[-1])
         vol = float(closed.select(
@@ -392,6 +391,9 @@ class PairRunner(LiveRunner):
         from ..strategies.meanrev_pairs import spread_bars
 
         now = datetime.now(timezone.utc)
+        equity, killed = self._kill_check(now)  # every poll, before the new-bar gate
+        if killed:
+            return
         bars_a = self.gw.bars(self.cfg.symbol, "M1", self.cfg.lookback_bars)
         bars_b = self.gw.bars(self.cfg.symbol_b, "M1", self.cfg.lookback_bars)
         spread = spread_bars(bars_a, bars_b, self.cfg.beta)
@@ -401,10 +403,6 @@ class PairRunner(LiveRunner):
             self._heartbeat()
             return
         self._last_bar_ts = bar_ts
-
-        equity, killed = self._kill_check(now)
-        if killed:
-            return
 
         sig = float(self.strategy.signal(closed)[-1])
         vol = float(closed.select(
