@@ -48,6 +48,10 @@ def main():
     args = p.parse_args()
 
     books, cfg = load_books(args.portfolio)
+    names = ", ".join(f"{b['strategy']}@{b['symbol']}*{float(b.get('weight', 1.0)):g}"
+                      for b in cfg["books"])
+    print(f"[run_portfolio] portfolio book | {len(books)} books from {args.portfolio} | {names}",
+          flush=True)
     _lock = acquire_or_exit("portfolio")  # refuse a duplicate portfolio bot
     gw = MT5Gateway()
     gw.connect(
