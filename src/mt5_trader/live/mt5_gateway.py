@@ -258,6 +258,12 @@ class MT5Gateway:
         delta = target_lots - self.position_lots(symbol, magic)
         delta = round(delta / step) * step
         if abs(delta) < max(step, spec["lot_min"]):
+            # No trade needed, but keep a configured disaster stop attached and
+            # trailed on the held position — else a steady position (target within
+            # one lot step) rides unprotected while the chandelier SL is recomputed
+            # every cycle. set_position_sltp only sends when the SL actually changes.
+            if (sl or tp) and self.position_lots(symbol, magic) != 0:
+                self.set_position_sltp(symbol, sl, tp, magic=magic)
             return 0.0
         delta = max(-spec["lot_max"], min(spec["lot_max"], delta))
 

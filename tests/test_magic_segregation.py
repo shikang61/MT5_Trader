@@ -97,6 +97,25 @@ def test_reconcile_touches_only_its_own_magic(monkeypatch, gw):
     assert all(s.get("position") != 2 for s in fake.sent)           # never referenced
 
 
+def test_reconcile_trails_sl_on_held_position_without_trade(monkeypatch, gw):
+    # Held position already at target (delta < lot step): no trade, but a configured
+    # disaster-stop SL must still attach/trail on it — else a steady position rides
+    # unprotected while the chandelier stop is recomputed every cycle.
+    fake = _install(monkeypatch, [Pos(1, 0.05, SELL, 1001, sl=0.0)])
+    delta = gw.reconcile("XAUUSD", -0.05, sl=4400.0, magic=1001)  # target == current
+    assert delta == 0.0                                           # no trade sent
+    sltp = [s for s in fake.sent if s["action"] == FakeMT5.TRADE_ACTION_SLTP]
+    assert len(sltp) == 1 and sltp[0]["position"] == 1
+    assert sltp[0]["sl"] == pytest.approx(4400.0)
+
+
+def test_reconcile_no_sltp_when_stop_disabled(monkeypatch, gw):
+    # delta < lot step AND no sl/tp -> nothing sent at all (stop off, no churn).
+    fake = _install(monkeypatch, [Pos(1, 0.05, SELL, 1001, sl=0.0)])
+    gw.reconcile("XAUUSD", -0.05, magic=1001)
+    assert fake.sent == []
+
+
 def test_new_orders_carry_magic(monkeypatch, gw):
     fake = _install(monkeypatch, [])
     gw.reconcile("XAUUSD", 0.05, magic=2002)
