@@ -39,4 +39,55 @@ class VelocityBreakout:
     name = "velocity_breakout"
 
     def signal(self, bars: pl.DataFrame) -> np.ndarray:
-        return np.zeros(len(bars))
+        n = len(bars)
+        close = bars["close"].to_numpy()
+        minute_of_day = (bars["ts"].dt.hour().cast(pl.Int32) * 60
+                         + bars["ts"].dt.minute()).to_numpy()
+        dates = bars["ts"].dt.date().to_numpy()
+        er = bars.select(er=efficiency_ratio(self.er_n))["er"].to_numpy()
+        push = bars.select(p=(pl.col("close").diff().abs() / atr(14)))["p"].to_numpy()
+        arms = [_to_minutes(a) for a in self.arm_times]
+
+        # per-arm state, reset each UTC day
+        pre_hi = {a: None for a in arms}
+        pre_lo = {a: None for a in arms}
+        entered = {a: False for a in arms}
+        apos = {a: 0.0 for a in arms}     # this arm's current held position
+        hold = {a: 0 for a in arms}       # bars remaining to hold
+
+        pos = np.zeros(n)
+        day = None
+        for t in range(n):
+            if dates[t] != day:
+                day = dates[t]
+                for a in arms:
+                    pre_hi[a] = pre_lo[a] = None
+                    entered[a] = False
+                    apos[a] = 0.0
+                    hold[a] = 0
+            mt = minute_of_day[t]
+            total = 0.0
+            for a in arms:
+                if hold[a] > 0:                      # age the open position
+                    hold[a] -= 1
+                    if hold[a] == 0:
+                        apos[a] = 0.0
+                if a - self.pre_min <= mt < a:       # accumulate the pre-range
+                    c = close[t]
+                    pre_hi[a] = c if pre_hi[a] is None else max(pre_hi[a], c)
+                    pre_lo[a] = c if pre_lo[a] is None else min(pre_lo[a], c)
+                elif (a <= mt < a + self.arm_min and not entered[a]
+                        and pre_hi[a] is not None and apos[a] == 0.0):
+                    c = close[t]
+                    direction = 1.0 if c > pre_hi[a] else -1.0 if c < pre_lo[a] else 0.0
+                    if direction != 0.0:             # first break consumes the arm
+                        entered[a] = True
+                        clean = (not np.isnan(er[t])) and er[t] >= self.er_min
+                        fast = self.push_min <= 0.0 or (
+                            not np.isnan(push[t]) and push[t] >= self.push_min)
+                        if clean and fast:
+                            apos[a] = direction
+                            hold[a] = self.hold_bars
+                total += apos[a]
+            pos[t] = max(-1.0, min(1.0, total))      # net the arms, clip to [-1, 1]
+        return pos
