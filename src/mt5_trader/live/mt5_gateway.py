@@ -34,8 +34,15 @@ class MT5Gateway:
             "H1": mt5.TIMEFRAME_H1,
         }
 
-    def connect(self, login: int, password: str, server: str) -> None:
+    def connect(self, login: int, password: str, server: str,
+                path: str | None = None) -> None:
+        """`path` = a specific terminal64.exe to attach to (omit for the default /
+        running terminal). Needed to drive several ACCOUNTS at once: one MT5
+        terminal serves one account, so each account needs its own terminal +
+        process. reconnect() reuses these creds, path included."""
         self._creds = {"login": login, "password": password, "server": server}
+        if path:
+            self._creds["path"] = path
         if not mt5.initialize(**self._creds):
             raise MT5Error(f"initialize failed: {mt5.last_error()}")
 

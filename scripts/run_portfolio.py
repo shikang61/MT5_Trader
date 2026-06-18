@@ -6,6 +6,14 @@ per-symbol orders are netted across books, one kill switch flattens all.
 
     python scripts/run_portfolio.py
     python scripts/run_portfolio.py --portfolio config/portfolio.yaml
+
+Several ACCOUNTS at once: MT5's Python module is one-terminal-per-process, so
+run one process per account, each with its own terminal, .env, and instance name
+(the name keys the single-instance lock AND the log file, so they don't collide):
+    python scripts/run_portfolio.py --name acctA --terminal "C:\\MT5-A\\terminal64.exe" --env A.env
+    python scripts/run_portfolio.py --name acctB --terminal "C:\\MT5-B\\terminal64.exe" --env B.env
+Sizing auto-scales: risk.size() reads each account's own equity. Note: same
+signals on N accounts = N x the SAME bet (correlated drawdowns), not diversified.
 """
 import argparse
 import os
@@ -41,23 +49,33 @@ def load_books(path: Path) -> tuple[list[Book], dict]:
 
 
 def main():
-    load_dotenv()  # MT5_LOGIN/PASSWORD/SERVER from a .env if present
     p = argparse.ArgumentParser()
     p.add_argument("--portfolio", type=Path, default=Path("config/portfolio.yaml"))
     p.add_argument("--risk-config", type=Path, default=Path("config/risk.yaml"))
+    p.add_argument("--name", default="portfolio",
+                   help="instance name — keys the single-instance lock and the log "
+                        "file. Use a distinct name per account when driving several.")
+    p.add_argument("--terminal", default=None,
+                   help="this account's MT5 terminal64.exe (omit = default terminal)")
+    p.add_argument("--env", type=Path, default=None,
+                   help="per-account .env with MT5_LOGIN/PASSWORD/SERVER "
+                        "(overrides the ambient env)")
     args = p.parse_args()
+    # per-account .env wins over the VPS's ambient user env vars; else default load
+    load_dotenv(args.env, override=True) if args.env else load_dotenv()
 
     books, cfg = load_books(args.portfolio)
     names = ", ".join(f"{b['strategy']}@{b['symbol']}*{float(b.get('weight', 1.0)):g}"
                       for b in cfg["books"])
-    print(f"[run_portfolio] portfolio book | {len(books)} books from {args.portfolio} | {names}",
+    print(f"[run_portfolio] {args.name} | {len(books)} books from {args.portfolio} | {names}",
           flush=True)
-    _lock = acquire_or_exit("portfolio")  # refuse a duplicate portfolio bot
+    _lock = acquire_or_exit(args.name)  # refuse a duplicate of THIS instance
     gw = MT5Gateway()
     gw.connect(
         login=int(os.environ["MT5_LOGIN"]),
         password=os.environ["MT5_PASSWORD"],
         server=os.environ["MT5_SERVER"],
+        path=args.terminal,
     )
     try:
         runner = PortfolioRunner(
@@ -69,7 +87,7 @@ def main():
                           tp_atr_mult=float(cfg.get("tp_atr_mult", 0.0)),
                           magic=cfg.get("magic"),
                           exposure_cap=float(cfg.get("exposure_cap", 0.0)),
-                          log_path=Path("logs/portfolio.jsonl")),
+                          log_path=Path(f"logs/{args.name}.jsonl")),
         )
         runner.run()
     finally:
