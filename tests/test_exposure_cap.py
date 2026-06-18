@@ -1,4 +1,13 @@
-from mt5_trader.live.runner import cap_lots
+import json
+from datetime import datetime, timedelta, timezone
+
+import numpy as np
+import polars as pl
+
+from mt5_trader.live.runner import Book, PortfolioRunner, RunnerCfg, cap_lots
+from mt5_trader.risk.manager import Posture, RiskManager
+
+NOW = datetime(2026, 6, 18, 0, 0, tzinfo=timezone.utc)
 
 # At equity 100_000, contract 100, price 4000: 1.0 frac == 0.25 lots
 # (0.25 * 100 * 4000 / 100_000 = 1.0).
@@ -26,6 +35,10 @@ def test_below_cap_unchanged():
     assert bound is False
     assert lots == 0.10                      # 0.4 frac < 0.5 -> untouched
 
+def test_zero_lots_untouched():
+    # vol_halt zeroes lots before the cap runs -> halt must win, cap a no-op.
+    assert cap_lots(0.0, 100.0, 4000.0, 100_000.0, 0.5) == (0.0, False)
+
 def test_cap_zero_disables():
     lots, bound = cap_lots(5.0, 100.0, 4000.0, 100_000.0, 0.0)
     assert bound is False
@@ -36,19 +49,9 @@ def test_nonpositive_equity_or_price_safe():
     assert cap_lots(5.0, 100.0, 0.0, 100_000.0, 0.5) == (5.0, False)
 
 
-import json
-from datetime import datetime, timezone
-
-from mt5_trader.live.runner import Book, PortfolioRunner, RunnerCfg
-from mt5_trader.risk.manager import RiskManager, Posture
-
-NOW = datetime.now(timezone.utc)
-
-
 class _Strat:
     """Constant full-long signal so the netted book exposure is large."""
     def signal(self, bars):
-        import numpy as np
         return np.ones(len(bars))
 
 
@@ -69,10 +72,7 @@ class CapFakeGW:
         # 300 constant-price bars: > the 240-bar vol window so realized_vol is
         # defined (== 0 on a flat price), which makes risk.size's leverage hit the
         # max_leverage=2 cap deterministically -> a known, over-cap netted exposure.
-        import polars as pl
-        from datetime import timedelta
-        base = datetime(2026, 6, 18, 0, 0, tzinfo=timezone.utc)
-        ts = [base + timedelta(minutes=i) for i in range(300)]
+        ts = [NOW + timedelta(minutes=i) for i in range(300)]
         return pl.DataFrame({
             "ts": ts,
             "open": [self._price] * 300, "high": [self._price] * 300,
