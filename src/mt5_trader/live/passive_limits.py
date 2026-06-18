@@ -104,9 +104,10 @@ class PassiveCfg:
                                # is the shared-equity bound (remedy C) — caps how far
                                # the experiment's P&L can move the account equity the
                                # portfolio kill switch / vol sizing sees. ~0.2x lev.
-    tp_bp: float = 15.0        # 1:1 reward:risk (tp_bp == sl_bp) -> breakeven win
-    sl_bp: float = 15.0        # rate ~50%, robust if the real win rate disappoints.
-                               # Screen edge band was ~11-22bp; tune both from fills.
+    tp_bp: float = 30.0        # 1:2 risk:reward (reward = 2x risk) -> breakeven win
+    sl_bp: float = 15.0        # rate ~33% (sl/(sl+tp)). Lets winners run 2x the stop;
+                               # needs the bounce to carry to 2x. Screen edge band was
+                               # ~11-22bp; tune both from fills.
     max_hold_min: int = 30     # fast exit: flatten a fill after this long if TP/SL
                                # has not fired — the screen's edge decayed by ~60m
     range_n: int = 48          # consolidation window in bars (M5: 48 = 4h)
