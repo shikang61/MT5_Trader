@@ -25,7 +25,9 @@ class RunnerCfg:
     symbol: str
     lookback_bars: int = 3000
     vol_window: int = 240
-    poll_seconds: float = 5.0
+    poll_seconds: float = 2.0   # 5->2: tighter disaster-stop trail (re-priced on
+                                # the live forming price each poll). Entries are
+                                # unaffected — they only change on a completed bar.
     heartbeat_seconds: float = 60.0
     sl_atr_mult: float = 3.0   # broker-side disaster stop, 0 = off
     tp_atr_mult: float = 0.0   # broker-side take profit, 0 = off
