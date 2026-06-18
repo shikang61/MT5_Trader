@@ -126,6 +126,24 @@ The diagnostic is the prior, not a pass. Before this leaves backtest-only it mus
 - **Forward OOS:** re-run on the competition dump (Jun 15–27) for unseen US-session
   events; this is the real out-of-sample.
 
+## Backtest result (sanity, 2026-06-18)
+
+`run_backtest --strategy velocity_breakout --symbol XAUUSD --data data/real --every 1m`
+(full month, defaults from the design):
+
+| slippage | total_return | sharpe | maxDD | hit | turnover | in-market |
+|---|---|---|---|---|---|---|
+| 0.5bp (default) | **+3.21%** | 5.53 | −1.97% | 49.0% | 28 | 1666/31613 (~5.3%) |
+| **2bp (cost-stress)** | **+2.78%** | 4.79 | −2.14% | 49.0% | 28 | same |
+
+The edge **survives 2bp** (+3.21% → +2.78%): turnover is only 28 (≈1–1.5 round-trips/day
+across two arms, 120-bar hold), so it is cost-insensitive — the opposite of a scalper.
+Hit 49% with positive return = the edge lives in the right tail / the hold, as designed.
+
+**Not a gate, and flattered:** one in-sample month (~28 trades, overlapping nothing but
+still thin), Sharpe ~5 is not believable forward. Stays backtest-only pending the
+validation-plan gates above and forward comp-data (Jun 15–27) OOS.
+
 ## Out of scope (YAGNI)
 
 - Not in `portfolio.yaml`; no live or paper deployment (gated on forward validation).
