@@ -37,6 +37,9 @@ class RunnerCfg:
                                # multiple of equity (lots*contract*price/equity);
                                # 0 = off. PortfolioRunner only.
     log_path: Path = Path("logs/live.jsonl")
+    reopen_guard: tuple[str, str] | None = ("21:58", "22:03")  # detach the broker
+                               # disaster stop across this UTC window (HH:MM) so the
+                               # sub-second 22:00 reopen blowout can't sweep it. None=off.
 
 
 def protective_levels(side: float, price: float, atr_value: float,
@@ -72,6 +75,19 @@ def chandelier_sl(side: float, price: float, high: float, low: float,
         atr_entry, entry, extreme = atr_value, price, price
     sl = extreme - direction * sl_mult * atr_entry
     return sl, (side, atr_entry, entry, extreme)
+
+
+def in_reopen_guard(now: datetime, window: tuple[str, str] | None) -> bool:
+    """True when `now`'s UTC time-of-day is in the [start, end) reopen-guard window
+    (HH:MM strings). The broker disaster stop is detached across this window so the
+    sub-second 22:00 gold-reopen spread blowout can't sweep it. None disables."""
+    if not window:
+        return False
+    def _mins(hhmm: str) -> int:
+        h, m = hhmm.split(":")
+        return int(h) * 60 + int(m)
+    now_min = now.hour * 60 + now.minute
+    return _mins(window[0]) <= now_min < _mins(window[1])
 
 
 def pair_leg_lots(target_frac: float, beta: float, equity: float,
@@ -335,8 +351,8 @@ class PortfolioRunner(LiveRunner):
         for s in self.symbols:
             self.gw.flatten(s, magic=self.cfg.magic)
 
-    def step(self) -> None:
-        now = datetime.now(timezone.utc)
+    def step(self, now: datetime | None = None) -> None:
+        now = now or datetime.now(timezone.utc)
         self._cache.new_cycle()
         equity, killed = self._kill_check(now)
         if killed:
@@ -372,6 +388,12 @@ class PortfolioRunner(LiveRunner):
             _, atr_entry, entry_price, _ = self._trail[sym]
             _, tp = protective_levels(lots, entry_price, atr_entry,
                                       0.0, self.cfg.tp_atr_mult)
+            if in_reopen_guard(now, self.cfg.reopen_guard):
+                # Reopen window: detach the broker disaster stop so the sub-second
+                # 22:00 spread blowout can't sweep it (it reverts; the bot re-attaches
+                # the trailed SL after the window). _trail keeps tracking the extreme.
+                sl = 0.0
+                self.gw.set_position_sltp(sym, 0.0, tp, magic=self.cfg.magic)
             fills[sym] = {"target_lots": lots, "sl": sl, "tp": tp,
                           "price": price, "vol_halt": halt, "cap": capped,
                           "contract_size": contract,
