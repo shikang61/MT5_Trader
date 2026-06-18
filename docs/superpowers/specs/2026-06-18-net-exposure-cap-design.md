@@ -38,6 +38,14 @@ directionally (`ratio_mr` has `trade_symbol2: false`), so a per-symbol XAU cap i
 effectively the portfolio cap, and it generalizes if a real second-symbol book
 is added later.
 
+**The cap is a general over-concentration guardrail, not a 6/17 fix.** The 6/17
+net (−0.10 lots) was `frac ≈ 0.42`, *under* a 0.5 cap, so 0.5 would NOT have
+clipped that night — it was a mild stack that happened to reverse (normal
+variance). 0.5 bounds the worse stacking (the 22% of bars with `frac > 0.5`, up
+to ~1.1); its value is portfolio-wide Sharpe + churn reduction, not avoiding that
+specific giveback. 0.4 would have just clipped 6/17 (~6% trim) but costs more
+return (+3.71% vs +4.85%); 0.5 chosen for the better risk-adjusted trade-off.
+
 ## Components
 
 ### 1. `cap_lots` — pure helper in `live/runner.py`
