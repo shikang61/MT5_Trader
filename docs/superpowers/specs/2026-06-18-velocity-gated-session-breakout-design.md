@@ -144,6 +144,20 @@ Hit 49% with positive return = the edge lives in the right tail / the hold, as d
 still thin), Sharpe ~5 is not believable forward. Stays backtest-only pending the
 validation-plan gates above and forward comp-data (Jun 15–27) OOS.
 
+### Forward OOS update (Jun 16–18, comp ticks pulled from VPS, 2bp)
+
+First live-comp days. **One** qualifying trade: Jun 16 12:31 UTC LONG @ 4347.09 (12:30
+arm, clean break passed the ER gate) → exit 14:31 @ 4318.52 = **−0.70%**. Jun 17–18:
+**no** qualifying clean breaks at the arm windows. Full-span return falls +2.78% →
+**+2.06%** with the OOS day folded in.
+
+n=1 — statistically meaningless, but it is a loss, not a confirm: the continuation-long
+was run over by the Jun 16→18 gold downtrend (same regime that gave back the live
+portfolio at the 22:00 reopen). The strategy has **no directional/regime filter** — it
+takes clean breaks either way in the US window, so longs fail in a down-regime. Flagged
+as the first thing to study before promotion (a trend-alignment gate on the break
+direction). Verdict unchanged: **backtest-only**, needs many more comp days.
+
 ## Out of scope (YAGNI)
 
 - Not in `portfolio.yaml`; no live or paper deployment (gated on forward validation).
