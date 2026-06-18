@@ -15,14 +15,15 @@
 magic: 1001           # order tag for this portfolio bot; lets a second strategy
                       # (e.g. run_passive_paper.py, magic 2002) share one account
                       # without netting against these positions. null = manage all.
-sl_atr_mult: 15.0     # WIDE disaster stop on the NET position (chandelier trail).
-                      # TIGHT stops (3x) bleed every book (donchian +5.1%->-2.2%,
-                      # london_orb +2%->-18%) — fire on normal pullbacks, churn.
-                      # But WIDE (research_wide_stop.py): 15x is HARMLESS in calm
-                      # (in-sample identical) and halved donchian's drawdown on the
-                      # OOS tail (-7.1%->-3.7%); vwap/sweep_fade never fire, others
-                      # neutral. Disaster insurance, not alpha; benefit rests on n=1
-                      # tail event (1 month) — provisional, 2026-06-18. 0 = off.
+sl_atr_mult: 8.0      # Disaster stop on the NET position (chandelier trail).
+                      # TIGHT (3x) bleeds (donchian +5.1%->-2.2%); TOO WIDE (>=18x)
+                      # also negative. Sweet spot ~8x: donchian sweep (research_wide_
+                      # stop.py /tmp sweep) MONOTONE tighter-is-better down to 8 on
+                      # BOTH return and DD, full-month AND OOS — 8x: +2.6%/DD-3.6%
+                      # (OOS +2.6%/DD-2.0%) vs off -1.7%/DD-7.1%. vwap/sweep never
+                      # fire; others neutral. ~1 month, donchian-dominated — provisional
+                      # 2026-06-18. 0 = off. NOTE: reconcile only attaches SL on a
+                      # trade — held-position trailing fix pending.
 tp_atr_mult: 0.0      # broker-side take profit (0 = off; strategy exits first)
 exposure_cap: 0.5     # cap |net directional exposure| per symbol as a leverage
                       # multiple of equity (net_lots*contract*price/equity). Bounds
