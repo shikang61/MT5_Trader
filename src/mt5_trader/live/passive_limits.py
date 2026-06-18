@@ -104,10 +104,14 @@ class PassiveCfg:
                                # is the shared-equity bound (remedy C) — caps how far
                                # the experiment's P&L can move the account equity the
                                # portfolio kill switch / vol sizing sees. ~0.2x lev.
-    tp_bp: float = 30.0        # 1:2 risk:reward (reward = 2x risk) -> breakeven win
-    sl_bp: float = 15.0        # rate ~33% (sl/(sl+tp)). Lets winners run 2x the stop;
-                               # needs the bounce to carry to 2x. Screen edge band was
-                               # ~11-22bp; tune both from fills.
+    tp_bp: float = 20.0        # closer target (capture the typical ~15bp reversion) +
+    sl_bp: float = 25.0        # WIDER stop = survive the noise-tail before the level reverts.
+                               # TP/SL sweep (2026-06-18, live 8h/8h gate): tp20/sl25 = +7.5bp
+                               # /73% win, beats the old tp30/sl15 (+3.8/55%). Fades want a wide
+                               # stop + close target, not 1:2. n~22, one regime — provisional.
+    breakout_bp: float = 15.0  # band-break cancel margin for _broke_out, DECOUPLED from the
+                               # position stop (sl_bp): keep the gate's cancel tight even with a
+                               # wide stop, else a wide sl would hold limits into breakouts.
     max_hold_min: int = 30     # fast exit: flatten a fill after this long if TP/SL
                                # has not fired — the screen's edge decayed by ~60m
     range_n: int = 48          # consolidation window in bars (M5: 48 = 4h)
@@ -163,11 +167,11 @@ class PassiveLimitRunner:
         return max(1, int((nxt - now).total_seconds() // 60))
 
     def _broke_out(self, price: float, sell_level: float, buy_level: float) -> bool:
-        """Price closed beyond the consolidation band (by sl_bp) — the range has
+        """Price closed beyond the consolidation band (by breakout_bp) — the range has
         broken, so the bounds no longer mean-revert. The slow ER regime can lag a
         short-term trend and keep saying RANGE; this cancels the resting limits
         directly instead of letting them sit into the breakout (adverse fills)."""
-        brk = self.cfg.sl_bp * 1e-4
+        brk = self.cfg.breakout_bp * 1e-4
         return price > sell_level * (1 + brk) or price < buy_level * (1 - brk)
 
     def _band_drifted(self, sell_level: float, buy_level: float,

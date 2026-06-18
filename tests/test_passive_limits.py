@@ -31,12 +31,21 @@ def test_consolidation_only_trades_in_range():
 
 
 def test_broke_out_cancels_outside_band():
-    # band: ceiling 4350, floor 4300; sl_bp=15 -> breakout margin 0.15%
-    r = PassiveLimitRunner(None, PassiveCfg(sl_bp=15.0))
+    # band: ceiling 4350, floor 4300; breakout_bp=15 -> breakout margin 0.15%
+    r = PassiveLimitRunner(None, PassiveCfg(breakout_bp=15.0))
     assert r._broke_out(4360.0, 4350.0, 4300.0)        # above ceiling+margin -> broke up
     assert r._broke_out(4290.0, 4350.0, 4300.0)        # below floor-margin -> broke down
     assert not r._broke_out(4355.0, 4350.0, 4300.0)    # within margin of ceiling -> inside
     assert not r._broke_out(4325.0, 4350.0, 4300.0)    # mid-band -> inside
+
+
+def test_broke_out_independent_of_sl_bp():
+    # breakout-cancel is driven by breakout_bp, NOT the (wider) position stop sl_bp.
+    r = PassiveLimitRunner(None, PassiveCfg(breakout_bp=15.0, sl_bp=25.0))
+    # 20bp above ceiling 4350 = 4358.7: past the 15bp cancel margin (4356.5) -> broke,
+    # even though it is inside the 25bp stop (4360.9). Proves the decoupling.
+    assert r._broke_out(4358.7, 4350.0, 4300.0)
+    assert not r._broke_out(4355.0, 4350.0, 4300.0)    # within 15bp margin -> not broken
 
 
 def test_consolidation_levels_rolling_minmax():
