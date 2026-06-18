@@ -68,6 +68,7 @@ def main():
                           sl_atr_mult=float(cfg.get("sl_atr_mult", 3.0)),
                           tp_atr_mult=float(cfg.get("tp_atr_mult", 0.0)),
                           magic=cfg.get("magic"),
+                          exposure_cap=float(cfg.get("exposure_cap", 0.0)),
                           log_path=Path("logs/portfolio.jsonl")),
         )
         runner.run()

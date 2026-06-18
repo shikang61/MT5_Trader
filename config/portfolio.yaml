@@ -21,6 +21,11 @@ sl_atr_mult: 0.0      # OFF — backtest (engine intrabar model) shows a trailin
                       # re-enters, churns. Kill switch (risk.yaml) is the real
                       # safety net. Use >=15 only as a pure gap/dead-runner backstop.
 tp_atr_mult: 0.0      # broker-side take profit (0 = off; strategy exits first)
+exposure_cap: 0.5     # cap |net directional exposure| per symbol as a leverage
+                      # multiple of equity (net_lots*contract*price/equity). Bounds
+                      # books stacking the same direction; 0 = off. Backtest
+                      # (research_portfolio_overlay.py): 0.5 lifts Sharpe, cuts
+                      # turnover ~30%, small return give-up. Provisional (1 month).
 books:
   - strategy: donchian
     symbol: XAUUSD

@@ -31,6 +31,9 @@ class RunnerCfg:
     tp_atr_mult: float = 0.0   # broker-side take profit, 0 = off
     atr_window: int = 60
     magic: int | None = None   # tag orders so strategies can share one account
+    exposure_cap: float = 0.0  # cap |net directional exposure| as a leverage
+                               # multiple of equity (lots*contract*price/equity);
+                               # 0 = off. PortfolioRunner only.
     log_path: Path = Path("logs/live.jsonl")
 
 
@@ -77,6 +80,20 @@ def pair_leg_lots(target_frac: float, beta: float, equity: float,
     lots_a = target_frac * equity / (contract_a * price_a)
     lots_b = -beta * target_frac * equity / (contract_b * price_b)
     return lots_a, lots_b
+
+
+def cap_lots(lots: float, contract_size: float, price: float,
+             equity: float, cap: float) -> tuple[float, bool]:
+    """Clip net lots so |exposure| <= cap, where exposure is the leverage
+    multiple of equity (lots * contract_size * price / equity). Preserves sign.
+    cap <= 0 (or non-positive equity/price) disables. Returns (lots, bound)."""
+    if cap <= 0 or equity <= 0 or price <= 0:
+        return lots, False
+    frac = lots * contract_size * price / equity
+    if abs(frac) <= cap:
+        return lots, False
+    capped = (cap if frac > 0 else -cap) * equity / (contract_size * price)
+    return capped, True
 
 
 def resilient_loop(step, log, reconnect, poll_seconds, should_halt) -> None:
@@ -343,6 +360,8 @@ class PortfolioRunner(LiveRunner):
             if halt:
                 lots = 0.0  # fast vol circuit breaker -> force flat this symbol
             price = float(bars["close"][-1])
+            contract = self._cache.spec(sym)["contract_size"]
+            lots, capped = cap_lots(lots, contract, price, equity, self.cfg.exposure_cap)
             high, low = float(bars["high"][-1]), float(bars["low"][-1])
             atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
             sl, self._trail[sym] = chandelier_sl(lots, price, high, low, atr_val,
@@ -352,8 +371,8 @@ class PortfolioRunner(LiveRunner):
             _, tp = protective_levels(lots, entry_price, atr_entry,
                                       0.0, self.cfg.tp_atr_mult)
             fills[sym] = {"target_lots": lots, "sl": sl, "tp": tp,
-                          "price": price, "vol_halt": halt,
-                          "contract_size": self._cache.spec(sym)["contract_size"],
+                          "price": price, "vol_halt": halt, "cap": capped,
+                          "contract_size": contract,
                           "traded_lots": self.gw.reconcile(sym, lots, sl=sl, tp=tp,
                                                            magic=self.cfg.magic)}
 
