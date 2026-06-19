@@ -10,6 +10,11 @@ if [ ! -d "$WINEPREFIX/drive_c" ]; then
   mkdir -p "$WINEPREFIX"; cp -a /opt/wine-mt5/. "$WINEPREFIX"/
 fi
 
+# Re-derive the Wine python against the runtime prefix so the binary and
+# WINEPREFIX agree (the seed above may have moved the prefix to /data/wine).
+WINE_PYTHON="$(find "$WINEPREFIX" -iname python.exe -path '*Python311*' | head -1)"
+[ -n "$WINE_PYTHON" ] || { echo "start_bridge: wine python.exe not found under $WINEPREFIX" >&2; exit 1; }
+
 TERM_EXE="$(find "$WINEPREFIX" -iname terminal64.exe | head -1)"
 wine "$TERM_EXE" /portable &
 sleep 15

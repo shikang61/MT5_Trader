@@ -1,0 +1,10 @@
+.git
+.superpowers/
+logs/
+data/
+notebooks/
+reports/
+research/
+docs/
+**/__pycache__/
+*.pyc

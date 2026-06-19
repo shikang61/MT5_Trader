@@ -38,4 +38,4 @@ COPY deploy/northflank/crontab /app/deploy/northflank/crontab
 RUN chmod +x deploy/northflank/*.sh
 
 EXPOSE 8501 6080
-CMD ["supervisord", "-c", "/etc/supervisor/conf.d/mt5.conf", "-n"]
+CMD ["bash", "/app/deploy/northflank/entrypoint.sh", "supervisord", "-c", "/etc/supervisor/conf.d/mt5.conf", "-n"]
