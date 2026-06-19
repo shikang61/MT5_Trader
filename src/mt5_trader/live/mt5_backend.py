@@ -11,6 +11,7 @@ uses it to pick its reconnect strategy.
 """
 from __future__ import annotations
 
+import logging
 import os
 
 IS_BRIDGE = bool(os.environ.get("MT5_BRIDGE"))
@@ -20,9 +21,14 @@ try:
 except ImportError:                      # Linux/Northflank: mt5linux RPC bridge
     try:
         from mt5linux import MetaTrader5
-        mt5 = MetaTrader5(
-            host=os.environ.get("MT5_BRIDGE_HOST", "localhost"),
-            port=int(os.environ.get("MT5_BRIDGE_PORT", "18812")),
-        )
-    except Exception:                    # mt5linux absent, or bridge unreachable
-        mt5 = None
+    except ImportError:
+        mt5 = None                       # mt5linux not installed (dev/CI) — expected, silent
+    else:
+        try:
+            mt5 = MetaTrader5(
+                host=os.environ.get("MT5_BRIDGE_HOST", "localhost"),
+                port=int(os.environ.get("MT5_BRIDGE_PORT", "18812")),
+            )
+        except Exception as e:           # installed but bridge unreachable — warn for debugging
+            logging.getLogger(__name__).warning("mt5linux bridge unreachable: %s", e)
+            mt5 = None
