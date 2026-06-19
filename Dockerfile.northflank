@@ -1,0 +1,41 @@
+# Dockerfile.northflank — account B live stack on Linux via Wine + mt5linux.
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive WINEPREFIX=/opt/wine-mt5 WINEARCH=win64 WINEDEBUG=-all
+RUN dpkg --add-architecture i386 && apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl gnupg software-properties-common \
+      xvfb x11vnc novnc websockify fluxbox \
+      supervisor python3 python3-venv python3-pip git \
+ && mkdir -p /etc/apt/keyrings \
+ && curl -fsSL https://dl.winehq.org/wine-builds/winehq.key | gpg --dearmor -o /etc/apt/keyrings/winehq.gpg \
+ && echo "deb [signed-by=/etc/apt/keyrings/winehq.gpg] https://dl.winehq.org/wine-builds/ubuntu/ noble main" \
+      > /etc/apt/sources.list.d/winehq.list \
+ && apt-get update && apt-get install -y --install-recommends winehq-stable \
+ && rm -rf /var/lib/apt/lists/*
+
+# uv (native Linux deps for the app — NOT under Wine)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:${PATH}"
+
+# supercronic (cron in containers, for the weekly calendar fetch)
+RUN curl -fsSLo /usr/local/bin/supercronic \
+      https://github.com/aptible/supercronic/releases/download/v0.2.33/supercronic-linux-amd64 \
+ && chmod +x /usr/local/bin/supercronic
+
+WORKDIR /app
+COPY pyproject.toml uv.lock ./
+COPY src ./src
+RUN uv sync --no-dev && uv pip install mt5linux   # mt5linux = Linux CLIENT, not in pyproject
+
+# Bake the broker terminal + Wine-python bridge server.
+COPY deploy/northflank/install_mt5.sh /tmp/install_mt5.sh
+ARG MT5_INSTALLER_URL
+RUN MT5_INSTALLER_URL="${MT5_INSTALLER_URL}" bash /tmp/install_mt5.sh
+
+COPY . /app
+COPY deploy/northflank/supervisord.conf /etc/supervisor/conf.d/mt5.conf
+COPY deploy/northflank/crontab /app/deploy/northflank/crontab
+RUN chmod +x deploy/northflank/*.sh
+
+EXPOSE 8501 6080
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/mt5.conf", "-n"]
