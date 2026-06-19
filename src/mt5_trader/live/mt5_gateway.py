@@ -13,10 +13,7 @@ import polars as pl
 
 from .broker_pnl import realized_by_magic
 
-try:
-    import MetaTrader5 as mt5
-except ImportError:
-    mt5 = None
+from .mt5_backend import mt5, IS_BRIDGE
 
 
 class MT5Error(RuntimeError):
@@ -26,7 +23,8 @@ class MT5Error(RuntimeError):
 class MT5Gateway:
     def __init__(self):
         if mt5 is None:
-            raise MT5Error("MetaTrader5 package not available — run on the Windows VPS")
+            raise MT5Error("no MT5 backend — run on the Windows VPS, or start the "
+                           "mt5linux bridge (set MT5_BRIDGE + bring :18812 up)")
         self._tf = {
             "M1": mt5.TIMEFRAME_M1,
             "M5": mt5.TIMEFRAME_M5,
