@@ -5,7 +5,7 @@
 set -euxo pipefail
 export WINEPREFIX=/opt/wine-mt5 WINEARCH=win64 WINEDEBUG=-all
 
-wineboot --init && sleep 5
+xvfb-run -a wineboot --init && sleep 5
 
 # Broker B's own terminal installer (REPLACE with B-broker's download URL).
 curl -L -o /tmp/mt5setup.exe "${MT5_INSTALLER_URL:?set MT5_INSTALLER_URL at build}"
@@ -16,6 +16,7 @@ sleep 20
 curl -L -o /tmp/py.exe "https://www.python.org/ftp/python/3.11.9/python-3.11.9-amd64.exe"
 xvfb-run -a wine /tmp/py.exe /quiet InstallAllUsers=1 PrependPath=1 Include_pip=1 || true
 sleep 20
-WINPY="$(find "$WINEPREFIX" -name python.exe -path '*Python3*' | head -1)"
+WINPY="$(find "$WINEPREFIX" -name python.exe -path '*Python311*' | head -1)"
+[ -n "$WINPY" ] || { echo "install_mt5: wine python.exe not found under $WINEPREFIX" >&2; exit 1; }
 xvfb-run -a wine "$WINPY" -m pip install --no-cache-dir MetaTrader5 mt5linux
 echo "WINE_PYTHON=$WINPY" > /opt/wine-mt5/winpython.env
