@@ -1,0 +1,30 @@
+{
+  "apiVersion": "v1",
+  "spec": {
+    "kind": "CombinedService",
+    "name": "mt5-acct-b",
+    "billing": { "deploymentPlan": "nf-compute-20" },
+    "deployment": { "instances": 1 },
+    "vcsData": {
+      "projectUrl": "https://github.com/shikang61/MT5_Trader.git",
+      "projectBranch": "deploy/northflank"
+    },
+    "buildSettings": {
+      "dockerfile": { "buildEngine": "kaniko", "dockerFilePath": "/Dockerfile.northflank", "dockerWorkDir": "/" }
+    },
+    "ports": [
+      { "name": "dashboard", "internalPort": 8501, "public": true,  "protocol": "HTTP" },
+      { "name": "vnc",       "internalPort": 6080, "public": false, "protocol": "HTTP" }
+    ],
+    "runtimeEnvironment": {
+      "MT5_BRIDGE": "1",
+      "MT5_BRIDGE_HOST": "localhost",
+      "MT5_BRIDGE_PORT": "18812",
+      "WINEPREFIX": "/data/wine"
+    },
+    "secretRefs": ["mt5-acct-b-secrets"],
+    "volumes": [
+      { "name": "mt5-data", "mountPath": "/data", "storageSize": 5120 }
+    ]
+  }
+}
