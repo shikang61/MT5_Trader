@@ -246,6 +246,11 @@ class MT5Gateway:
     def set_position_sltp(self, symbol: str, sl: float = 0.0, tp: float = 0.0,
                           magic: int | None = None) -> None:
         """Attach/replace SL/TP on this magic's open positions for symbol."""
+        # Round to the symbol's digits first (as market_order/limit_order do): the
+        # broker stores SL/TP rounded, so an unrounded sub-tick value always differs
+        # from p.sl by >1e-9 and re-sends every bar -> retcode 10025 "No changes".
+        sl = self._round_price(symbol, sl)
+        tp = self._round_price(symbol, tp)
         for p in self._mine(mt5.positions_get(symbol=symbol), magic):
             if abs(p.sl - sl) > 1e-9 or abs(p.tp - tp) > 1e-9:
                 self._send({"action": mt5.TRADE_ACTION_SLTP, "symbol": symbol,

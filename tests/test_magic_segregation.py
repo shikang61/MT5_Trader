@@ -129,6 +129,26 @@ def test_flatten_only_its_own_magic(monkeypatch, gw):
     assert 1 in fake.positions and 2 not in fake.positions
 
 
+def test_set_position_sltp_no_resend_when_rounds_to_existing(monkeypatch, gw):
+    # Position already carries the broker-rounded SL (4220.49, 2 digits). The bot
+    # recomputes a sub-tick chandelier SL (4220.490666) that rounds to the SAME
+    # 2-digit value -> set_position_sltp must treat it as no-change and send NOTHING.
+    # Else the broker rejects the SLTP with retcode 10025 "No changes" and the live
+    # step() throws every bar, freezing the strategy.
+    fake = _install(monkeypatch, [Pos(1, 0.03, SELL, 1001, sl=4220.49)])
+    gw.set_position_sltp("XAUUSD", sl=4220.490666666667, magic=1001)
+    assert fake.sent == []
+
+
+def test_set_position_sltp_rounds_value_sent(monkeypatch, gw):
+    # A genuinely new SL is rounded to the symbol's digits before sending, matching
+    # market_order/limit_order, so the value broker-stores equals what we compare next.
+    fake = _install(monkeypatch, [Pos(1, 0.03, SELL, 1001, sl=0.0)])
+    gw.set_position_sltp("XAUUSD", sl=4220.490666666667, magic=1001)
+    sltp = [s for s in fake.sent if s["action"] == FakeMT5.TRADE_ACTION_SLTP]
+    assert len(sltp) == 1 and sltp[0]["sl"] == 4220.49
+
+
 def test_limit_order_rounds_price_to_digits(monkeypatch, gw):
     fake = _install(monkeypatch, [])
     # 3-decimal mid-derived price + sub-tick sl/tp must snap to 2 digits (10015 fix)
