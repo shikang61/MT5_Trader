@@ -1,0 +1,2 @@
+# deploy/northflank/crontab — weekly high-impact USD calendar (Sun 22:00 UTC)
+0 22 * * 0 cd /app && uv run python scripts/fetch_calendar.py --impact high --currency USD >> /data/logs/calendar.log 2>&1
