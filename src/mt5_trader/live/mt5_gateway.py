@@ -46,7 +46,14 @@ class MT5Gateway:
 
     def reconnect(self) -> None:
         """Re-attach after the terminal restarted (e.g. auto-update) — the
-        IPC pipe dies with (-10001, 'IPC send failed')."""
+        IPC pipe dies with (-10001, 'IPC send failed').
+
+        On the Linux bridge the rpyc socket dies with the terminal and cannot be
+        revived in-process; exit so supervisord relaunches us with a fresh
+        rpyc connection (single-instance lock releases on exit, so no dup)."""
+        if IS_BRIDGE:
+            raise SystemExit("[mt5_gateway] bridge connection lost — exiting for "
+                             "supervisord to relaunch with a fresh rpyc link")
         mt5.shutdown()
         if not mt5.initialize(**self._creds):
             raise MT5Error(f"reconnect failed: {mt5.last_error()}")
