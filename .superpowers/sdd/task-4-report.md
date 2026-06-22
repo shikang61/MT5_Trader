@@ -11,10 +11,30 @@
 
 ```
 bash -n deploy/northflank/install_mt5.sh
-→ SYNTAX OK
+→ SYNTAX OK (exit 0)
 ```
 
 No syntax errors.
+
+## Build-Robustness Fixes Applied (2026-06-19)
+
+Two surgical changes to `deploy/northflank/install_mt5.sh`:
+
+**Fix 1 — wrap wineboot in a virtual display**
+- Old: `wineboot --init && sleep 5`
+- New: `xvfb-run -a wineboot --init && sleep 5`
+- Reason: wineboot can error without a display; xvfb-run gives it a headless one.
+
+**Fix 2 — precise Wine-Python path resolution + loud failure**
+- Old: `WINPY="$(find "$WINEPREFIX" -name python.exe -path '*Python3*' | head -1)"`
+- New:
+  ```bash
+  WINPY="$(find "$WINEPREFIX" -name python.exe -path '*Python311*' | head -1)"
+  [ -n "$WINPY" ] || { echo "install_mt5: wine python.exe not found under $WINEPREFIX" >&2; exit 1; }
+  ```
+- Reason: `*Python3*` could match any Python 3.x version; `*Python311*` pins to the installed 3.11.9. The guard clause fails loudly if the path resolves to empty (previously silent: `wine ""` would give a confusing error later).
+
+`bash -n` result: exit 0 (no syntax errors).
 
 ## Deferred Steps (cannot run locally)
 
