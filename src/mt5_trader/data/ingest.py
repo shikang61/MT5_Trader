@@ -69,14 +69,33 @@ def ingest_csv_dir(csv_dir: Path | str, out_dir: Path | str,
     return written
 
 
+def drop_market_closed(frame, ts_col: str = "ts",
+                       fri_close_hour: int = 18, sun_open_hour: int = 22):
+    """Strip the spot-metals weekend (UTC) from a tick/bar frame (lazy or eager).
+
+    The competition broker's feed goes STALE Fri 18:00 UTC — `copy_ticks_range`
+    loops its last hour through the weekend (XAUUSD+XAGUSD both froze at exactly
+    18:00 on 2026-06-19), so the captured Sat/Sun ticks are replayed Friday data
+    that would pollute bars/backtests. Closed = Fri >= fri_close_hour, all Sat,
+    Sun < sun_open_hour. Other feeds close later (Dukascopy ~21:00) — pass
+    fri_close_hour=21 for those."""
+    wd, h = pl.col(ts_col).dt.weekday(), pl.col(ts_col).dt.hour()
+    closed = (((wd == 5) & (h >= fri_close_hour))
+              | (wd == 6)
+              | ((wd == 7) & (h < sun_open_hour)))
+    return frame.filter(~closed)
+
+
 def load_ticks(processed_dir: Path | str | list, symbol: str,
-               start: datetime | None = None, end: datetime | None = None) -> pl.DataFrame:
+               start: datetime | None = None, end: datetime | None = None,
+               drop_weekend: bool = True) -> pl.DataFrame:
     """Load a symbol's canonical ticks from one or many source dirs, merged on
     time. Pass a list to combine feeds (e.g. real historical + live capture):
         load_ticks(["data/real", "data/ticks"], "XAUUSD")
     Each source is projected to CORE_COLUMNS before the merge, so a feed whose
     files carry extra columns (the live logger writes a `volume` col) still
-    concats cleanly into one schema."""
+    concats cleanly into one schema. `drop_weekend` (default on) strips the
+    market-closed window — see drop_market_closed; pass False for raw capture."""
     dirs = processed_dir if isinstance(processed_dir, (list, tuple)) else [processed_dir]
     frames = [pl.scan_parquet(Path(d) / symbol / "*.parquet").select(CORE_COLUMNS)
               for d in dirs if (Path(d) / symbol).exists()]
@@ -87,4 +106,6 @@ def load_ticks(processed_dir: Path | str | list, symbol: str,
         lf = lf.filter(pl.col("ts") >= start)
     if end is not None:
         lf = lf.filter(pl.col("ts") < end)
+    if drop_weekend:
+        lf = drop_market_closed(lf)
     return lf.sort("ts").collect()
