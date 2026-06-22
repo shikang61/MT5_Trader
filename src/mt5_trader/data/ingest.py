@@ -70,15 +70,15 @@ def ingest_csv_dir(csv_dir: Path | str, out_dir: Path | str,
 
 
 def drop_market_closed(frame, ts_col: str = "ts",
-                       fri_close_hour: int = 18, sun_open_hour: int = 22):
+                       fri_close_hour: int = 21, sun_open_hour: int = 22):
     """Strip the spot-metals weekend (UTC) from a tick/bar frame (lazy or eager).
 
-    The competition broker's feed goes STALE Fri 18:00 UTC — `copy_ticks_range`
-    loops its last hour through the weekend (XAUUSD+XAGUSD both froze at exactly
-    18:00 on 2026-06-19), so the captured Sat/Sun ticks are replayed Friday data
-    that would pollute bars/backtests. Closed = Fri >= fri_close_hour, all Sat,
-    Sun < sun_open_hour. Other feeds close later (Dukascopy ~21:00) — pass
-    fri_close_hour=21 for those."""
+    The broker's real session closes Fri 21:00 UTC and reopens Sun 22:00 (data/real
+    confirms: every historical Friday ends 21:00:00 sharp). During the close the
+    LIVE feed streams SYNTHETIC, live-timestamped ticks that LOOP the last real hour
+    — junk that pollutes bars/backtests. Closed = Fri >= fri_close_hour, all Sat,
+    Sun < sun_open_hour. Pass a smaller fri_close_hour when a capture stalled before
+    the real close (e.g. the 2026-06-19 18:00 terminal failure)."""
     wd, h = pl.col(ts_col).dt.weekday(), pl.col(ts_col).dt.hour()
     closed = (((wd == 5) & (h >= fri_close_hour))
               | (wd == 6)

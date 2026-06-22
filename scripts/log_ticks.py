@@ -24,6 +24,7 @@ import polars as pl
 import yaml
 from dotenv import load_dotenv
 
+from mt5_trader.data.ingest import drop_market_closed
 from mt5_trader.live.mt5_gateway import MT5Gateway
 from mt5_trader.live.runner import resilient_loop
 from mt5_trader.live.single_instance import acquire_or_exit
@@ -97,6 +98,11 @@ def main():
             df = gw.ticks_range(sym, cursors[sym] - timedelta(seconds=args.overlap_seconds), now)
             if not df.is_empty():
                 df = df.filter(pl.col("ts") > cursors[sym])
+            # Skip synthetic looped ticks the broker streams while the market is
+            # closed (Fri 21:00 -> Sun 22:00 UTC) — they'd pollute the capture and,
+            # by advancing the cursor, mask the real Sunday reopen. Cursor stays at
+            # the Friday close until genuine ticks arrive.
+            df = drop_market_closed(df)
             if df.is_empty():
                 continue
             write_ticks(df, sym)

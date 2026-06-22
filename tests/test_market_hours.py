@@ -15,9 +15,9 @@ def _df(*hours):
 
 
 def test_drops_friday_after_close_keeps_before():
-    # 2026-06-19 = Friday. close 18:00 UTC.
-    out = drop_market_closed(_df((19, 17), (19, 18), (19, 23)))
-    assert out["ts"].dt.hour().to_list() == [17]  # 18:00 + 23:00 dropped
+    # 2026-06-19 = Friday. Real broker close 21:00 UTC (default).
+    out = drop_market_closed(_df((19, 20), (19, 21), (19, 23)))
+    assert out["ts"].dt.hour().to_list() == [20]  # 21:00 + 23:00 dropped
 
 
 def test_drops_all_saturday():
@@ -37,9 +37,10 @@ def test_keeps_weekday():
 
 
 def test_hours_overridable_for_other_feeds():
-    # Dukascopy-style 21:00 close: Fri 18:00-20:00 are real, must be kept.
-    out = drop_market_closed(_df((19, 18), (19, 20), (19, 21)), fri_close_hour=21)
-    assert out["ts"].dt.hour().to_list() == [18, 20]
+    # Override earlier when a feed/terminal stalls before the real close (e.g. the
+    # 2026-06-19 18:00 capture failure): fri_close_hour=18 drops Fri 18:00+.
+    out = drop_market_closed(_df((19, 17), (19, 18), (19, 20)), fri_close_hour=18)
+    assert out["ts"].dt.hour().to_list() == [17]
 
 
 def test_works_on_lazyframe():
