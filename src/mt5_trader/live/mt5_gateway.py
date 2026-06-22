@@ -19,6 +19,18 @@ except ImportError:
     mt5 = None
 
 
+def _struct_to_df(arr) -> pl.DataFrame:
+    """Structured ndarray (mt5.copy_ticks_range / copy_rates) -> DataFrame.
+
+    polars 1.41 `from_numpy` panics (AsSliceError, aborts the process below the
+    `except Exception` guard) on a length-1 structured array — which a quiet flush
+    that picked up a single tick produces. Build column-wise through Python lists,
+    sidestepping the numpy zero-copy slice path that panics."""
+    if arr.dtype.names:
+        return pl.DataFrame({n: arr[n].tolist() for n in arr.dtype.names})
+    return pl.from_numpy(arr)
+
+
 class MT5Error(RuntimeError):
     pass
 
@@ -86,7 +98,7 @@ class MT5Gateway:
         if rates is None:
             raise MT5Error(f"copy_rates failed for {symbol}: {mt5.last_error()}")
         offset = self.server_offset_s(symbol)
-        df = pl.from_numpy(rates)
+        df = _struct_to_df(rates)
         return df.with_columns(
             ts=pl.from_epoch(pl.col("time") - offset, time_unit="s").dt.replace_time_zone("UTC"),
             spread_mean=pl.col("spread") * self.point(symbol),
@@ -106,7 +118,7 @@ class MT5Gateway:
         ticks = mt5.copy_ticks_range(symbol, frm, to, mt5.COPY_TICKS_ALL)
         if ticks is None:
             raise MT5Error(f"copy_ticks_range failed for {symbol}: {mt5.last_error()}")
-        df = pl.from_numpy(ticks)
+        df = _struct_to_df(ticks)
         if df.is_empty():
             return df
         vol = "volume_real" if "volume_real" in df.columns else "volume"
