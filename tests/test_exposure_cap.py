@@ -109,7 +109,7 @@ def _last_step(path):
 
 def test_step_clips_over_aligned_net(tmp_path):
     gw = CapFakeGW(equity=100_000.0)
-    _runner(gw, cap=0.5, tmp_path=tmp_path).step()
+    _runner(gw, cap=0.5, tmp_path=tmp_path).step(now=NOW)  # fixed now: avoid the 21:58-22:03 reopen-guard window
     # net exposure is clipped: reconcile sees |lots*contract*price/equity| == 0.5
     frac = gw.reconciled["XAUUSD"] * 100.0 * 4000.0 / 100_000.0
     assert abs(abs(frac) - 0.5) < 1e-6
@@ -118,5 +118,5 @@ def test_step_clips_over_aligned_net(tmp_path):
 
 def test_step_cap_off_does_not_clip(tmp_path):
     gw = CapFakeGW(equity=100_000.0)
-    _runner(gw, cap=0.0, tmp_path=tmp_path).step()
+    _runner(gw, cap=0.0, tmp_path=tmp_path).step(now=NOW)  # fixed now: avoid the 21:58-22:03 reopen-guard window
     assert _last_step(tmp_path / "p.jsonl")["fills"]["XAUUSD"]["cap"] is False
