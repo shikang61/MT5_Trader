@@ -53,6 +53,28 @@ def normalise(df: pl.DataFrame, schema_map: dict[str, str] | None = None) -> pl.
     return df.select(keep).sort("ts")
 
 
+def ingest_parquet_dump(dump_dir: Path | str, out_dir: Path | str,
+                        symbols: list[str], schema_map: dict[str, str] | None = None,
+                        ) -> list[Path]:
+    """Per-symbol-per-day parquet dump (cols `time`,`sym`,`bid`,`ask`,L2 lists) ->
+    canonical `out_dir/<SYM>/<stem>.parquet`. Reads only the columns we map +
+    bid/ask so the 20GB L2 ladder never loads."""
+    dump_dir, out_dir = Path(dump_dir), Path(out_dir)
+    schema_map = schema_map or {}
+    cols = list(schema_map) + ["bid", "ask"]
+    written: list[Path] = []
+    for sym in symbols:
+        for f in sorted(dump_dir.glob(f"{sym}_*.parquet")):
+            present = [c for c in cols if c in pl.scan_parquet(f).collect_schema().names()]
+            df = normalise(pl.read_parquet(f, columns=present), schema_map)
+            dest = out_dir / sym
+            dest.mkdir(parents=True, exist_ok=True)
+            path = dest / f"{f.stem}.parquet"
+            df.write_parquet(path)
+            written.append(path)
+    return written
+
+
 def ingest_csv_dir(csv_dir: Path | str, out_dir: Path | str,
                    schema_map: dict[str, str] | None = None) -> list[Path]:
     """Read every CSV in csv_dir, write data/processed/<SYMBOL>/<file>.parquet."""
@@ -97,8 +119,13 @@ def load_ticks(processed_dir: Path | str | list, symbol: str,
     concats cleanly into one schema. `drop_weekend` (default on) strips the
     market-closed window — see drop_market_closed; pass False for raw capture."""
     dirs = processed_dir if isinstance(processed_dir, (list, tuple)) else [processed_dir]
-    frames = [pl.scan_parquet(Path(d) / symbol / "*.parquet").select(CORE_COLUMNS)
-              for d in dirs if (Path(d) / symbol).exists()]
+    frames = []
+    for d in dirs:
+        if (Path(d) / symbol).exists():
+            lf = pl.scan_parquet(Path(d) / symbol / "*.parquet")
+            # Select only CORE_COLUMNS that actually exist in the schema
+            cols_to_select = [c for c in CORE_COLUMNS if c in lf.collect_schema().names()]
+            frames.append(lf.select(cols_to_select))
     if not frames:
         raise FileNotFoundError(f"no tick parquet for {symbol} under {[str(d) for d in dirs]}")
     lf = pl.concat(frames, how="vertical")

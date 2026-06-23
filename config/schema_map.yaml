@@ -2,13 +2,7 @@
 # PLACEHOLDER: the real schema is released after the opening announcement.
 # Edit this file when the dump arrives, then run scripts/ingest_dump.py.
 columns:
-  timestamp: ts
-  instrument: symbol
-  bid_price_1: bid
-  ask_price_1: ask
-  bid_size_1: bid_sz
-  ask_size_1: ask_sz
-  # depth levels — uncomment/adjust to match the real dump
-  # bid_price_2: bid_px_2
-  # bid_size_2: bid_sz_2
-  # ...
+  time: ts
+  sym: symbol
+  # bid / ask already match canonical names. L2 list cols (bidprices/bidsizes/
+  # askprices/asksizes) are dropped by normalise() (kept set = ALL_COLUMNS).
