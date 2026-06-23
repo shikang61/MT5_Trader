@@ -31,6 +31,19 @@ def _struct_to_df(arr) -> pl.DataFrame:
     return pl.from_numpy(arr)
 
 
+def clamp_sl(side: float, sl: float, bid: float, ask: float, min_dist: float) -> float:
+    """Push a protective stop to a valid distance from the live market so the
+    broker can't reject it as 10016 "Invalid stops". side>0=long (the stop must
+    sit at least `min_dist` below the bid), side<0=short (at least `min_dist`
+    above the ask). A 0 SL (no stop) passes through unchanged, and a stop already
+    a safe distance away is left alone — this only ever widens a too-tight one."""
+    if not sl:
+        return sl
+    if side > 0:
+        return min(sl, bid - min_dist)
+    return max(sl, ask + min_dist)
+
+
 class MT5Error(RuntimeError):
     pass
 
@@ -181,8 +194,10 @@ class MT5Gateway:
     def _send(self, request: dict) -> None:
         result = mt5.order_send(request)
         if result is None or result.retcode != mt5.TRADE_RETCODE_DONE:
-            raise MT5Error(f"order_send failed: {getattr(result, 'retcode', None)} "
+            err = MT5Error(f"order_send failed: {getattr(result, 'retcode', None)} "
                            f"{getattr(result, 'comment', '')} {mt5.last_error()}")
+            err.retcode = getattr(result, "retcode", None)
+            raise err
 
     def _min_stop_dist(self, symbol: str) -> float:
         info = mt5.symbol_info(symbol)
@@ -211,6 +226,8 @@ class MT5Gateway:
             "type_filling": mt5.ORDER_FILLING_IOC,
         }
         if sl:
+            dist = max(self._min_stop_dist(symbol), tick.ask - tick.bid)
+            sl = clamp_sl(1.0 if buy else -1.0, sl, tick.bid, tick.ask, dist)
             request["sl"] = self._round_price(symbol, sl)
         if tp:
             request["tp"] = self._round_price(symbol, tp)
@@ -261,12 +278,24 @@ class MT5Gateway:
         # Round to the symbol's digits first (as market_order/limit_order do): the
         # broker stores SL/TP rounded, so an unrounded sub-tick value always differs
         # from p.sl by >1e-9 and re-sends every bar -> retcode 10025 "No changes".
-        sl = self._round_price(symbol, sl)
+        tick = mt5.symbol_info_tick(symbol)
+        dist = max(self._min_stop_dist(symbol), tick.ask - tick.bid)
         tp = self._round_price(symbol, tp)
         for p in self._mine(mt5.positions_get(symbol=symbol), magic):
-            if abs(p.sl - sl) > 1e-9 or abs(p.tp - tp) > 1e-9:
-                self._send({"action": mt5.TRADE_ACTION_SLTP, "symbol": symbol,
-                            "position": p.ticket, "sl": sl, "tp": tp})
+            side = 1.0 if p.type == mt5.POSITION_TYPE_BUY else -1.0
+            psl = self._round_price(symbol, clamp_sl(side, sl, tick.bid, tick.ask, dist))
+            if abs(p.sl - psl) > 1e-9 or abs(p.tp - tp) > 1e-9:
+                try:
+                    self._send({"action": mt5.TRADE_ACTION_SLTP, "symbol": symbol,
+                                "position": p.ticket, "sl": psl, "tp": tp})
+                except MT5Error as e:
+                    # A protective-stop modify the broker rejects as an invalid stop
+                    # (too close / through the freeze level) must not abort the whole
+                    # trading cycle — entries/exits matter more than re-attaching a
+                    # trailing stop, and clamp_sl already widened it to a valid
+                    # distance. Re-raise anything else (a real broker fault).
+                    if getattr(e, "retcode", None) != mt5.TRADE_RETCODE_INVALID_STOPS:
+                        raise
 
     def reconcile(self, symbol: str, target_lots: float,
                   sl: float = 0.0, tp: float = 0.0,
