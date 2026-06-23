@@ -35,6 +35,8 @@ W_GRID = [1, 2, 3, 5, 8, 13]
 H_GRID = [1, 3, 5, 10, 20, 30]
 THETA_GRID = [0.0, 0.5, 1.0]      # bp gate
 
+BEST = dict(lead_w=13, hold_h=20, theta_bp=1.0)
+
 
 def _net_bp(bars: pl.DataFrame, strat, slip_bp: float) -> tuple[float, float, float]:
     res = backtest(strat, bars, slip_bp)
@@ -74,6 +76,34 @@ def _session_splits(bars: pl.DataFrame, strat) -> None:
     for wk in sorted(set(week.tolist())):
         m = week == wk
         print(f"  week {wk}: {pnl[m].sum()*1e4:>8.1f}bp")
+
+
+def _tot_return(bars, strat, slip_bp):
+    return backtest(strat, bars, slip_bp).metrics["total_return"]
+
+
+def null_test(bars: pl.DataFrame, n_perm: int = 200, seed: int = 0) -> None:
+    strat = UsdLeadLag(**BEST)
+    actual = _tot_return(bars, strat, 0.5)
+    print(f"actual totRet (1x cost) = {actual:.4f}  params={BEST}")
+
+    rng = np.random.default_rng(seed)
+    eur = bars["eur_close"].to_numpy()
+    n = len(eur)
+    beat = 0
+    null = np.empty(n_perm)
+    for i in range(n_perm):
+        shift = int(rng.integers(n // 10, n - n // 10))    # circular shift breaks the lead
+        shuffled = bars.with_columns(eur_close=pl.Series(np.roll(eur, shift)))
+        null[i] = _tot_return(shuffled, strat, 0.5)
+        beat += null[i] >= actual
+    p = (beat + 1) / (n_perm + 1)
+    print(f"null mean={null.mean():.4f} std={null.std():.4f}  p(null>=actual)={p:.4f}  "
+          f"-> {'PASS' if p < 0.01 else 'FAIL'} (<0.01)")
+
+    print("\n-- cost stress --")
+    for k, slip in ((1, 0.5), (4, 2.0)):
+        print(f"  {k}x cost (slip {slip}bp): totRet={_tot_return(bars, strat, slip):.4f}")
 
 
 def main():
