@@ -41,22 +41,33 @@ position   = signal, held for H bars (time exit), taker entry on gold
 The empirical question: does a tradeable **1–15 min** lead exist? If the lead is
 sub-second it's arbed away → expect no plateau → kill it.
 
-## Data ingestion (gating prerequisite)
+## Data ingestion (RESOLVED for in-sample; OOS is the remaining gap)
 
-1. **Pull EURUSD history** via IBKR (`get_price_history`) over the gold backtest
-   windows: `data/real` span (2026-05-11 → 2026-06-10) **and** the comp/live span
-   (2026-06-16 →). M1 bars (ts UTC, OHLC).
-2. **Store**: `data/macro/EURUSD/<date>_<ms>.parquet`, canonical schema (ts, open,
-   high, low, close). Mirrors the `data/ticks` layout.
-3. **Loader**: `load_macro(symbol, ...)` (or extend `load_ticks`) — returns aligned
-   M1 bars; apply the SAME `drop_market_closed` weekend filter (EURUSD and gold
-   share ~24/5 hours, so alignment is clean — forward-fill any sparse gaps).
-4. **Alignment**: join EURUSD close onto the gold bar frame on `ts` (M1), before
-   `signal()` — see framework fit.
+A local cross-asset tick dump exists: **`/Volumes/SK Storage-1/Trading/2026-05-11_2026-06-10`**
+(~20 GB) — the **same source/clock as the gold data**, covering the in-sample
+window. Contains EURUSD (27 days, ~1.08M ticks/day) **and XAUUSD itself**, plus the
+full FX-majors + gold-cross universe, with **L2 depth** (vendor schema: `time` str,
+`sym`, `bid`/`ask`, `bidprices`/`bidsizes`/`askprices`/`asksizes` lists). This is
+the canonical L2 source the schema (`schema.py`, depth cols) was built for.
 
-**Risk:** if IBKR can't deliver clean aligned EURUSD M1 history for the window,
-the whole spec is blocked. Step 1 is therefore the FIRST implementation task and a
-go/no-go gate.
+1. **Ingest EURUSD + XAUUSD from this dump** — using *both* from the same dump
+   gives clean lead-lag alignment (**no cross-feed clock skew — critical for a
+   lead-lag study**). Reuse the vendor→canonical pipeline (`normalise` +
+   `config/schema_map.yaml`), adding a parquet reader + L2-list→depth-column
+   explosion. Output canonical parquet (CORE_COLUMNS + depth).
+2. **Build M1 bars** for both; join EURUSD close onto the gold bar frame on `ts`.
+   Apply `drop_market_closed` (both share ~24/5 hours).
+3. **Verify `time` is UTC** — cross-check the dump's own XAUUSD against `data/real`
+   (canonical) to confirm tz/clock before trusting alignment.
+
+**Scope note — OOS/live is the real remaining gap.** The dump covers the
+**in-sample window only** (2026-05-11→06-10). For out-of-sample / live (06-16+),
+capture EURUSD from the comp feed (the live MT5 broker likely quotes it — add to
+`log_ticks`). Validate in-sample first; OOS is the confirmation step.
+
+**Universe bonus:** the dump also has GBPUSD/USDJPY/AUDUSD/NZDUSD/USDCAD/USDCHF/
+USDCNH/USDHKD + gold crosses → a **synthetic DXY basket** USD signal and the ②/③
+ideas all become backtestable on real, same-source, L2 data later.
 
 ## Framework fit
 
@@ -99,6 +110,9 @@ HF sweep), do not deploy.
   "no tradeable lead" (would be a clean negative result).
 - **EURUSD↔gold beta is regime-dependent** (risk-on/off can decouple them) — a
   single static sign may underperform; note for v2.
-- **IBKR data quality/alignment** for the historical window (see Data risk).
+- **Ingestion of the vendor parquet** (L2-list explosion + UTC verification) is now
+  the only data task for in-sample — small, not a blocker.
+- **OOS/live EURUSD not yet captured** (06-16+) — in-sample validates the
+  hypothesis; OOS confirmation needs the comp-feed capture (follow-up).
 - **Cost realism** — EURUSD signal is free to compute; only gold round-trip cost
   applies (taker). Slippage on gold market entries must be in the 4× stress.
