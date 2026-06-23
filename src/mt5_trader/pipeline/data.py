@@ -39,6 +39,32 @@ def build_bars(symbol: str, every: str = "5m",
     return time_bars(ticks, every, extra={"ofi": pl.col("ofi").sum()})
 
 
+def cached_bars(symbol: str, every: str = "5m", data_dir: Path | str = DEFAULT_DATA,
+                drop_weekend: bool = True,
+                cache_dir: Path | str = "data/bars_cache") -> pl.DataFrame:
+    """Plain OHLC bars (time_bars on load_ticks), disk-cached so a param sweep
+    doesn't rebuild from ~100M ticks every call. The cache key includes the max
+    source-file mtime, so re-ingesting ticks auto-invalidates it; older versions
+    for the same key are removed on rebuild (self-cleaning). No micro features —
+    use build_bars() if you need the OFI aggregation."""
+    dirs = data_dir if isinstance(data_dir, (list, tuple)) else [data_dir]
+    src = [p for d in dirs for p in (Path(d) / symbol).glob("*.parquet")]
+    if not src:
+        raise FileNotFoundError(f"no tick parquet for {symbol} under {[str(d) for d in dirs]}")
+    mtime = max(int(p.stat().st_mtime) for p in src)
+    cache_dir = Path(cache_dir)
+    key = f"{symbol}_{every}_dw{int(drop_weekend)}"
+    target = cache_dir / f"{key}_{mtime}.parquet"
+    if target.exists():
+        return pl.read_parquet(target)
+    bars = time_bars(load_ticks(data_dir, symbol, drop_weekend=drop_weekend), every)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    for old in cache_dir.glob(f"{key}_*.parquet"):
+        old.unlink()
+    bars.write_parquet(target)
+    return bars
+
+
 def synthetic_bars(n: int = 8000, every: str = "5m", seed: int = 0,
                    start: datetime | None = None) -> pl.DataFrame:
     """Deterministic random-walk bars for tests and for running the pipeline
