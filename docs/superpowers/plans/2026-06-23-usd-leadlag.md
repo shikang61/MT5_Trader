@@ -344,7 +344,7 @@ POLARS_SKIP_CPU_CHECK=1 uv run python -c "import scripts.research_leadlag as r; 
 b=r.build_bars(); print('bars', b.height, 'eur_nonnull', b['eur_close'].is_not_null().mean()); \
 res=r.backtest(r.UsdLeadLag(lead_w=3,hold_h=10), b); print(res.metrics)"
 ```
-Expected: `bars` ~3e4 (M1 over ~22 trading days), `eur_nonnull` 1.0, and a `metrics` dict with keys like `ann_return`/`sharpe`/`turnover` (whatever `metrics.summary` returns). This proves the end-to-end path; the *value* is not the test — the sweep is.
+Expected: `bars` ~3e4 (M1 over ~22 trading days), `eur_nonnull` 1.0, and a `metrics` dict with keys `total_return`, `sharpe`, `sortino`, `max_drawdown`, `hit_rate`, `active_bars`, `n_bars`, `total_turnover` (confirmed from `backtest/metrics.py::summary`). This proves the end-to-end path; the *value* is not the test — the sweep is.
 
 - [ ] **Step 3: Commit**
 
@@ -375,19 +375,19 @@ THETA_GRID = [0.0, 0.5, 1.0]      # bp gate
 def _net_bp(bars: pl.DataFrame, strat, slip_bp: float) -> tuple[float, float, float]:
     res = backtest(strat, bars, slip_bp)
     m = res.metrics
-    return m.get("ann_return", float("nan")), m.get("sharpe", float("nan")), m.get("turnover", float("nan"))
+    return (m["total_return"], m["sharpe"], m.get("total_turnover", float("nan")))
 
 
 def sweep(bars: pl.DataFrame) -> None:
     hurdle = cost_bp(bars, slip_bp=0.5)
     print(f"per-trade cost hurdle ~{hurdle:.3f} bp; grid = after 1x cost (slip 0.5bp)\n")
-    print(f"{'W':>3}{'H':>4}{'theta':>7}{'annRet':>9}{'Sharpe':>8}{'turn':>8}")
+    print(f"{'W':>3}{'H':>4}{'theta':>7}{'totRet':>9}{'Sharpe':>8}{'turn':>8}")
     best = None
     for w in W_GRID:
         for h in H_GRID:
             for th in THETA_GRID:
-                ann, sh, tn = _net_bp(bars, UsdLeadLag(lead_w=w, hold_h=h, theta_bp=th), 0.5)
-                print(f"{w:>3}{h:>4}{th:>7.1f}{ann:>9.4f}{sh:>8.2f}{tn:>8.1f}")
+                ret, sh, tn = _net_bp(bars, UsdLeadLag(lead_w=w, hold_h=h, theta_bp=th), 0.5)
+                print(f"{w:>3}{h:>4}{th:>7.1f}{ret:>9.4f}{sh:>8.2f}{tn:>8.1f}")
                 if best is None or (sh == sh and sh > best[0]):
                     best = (sh, w, h, th)
     print(f"\nbest Sharpe: {best}")
@@ -460,14 +460,14 @@ git commit -m "feat(research): lead-lag W x H x theta sweep + session/weekly spl
 BEST = dict(lead_w=3, hold_h=10, theta_bp=0.0)   # EDIT to the plateau centre from Task 4
 
 
-def _ann_return(bars, strat, slip_bp):
-    return backtest(strat, bars, slip_bp).metrics.get("ann_return", float("nan"))
+def _tot_return(bars, strat, slip_bp):
+    return backtest(strat, bars, slip_bp).metrics["total_return"]
 
 
 def null_test(bars: pl.DataFrame, n_perm: int = 200, seed: int = 0) -> None:
     strat = UsdLeadLag(**BEST)
-    actual = _ann_return(bars, strat, 0.5)
-    print(f"actual annRet (1x cost) = {actual:.4f}  params={BEST}")
+    actual = _tot_return(bars, strat, 0.5)
+    print(f"actual totRet (1x cost) = {actual:.4f}  params={BEST}")
 
     rng = np.random.default_rng(seed)
     eur = bars["eur_close"].to_numpy()
@@ -477,7 +477,7 @@ def null_test(bars: pl.DataFrame, n_perm: int = 200, seed: int = 0) -> None:
     for i in range(n_perm):
         shift = int(rng.integers(n // 10, n - n // 10))    # circular shift breaks the lead
         shuffled = bars.with_columns(eur_close=pl.Series(np.roll(eur, shift)))
-        null[i] = _ann_return(shuffled, strat, 0.5)
+        null[i] = _tot_return(shuffled, strat, 0.5)
         beat += null[i] >= actual
     p = (beat + 1) / (n_perm + 1)
     print(f"null mean={null.mean():.4f} std={null.std():.4f}  p(null>=actual)={p:.4f}  "
@@ -485,7 +485,7 @@ def null_test(bars: pl.DataFrame, n_perm: int = 200, seed: int = 0) -> None:
 
     print("\n-- cost stress --")
     for k, slip in ((1, 0.5), (4, 2.0)):
-        print(f"  {k}x cost (slip {slip}bp): annRet={_ann_return(bars, strat, slip):.4f}")
+        print(f"  {k}x cost (slip {slip}bp): totRet={_tot_return(bars, strat, slip):.4f}")
 ```
 
 - [ ] **Step 2: Run the null + cost test** (after setting `BEST` to Task 4's plateau centre)
