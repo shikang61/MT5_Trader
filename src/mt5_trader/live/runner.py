@@ -15,7 +15,7 @@ from pathlib import Path
 from ..backtest.engine import BTConfig
 from ..features.technicals import atr, realized_vol
 from ..risk.manager import RiskManager
-from .mt5_gateway import MT5Gateway
+from .mt5_gateway import MT5Error, MT5Gateway
 
 TF_MINUTES = {"M1": 1, "M5": 5, "M15": 15, "H1": 60}
 
@@ -394,11 +394,18 @@ class PortfolioRunner(LiveRunner):
                 # the trailed SL after the window). _trail keeps tracking the extreme.
                 sl = 0.0
                 self.gw.set_position_sltp(sym, 0.0, tp, magic=self.cfg.magic)
+            # Isolate each symbol: a broker error on one must not skip the others
+            # nor blank the STEP audit line (the whole step runs under one
+            # resilient_loop try/except). Record the error on the fill and go on.
+            try:
+                traded, err = self.gw.reconcile(sym, lots, sl=sl, tp=tp,
+                                                magic=self.cfg.magic), None
+            except MT5Error as e:
+                traded, err = 0.0, repr(e)
             fills[sym] = {"target_lots": lots, "sl": sl, "tp": tp,
                           "price": price, "vol_halt": halt, "cap": capped,
-                          "contract_size": contract,
-                          "traded_lots": self.gw.reconcile(sym, lots, sl=sl, tp=tp,
-                                                           magic=self.cfg.magic)}
+                          "contract_size": contract, "traded_lots": traded,
+                          "error": err}
 
         self._log(event="STEP", equity=equity, books=infos, fills=fills)
 
