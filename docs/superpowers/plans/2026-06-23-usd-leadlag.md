@@ -128,20 +128,28 @@ Expected: PASS.
 
 - [ ] **Step 7: Run the real ingestion** (external drive must be mounted)
 
+The dump's XAUUSD is **identical tick-for-tick** to the existing `data/real/XAUUSD`
+(verified — `data/real` was built from this dump), so ingest **EURUSD only** into
+`data/real` (XAUUSD already there; do NOT duplicate it). `load_ticks` globs
+per-symbol, so the new `data/real/EURUSD/` subdir never collides with XAUUSD's
+richer (depth) schema. Do NOT use `data/processed` — it holds Dukascopy files and
+mixing schemas in one symbol dir breaks `load_ticks`.
+
 Run:
 ```bash
 POLARS_SKIP_CPU_CHECK=1 uv run scripts/ingest_dump.py \
   "/Volumes/SK Storage-1/Trading/2026-05-11_2026-06-10" \
-  --parquet --symbols EURUSD XAUUSD --out data/processed
+  --parquet --symbols EURUSD --out data/real
 ```
-Expected: `wrote 54 parquet files to data/processed` (~27 days × 2 symbols).
-Then verify UTC + same clock:
+Expected: `wrote 27 parquet files to data/real` (~27 trading days).
+Then verify UTC + same window:
 ```bash
 POLARS_SKIP_CPU_CHECK=1 uv run python -c "from mt5_trader.data.ingest import load_ticks; \
-e=load_ticks('data/processed','EURUSD',drop_weekend=False); g=load_ticks('data/processed','XAUUSD',drop_weekend=False); \
+e=load_ticks('data/real','EURUSD',drop_weekend=False); g=load_ticks('data/real','XAUUSD',drop_weekend=False); \
 print('EUR',e['ts'].min(),e['ts'].max(),e.height); print('XAU',g['ts'].min(),g['ts'].max(),g.height)"
 ```
-Expected: both span ~2026-05-11 → 2026-06-10, ts tz=UTC.
+Expected: both span ~2026-05-11 → 2026-06-10, ts tz=UTC. (EURUSD cols = ts,symbol,
+bid,ask — depth lists are dropped by `normalise`; fine, the signal uses close only.)
 
 - [ ] **Step 8: Commit**
 
@@ -322,7 +330,7 @@ from mt5_trader.data.ingest import load_ticks
 from mt5_trader.research import cost_bp
 from mt5_trader.strategies.usd_leadlag import UsdLeadLag, attach_eur
 
-DATA = "data/processed"
+DATA = "data/real"   # XAUUSD + EURUSD both here, same source/clock (verified tick-identical)
 KILL = {"London": (7, 10), "NY": (12, 15)}
 
 
