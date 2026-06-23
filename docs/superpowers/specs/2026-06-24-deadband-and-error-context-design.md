@@ -45,18 +45,23 @@ def apply_deadband(target: float, held: float, band: float) -> float:
     return held if abs(target - held) <= band else target
 ```
 
-- Applies on the **normalized position / target_frac** (∈[-1,1]) — unit-consistent
-  on both sides (engine `pos`, live `target_frac`).
+- Applies on the **per-book signal** — the strategy output ∈[-1,1], which is
+  exactly the engine's `pos`. Live: deadband `sig` *before* `risk.size`/weight
+  (runner.py:293); engine: deadband `pos` after the one-bar shift. Same quantity
+  both sides → parity. (Live vol-target re-sizing downstream is a known small
+  residual the single-book engine doesn't model; the dominant turnover is signal
+  wiggle, which the band catches.)
 - Rule: keep `held` unless `|target - held| > band`, then move fully to `target`
   (classic deadband / hysteresis). No partial / sticky move — keep it simple.
 - Stateful across bars (needs the previously-held position), so the engine applies
   it as a sequential pass over the position series, and the runner applies it to
   each book's target against that book's last held target.
-- **Per-book, before netting.** The engine backtests each book standalone, so the
-  band is calibrated on a per-book position series. To match, the runner applies
-  the band to each book's `target_frac` *before* the per-symbol netting/reconcile
-  — never on the post-net symbol target. This preserves research-prod parity;
-  the existing lot-step threshold in `reconcile` is a separate, downstream guard.
+- **Per-book, before risk-sizing and netting.** The engine backtests each book
+  standalone, so the band is calibrated on a per-book signal series. To match, the
+  runner applies the band to each book's `sig` inside `Book.targets` *before*
+  `risk.size`/weight and before the per-symbol netting/reconcile — never on the
+  post-net symbol target. This preserves research-prod parity; the existing
+  lot-step threshold in `reconcile` is a separate, downstream guard.
 
 ### Phase 1 — research (gate before any deploy)
 
