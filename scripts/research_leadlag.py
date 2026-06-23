@@ -29,3 +29,64 @@ def build_bars(data: str = DATA) -> pl.DataFrame:
 
 def backtest(strat, bars: pl.DataFrame, slip_bp: float = 0.5):
     return run(bars, strat.signal(bars), BTConfig(slippage_bps=slip_bp))
+
+
+W_GRID = [1, 2, 3, 5, 8, 13]
+H_GRID = [1, 3, 5, 10, 20, 30]
+THETA_GRID = [0.0, 0.5, 1.0]      # bp gate
+
+
+def _net_bp(bars: pl.DataFrame, strat, slip_bp: float) -> tuple[float, float, float]:
+    res = backtest(strat, bars, slip_bp)
+    m = res.metrics
+    return (m["total_return"], m["sharpe"], m.get("total_turnover", float("nan")))
+
+
+def sweep(bars: pl.DataFrame) -> None:
+    hurdle = cost_bp(bars, slip_bp=0.5)
+    print(f"per-trade cost hurdle ~{hurdle:.3f} bp; grid = after 1x cost (slip 0.5bp)\n")
+    print(f"{'W':>3}{'H':>4}{'theta':>7}{'totRet':>9}{'Sharpe':>8}{'turn':>8}")
+    best = None
+    for w in W_GRID:
+        for h in H_GRID:
+            for th in THETA_GRID:
+                ret, sh, tn = _net_bp(bars, UsdLeadLag(lead_w=w, hold_h=h, theta_bp=th), 0.5)
+                print(f"{w:>3}{h:>4}{th:>7.1f}{ret:>9.4f}{sh:>8.2f}{tn:>8.1f}")
+                if best is None or (sh == sh and sh > best[0]):
+                    best = (sh, w, h, th)
+    print(f"\nbest Sharpe: {best}")
+    print("\n--- look for a CONTIGUOUS positive-Sharpe region (plateau), not a lone spike ---")
+    _session_splits(bars, UsdLeadLag(lead_w=best[1], hold_h=best[2], theta_bp=best[3]))
+
+
+def _session_splits(bars: pl.DataFrame, strat) -> None:
+    sig = strat.signal(bars)
+    close = bars["close"].to_numpy()
+    ret = np.zeros_like(close); ret[:-1] = np.diff(close) / close[:-1]
+    pnl = sig * np.concatenate([ret[1:], [0.0]])     # position t earns t->t+1 return
+    hour = bars["ts"].dt.hour().to_numpy()
+    week = bars["ts"].dt.week().to_numpy()
+    print("\n-- kill-zone net (best params, gross) --")
+    for name, (lo, hi) in KILL.items():
+        m = (hour >= lo) & (hour < hi)
+        print(f"  {name:7} sum={pnl[m].sum()*1e4:>8.1f}bp n={int(m.sum())}")
+    print("-- weekly net (gross) --")
+    for wk in sorted(set(week.tolist())):
+        m = week == wk
+        print(f"  week {wk}: {pnl[m].sum()*1e4:>8.1f}bp")
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("cmd", choices=["sweep", "null"])
+    args = ap.parse_args()
+    bars = build_bars()
+    print(f"bars={bars.height}  span={bars['ts'].min()} -> {bars['ts'].max()}\n")
+    if args.cmd == "sweep":
+        sweep(bars)
+    elif args.cmd == "null":
+        null_test(bars)        # Task 5
+
+
+if __name__ == "__main__":
+    main()
