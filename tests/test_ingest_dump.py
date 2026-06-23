@@ -26,3 +26,17 @@ def test_parquet_dump_to_canonical(tmp_path):
     assert df.schema["ts"] == pl.Datetime("us", "UTC")
     assert df["ts"][0] == datetime(2026, 5, 11, 0, 0, 0, 100000, tzinfo=timezone.utc)
     assert abs(df["bid"][0] - 1.1767) < 1e-9
+
+
+def test_load_ticks_multidir_mixed_schema(tmp_path):
+    # thin feed (ts,symbol,bid,ask) + thick feed (+bid_sz,ask_sz) for one symbol
+    ts = [datetime(2026, 5, 11, 0, 0, 0, tzinfo=timezone.utc)]
+    thin = pl.DataFrame({"ts": ts, "symbol": ["EURUSD"], "bid": [1.17], "ask": [1.18]})
+    thick = pl.DataFrame({"ts": ts, "symbol": ["EURUSD"], "bid": [1.19], "ask": [1.20],
+                          "bid_sz": [100.0], "ask_sz": [200.0]})
+    for name, df in (("thinfeed", thin), ("thickfeed", thick)):
+        d = tmp_path / name / "EURUSD"; d.mkdir(parents=True)
+        df.write_parquet(d / "x.parquet")
+    out = load_ticks([tmp_path / "thinfeed", tmp_path / "thickfeed"], "EURUSD", drop_weekend=False)
+    assert out.height == 2                          # both feeds concatenated
+    assert out.columns == ["ts", "symbol", "bid", "ask"]   # common CORE cols only

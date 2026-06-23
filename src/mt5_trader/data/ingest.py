@@ -119,16 +119,15 @@ def load_ticks(processed_dir: Path | str | list, symbol: str,
     concats cleanly into one schema. `drop_weekend` (default on) strips the
     market-closed window — see drop_market_closed; pass False for raw capture."""
     dirs = processed_dir if isinstance(processed_dir, (list, tuple)) else [processed_dir]
-    frames = []
-    for d in dirs:
-        if (Path(d) / symbol).exists():
-            lf = pl.scan_parquet(Path(d) / symbol / "*.parquet")
-            # Select only CORE_COLUMNS that actually exist in the schema
-            cols_to_select = [c for c in CORE_COLUMNS if c in lf.collect_schema().names()]
-            frames.append(lf.select(cols_to_select))
-    if not frames:
+    lfs = [pl.scan_parquet(Path(d) / symbol / "*.parquet")
+           for d in dirs if (Path(d) / symbol).exists()]
+    if not lfs:
         raise FileNotFoundError(f"no tick parquet for {symbol} under {[str(d) for d in dirs]}")
-    lf = pl.concat(frames, how="vertical")
+    # Uniform schema across feeds: keep CORE columns present in EVERY source, so a
+    # thin feed (ts,symbol,bid,ask) and a thick one (+bid_sz/ask_sz) concat cleanly.
+    names = [set(lf.collect_schema().names()) for lf in lfs]
+    common = [c for c in CORE_COLUMNS if all(c in n for n in names)]
+    lf = pl.concat([lf.select(common) for lf in lfs], how="vertical")
     if start is not None:
         lf = lf.filter(pl.col("ts") >= start)
     if end is not None:
