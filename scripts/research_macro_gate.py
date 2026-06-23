@@ -79,6 +79,45 @@ def sweep(slip_bp: float = 0.5) -> None:
         print("--- need a CONTIGUOUS plateau of WIN cells, not isolated hits ---")
 
 
+# EDIT to a Task-3 WIN cell (book + params). If Task 3 found NO win, the study is
+# negative — record it and skip the placebo (nothing to validate).
+PLACEBO = dict(book="donchian", trend_span=960, slope_lag=240, band=0.0005)
+
+
+def _random_veto(base: np.ndarray, n_veto: int, rng) -> np.ndarray:
+    """Zero n_veto randomly-chosen non-zero positions of `base` (placebo for the
+    macro veto: same trade-count removed, but at random instead of by macro_dir)."""
+    out = base.copy()
+    nz = np.flatnonzero(base != 0)
+    if n_veto > 0 and len(nz) >= n_veto:
+        out[rng.choice(nz, size=n_veto, replace=False)] = 0.0
+    return out
+
+
+def placebo(n_perm: int = 200, seed: int = 0, slip_bp: float = 0.5) -> None:
+    p = PLACEBO
+    strat, tf = BOOKS[p["book"]]
+    bars = build_bars(tf)
+    base = strat.signal(bars)
+    mdir = macro_signal(bars, p["trend_span"], p["slope_lag"], p["band"])
+    gated = macro_gate(base, mdir)
+    n_veto = int(((base != 0) & (gated == 0)).sum())
+    macro_ret = _metrics(bars, gated, slip_bp)["ret"]
+    print(f"{p['book']} {p}: macro veto removes {n_veto} positions; "
+          f"macro gated ret={macro_ret:+.4f}")
+
+    rng = np.random.default_rng(seed)
+    null = np.empty(n_perm)
+    beat = 0
+    for i in range(n_perm):
+        rv = _random_veto(base, n_veto, rng)
+        null[i] = _metrics(bars, rv, slip_bp)["ret"]
+        beat += null[i] >= macro_ret
+    pval = (beat + 1) / (n_perm + 1)
+    print(f"random-veto null: mean={null.mean():+.4f} std={null.std():.4f}  "
+          f"p(random>=macro)={pval:.4f}  -> {'PASS' if pval < 0.05 else 'FAIL'} (<0.05)")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["sweep", "placebo"])
