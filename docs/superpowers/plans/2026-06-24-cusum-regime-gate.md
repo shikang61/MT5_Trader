@@ -2,6 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **OUTCOME (2026-06-24): NOT DEPLOYED.** Tasks 1–2 done. Gate: no book beats ER on
+> a plateau (donchian raw best; vwap ER best; london one isolated overfit cell
+> k0.25/h3.0). Task 3 (deploy) cancelled. `cusum_regime` + research script KEPT as
+> tooling (not reverted). See spec OUTCOME + [[profit-ratchet-dead]].
+
 **Goal:** Add a causal CUSUM change-point regime detector and test, head-to-head vs the efficiency-ratio (ER) gate, whether it gates the trend books better.
 
 **Architecture:** `cusum_regime()` lives beside `regime_series()` in `features/regime.py`, returns the same `{+1,0,-1}` per-bar array (causal, coarsened) so books gate identically (`regime != RANGE`). A research harness compares none / ER / CUSUM on the raw book signals via the backtest engine; deploy is opt-in and conditional on the gate.

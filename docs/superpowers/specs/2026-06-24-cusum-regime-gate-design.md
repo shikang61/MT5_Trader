@@ -2,6 +2,15 @@
 
 Status: design. Author: QR/QD. Date: 2026-06-24.
 
+> **OUTCOME (2026-06-24): NOT DEPLOYED — fails the plateau gate.**
+> Head-to-head (none/ER/CUSUM): donchian raw best (both gates hurt); vwap ER best
+> (Sh 1.84 > CUSUM 1.67); london has ONE cell (k0.25/h3.0, Sh 4.50) beating raw+ER
+> but isolated — neighbors collapse (h5.0→−1.97, k0.5→0.30), the overfit signature
+> that shelved [[macro-gate-shelved]]. No book clears "beat ER on Sharpe+maxDD on a
+> plateau." `cusum_regime` + research script KEPT as research tooling; ER stays the
+> only live gate. Task 3 (deploy) cancelled. 5th dead reversal/regime lever — see
+> [[profit-ratchet-dead]].
+
 ## Goal & hypothesis
 
 Add a **change-point (CUSUM) regime detector** as an alternative to the existing
