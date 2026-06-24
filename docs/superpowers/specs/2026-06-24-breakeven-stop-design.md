@@ -2,6 +2,15 @@
 
 Status: design. Author: QR/QD. Date: 2026-06-24.
 
+> **OUTCOME (2026-06-24): DROPPED at the Phase-1 gate.**
+> Sweep (T∈{1..4} × buffer∈{0,0.1,0.2}): no cell raises/holds Sharpe on any trend
+> book vs baseline — donchian Sh 1.95→1.70 (DD worse); vwap 1.84→0.37; london
+> 3.90→3.35 (trims DD 0.28pp only by paying 1.1pp return). As trigger→4 it converges
+> to baseline (rarely arms). Same whipsaw mechanism as the ratchet, even in this
+> gentlest form. **4th dead protect-giveback lever** — the wide 8× disaster stop is
+> optimal; the giveback is the price of the trend edge. Code reverted; research
+> script kept. Stop pursuing this family — see [[profit-ratchet-dead]].
+
 ## Goal
 
 Once a trade is up `T`×ATR, move its stop to ~entry so a winner cannot turn into

@@ -2,6 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **OUTCOME (2026-06-24): DROPPED at the Task 3 gate.** Tasks 1–2 built; the sweep
+> showed no (T,B) cell holds Sharpe on any trend book → reverted (stops.py + engine
+> wiring + tests removed); Tasks 4–5 cancelled. Research script kept. 4th dead
+> protect-giveback lever — see the spec OUTCOME note + [[profit-ratchet-dead]].
+
 **Goal:** Once a trade is up `T`×ATR, floor its stop to ~entry so a winner can't become a loss — without truncating trends.
 
 **Architecture:** A pure `breakeven_floor()` raises (long) / lowers (short) the chandelier disaster stop toward `entry + cost-buffer` once a position is `T`×ATR in profit. The backtest engine (`_simulate_stops`) and live runner (`chandelier_sl`) both call it → research == live. Research-gated; default off.
