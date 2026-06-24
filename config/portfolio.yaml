@@ -34,8 +34,9 @@ books:
   - strategy: donchian
     symbol: XAUUSD
     timeframe: M5
-    weight: 0.35   # most robust book (4x-cost survivor, smooth wiggle) -> anchor
-                   # (trimmed 0.40->0.35 in the 2026-06-18 reweight to fund diversifiers)
+    weight: 0.40   # most robust book (4x-cost survivor, smooth wiggle) -> anchor
+                   # (trimmed 0.40->0.35 on 2026-06-18 to fund asian_sweep; RESTORED to
+                   # 0.40 on 2026-06-24 when asian_sweep was reverted 0.20->0.10)
   - strategy: vwap_trend
     symbol: XAUUSD
     timeframe: M5
@@ -51,8 +52,9 @@ books:
   - strategy: london_orb
     symbol: XAUUSD
     timeframe: M1
-    weight: 0.05   # weak link: param cliff (flat_hour=14 -> -3%), barely survives 4x cost;
-                   # trimmed 0.10->0.05 (lost -$19.79 live 2026-06-16) to fund asian_sweep
+    weight: 0.10   # weak link: param cliff (flat_hour=14 -> -3%), barely survives 4x cost;
+                   # trimmed 0.10->0.05 (lost -$19.79 live 2026-06-16) to fund asian_sweep;
+                   # RESTORED to 0.10 on 2026-06-24 when asian_sweep was reverted
   - strategy: sweep_fade
     symbol: XAUUSD
     timeframe: M1
@@ -76,7 +78,8 @@ books:
   - strategy: asian_sweep     # Asian-session (00-06 UTC) H/L sweep-reversal fade, taker, 60m hold.
     symbol: XAUUSD            #  Liquidity-pool research: only new level source surviving costs on
     timeframe: M1            #   gold besides PDH/PDL. Gate (2026-06-16): param plateau + survives
-    weight: 0.2              #   real-broker cost stress; null test sweep-specific p=0.005. CAVEAT:
-                             #   one in-sample month (n~25). RAISED 0.10->0.20 (2026-06-18) on full-
-                             #   span Sh7.0/maxDD-1.7% DESPITE the "confirm before raising" caution —
-                             #   provisional; forward-confirm on comp data, trim back if it fades.
+    weight: 0.10             #   real-broker cost stress; null test sweep-specific p=0.005. CAVEAT:
+                             #   one in-sample month (n~25). RAISED 0.10->0.20 (2026-06-18) DESPITE
+                             #   the "confirm before raising" caution, then REVERTED 0.20->0.10 on
+                             #   2026-06-24: faded live (-$58.75, churned turnover 0.13) — trimmed
+                             #   back per the "trim if it fades" plan (donchian/london_orb restored).
