@@ -2,6 +2,11 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **OUTCOME (2026-06-24): left OFF.** Task 1 ran; the sweep table is flat — every
+> `g` identical to baseline (worst intraday net retrace < 1%, so no `g` ever fires).
+> Task 2 (config) not applied; `posture.give_back` stays 0.0. Research script kept;
+> revisit on a choppy/shock month. See spec OUTCOME.
+
 **Goal:** Find (backtest) and, if it clears the gate, enable a daily trailing-kill fraction `g` that flattens the net book for the rest of a UTC day once net equity retraces `g` from the day's peak.
 
 **Architecture:** The live mechanism already exists and is unit-tested (`RiskManager.give_back` / `.kill` / `.roll_day`). This is **validate-then-enable**: a net-level backtest sweeps `g`, then a one-line `config/risk.yaml` change. No new live code.

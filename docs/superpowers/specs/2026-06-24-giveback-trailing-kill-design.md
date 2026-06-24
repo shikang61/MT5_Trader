@@ -2,6 +2,15 @@
 
 Status: design. Author: QR/QD. Date: 2026-06-24.
 
+> **OUTCOME (2026-06-24): left OFF — give_back never fires on the window.**
+> The net-level sweep (`research_giveback_net.py`, g ∈ {0,1,1.5,2,3,4}%) returned a
+> flat table: every g identical to the g=0 baseline (+6.01% / Sh 9.00 / maxDD
+> −0.95%). The blended book's worst intraday peak-to-trough retrace is **< 1%**, so
+> even the tightest 1% trailing kill never triggers (nor does the 4% loss_limit).
+> No tail to protect on this benign window → `posture.give_back` stays 0.0. No live
+> change. Revisit on a choppy/shock month or the comp data. The mechanism remains
+> built + tested in `RiskManager`; this was a validate step, verdict = don't enable.
+
 ## Goal
 
 Find and enable a daily **trailing kill** fraction `g` that protects an intraday
