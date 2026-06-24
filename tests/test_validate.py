@@ -7,7 +7,7 @@ from mt5_trader.pipeline import validate
 from mt5_trader.pipeline.data import synthetic_bars
 
 GATES = {"week_by_week", "cost_stress", "param_wiggle", "turnover",
-         "out_of_sample", "deflated_sharpe"}
+         "walk_forward", "deflated_sharpe"}
 
 
 def _trend_bars(n=8000, slope=0.00005):
@@ -31,12 +31,22 @@ def test_verdict_structure_and_overall():
 
 
 def test_passes_on_clean_uptrend():
-    """A steady uptrend: donchian holds long, low turnover, positive OOS — the
-    cost-survival and out-of-sample gates must pass."""
+    """A steady uptrend: donchian holds long, low turnover, every walk-forward
+    fold positive — the cost-survival and walk-forward gates must pass."""
     v = validate.validate_candidate("donchian", _trend_bars(), "5m",
                                     wiggle=("entry_n", [180, 240, 300]))
-    assert v["gates"]["out_of_sample"]["pass"] is True
+    assert v["gates"]["walk_forward"]["pass"] is True
     assert v["gates"]["cost_stress"]["pass"] is True
+
+
+def test_walk_forward_folds_and_pass_on_uptrend():
+    """Sequential OOS folds: a steady uptrend keeps donchian long, so the
+    majority (here all) of folds are positive and pos_frac clears 0.5."""
+    wf = validate.walk_forward("donchian", _trend_bars(), "5m", n_folds=5)
+    assert len(wf["folds"]) == 5
+    assert all({"ret", "sharpe", "n_bars"} <= set(f) for f in wf["folds"])
+    assert sum(f["n_bars"] for f in wf["folds"]) == len(_trend_bars())
+    assert wf["pos_frac"] >= 0.5
 
 
 def test_deflated_sharpe_haircut_grows_with_trials():

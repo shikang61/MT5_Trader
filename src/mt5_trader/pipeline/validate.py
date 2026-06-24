@@ -8,8 +8,9 @@ Gates (all present gates must pass for overall PASS):
   cost_stress     : total return still positive at 4x slippage
   param_wiggle    : +/-25% on the primary param stays positive (plateau, not cliff)
   turnover        : avg position change per bar under a churn cap
-  out_of_sample   : held-out later weeks positive (fixed params — an OOS check,
-                    not rolling re-fit; documented honestly)
+  walk_forward    : majority of sequential OOS folds positive (fixed params, no
+                    re-optimization — catches a strategy that only worked in one
+                    era; documented honestly in walk_forward())
   deflated_sharpe : per-bar Sharpe survives a multiple-testing haircut for the
                     number of trials logged (Lo-2002 Sharpe SE x expected-max-of-N)
 
@@ -67,8 +68,35 @@ def _deflated_sharpe(pnl: np.ndarray, n_trials: int) -> tuple[float, float]:
     return sr, sr - haircut * se
 
 
+def walk_forward(name: str, bars: pl.DataFrame, every: str = "5m",
+                 n_folds: int = 5, slippage: float = 0.5, **params) -> dict:
+    """Sequential out-of-sample walk-forward. The series is cut into `n_folds`
+    contiguous, equal folds (last fold takes the remainder); each fold is scored
+    independently (engine starts flat, no PnL carried across the cut) on the same
+    fixed-param signal. Because signals are causal (signal[t] uses only data <=t)
+    and not re-fit, this is walk-forward WITHOUT re-optimization — it catches a
+    strategy that only worked in one era. Returns {folds: [{ret, sharpe,
+    n_bars}], pos_frac, mean_ret, n_folds}."""
+    sig = REGISTRY[name](**params).signal(bars)
+    n = len(bars)
+    width = n // n_folds
+    folds = []
+    for k in range(n_folds):
+        lo = k * width
+        hi = n if k == n_folds - 1 else (k + 1) * width
+        m = run(bars[lo:hi], sig[lo:hi],
+                BTConfig(slippage_bps=slippage, bars_per_year=bars_per_year(every))).metrics
+        folds.append({"ret": round(m["total_return"], 4),
+                      "sharpe": round(m["sharpe"], 3), "n_bars": hi - lo})
+    pos_frac = sum(f["ret"] > 0 for f in folds) / n_folds
+    return {"folds": folds, "pos_frac": round(pos_frac, 3),
+            "mean_ret": round(float(np.mean([f["ret"] for f in folds])), 4),
+            "n_folds": n_folds}
+
+
 def validate_candidate(name: str, bars: pl.DataFrame, every: str = "5m", *,
                        wiggle: tuple[str, list] | None = None, n_trials: int = 1,
+                       n_folds: int = 5,
                        thresholds: dict | None = None, **params) -> dict:
     """Run all gates on REGISTRY[name](**params) over `bars`. Returns
     {gates: {gate: {pass: bool, ...}}, metrics: {...}, overall: bool}."""
@@ -100,11 +128,11 @@ def validate_candidate(name: str, bars: pl.DataFrame, every: str = "5m", *,
     gates["turnover"] = {"pass": tpb <= th["max_turnover_per_bar"],
                          "per_bar": round(tpb, 4)}
 
-    split = int(len(bars) * 0.6)
-    oos = run(bars[split:], REGISTRY[name](**params).signal(bars)[split:],
-              BTConfig(slippage_bps=th["base_slippage"], bars_per_year=bars_per_year(every)))
-    gates["out_of_sample"] = {"pass": oos.metrics["total_return"] > 0,
-                              "oos_ret": round(oos.metrics["total_return"], 4)}
+    wf = walk_forward(name, bars, every, n_folds=n_folds,
+                      slippage=th["base_slippage"], **params)
+    gates["walk_forward"] = {"pass": wf["pos_frac"] >= th["week_pos_frac"],
+                             "pos_frac": wf["pos_frac"], "mean_ret": wf["mean_ret"],
+                             "folds": [f["ret"] for f in wf["folds"]]}
 
     raw_sr, def_sr = _deflated_sharpe(full.bars["pnl"].to_numpy(), n_trials)
     gates["deflated_sharpe"] = {"pass": def_sr > 0, "raw": round(raw_sr, 4),
