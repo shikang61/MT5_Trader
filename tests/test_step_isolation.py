@@ -53,6 +53,9 @@ class FaultyGW:
         self.reconciled[symbol] = lots
         return lots
 
+    def position_lots(self, symbol, magic=None):
+        return 0.0
+
     def flatten(self, symbol, magic=None):
         pass
 
