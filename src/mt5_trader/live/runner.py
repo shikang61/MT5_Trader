@@ -383,6 +383,14 @@ class PortfolioRunner(LiveRunner):
             lots, capped = cap_lots(lots, contract, price, equity, self.cfg.exposure_cap)
             high, low = float(bars["high"][-1]), float(bars["low"][-1])
             atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
+            # The broker may have closed the net position (the disaster stop fired)
+            # without the runner knowing. If it's flat, drop the stale chandelier
+            # trail so the re-entry re-anchors a fresh stop at the current price —
+            # else we re-open into an already-breached stop and churn (open ->
+            # instant stop-out loop, observed live 2026-06-24). Mirrors the engine,
+            # which re-anchors after every stop.
+            if abs(self.gw.position_lots(sym, self.cfg.magic)) < 1e-9:
+                self._trail[sym] = None
             sl, self._trail[sym] = chandelier_sl(lots, price, high, low, atr_val,
                                                  self.cfg.sl_atr_mult,
                                                  self._trail.get(sym))

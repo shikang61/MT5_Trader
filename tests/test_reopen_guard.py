@@ -63,6 +63,9 @@ class GuardFakeGW:
     def set_position_sltp(self, s, sl=0.0, tp=0.0, magic=None):
         self.sltp_calls.append((s, sl, tp))
 
+    def position_lots(self, s, magic=None):
+        return 0.0
+
     def flatten(self, s, magic=None):
         pass
 
