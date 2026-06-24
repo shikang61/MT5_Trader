@@ -20,6 +20,7 @@ from dataclasses import dataclass, field
 import numpy as np
 import polars as pl
 
+from ..execution import deadband_series
 from ..features.technicals import atr
 from .metrics import summary
 
@@ -33,6 +34,7 @@ class BTConfig:
     sl_atr_mult: float = 0.0   # intrabar trailing disaster stop; 0 = off
     tp_atr_mult: float = 0.0   # intrabar take profit; 0 = off
     atr_window: int = 60       # ATR lookback for the stop distance
+    deadband: float = 0.0      # hold position until |target-held| > deadband (turnover cut); 0 = off
 
 
 @dataclass
@@ -58,6 +60,7 @@ def run(bars: pl.DataFrame, signal: np.ndarray, cfg: BTConfig | None = None) -> 
     pos = np.empty(n)
     pos[0] = 0.0
     pos[1:] = sig[:-1]  # executed one bar after the signal
+    pos = deadband_series(pos, cfg.deadband)  # hold through sub-band wiggles (turnover cut)
 
     if cfg.sl_atr_mult > 0 or cfg.tp_atr_mult > 0:
         if not {"high", "low"}.issubset(bars.columns):
