@@ -2,6 +2,15 @@
 
 Status: design. Author: QR/QD. Date: 2026-06-24.
 
+> **OUTCOME (2026-06-24): #1 deadband DROPPED at the research gate; #3 SHIPPED.**
+> The sweep showed strategy signals are discrete {-1,0,1}, so a deadband on the
+> signal is a no-op (turnover flat across all bands). Decomposing live cost
+> showed real spread cost is ~$31/week — the "-755 / 57% of gross" was an
+> attribution artifact (gross mark-to-market vs realized equity; broker realized
+> +329.97 vs +325 gross, ~$5/day apart), not execution cost. No turnover problem
+> to solve → deadband code reverted. The #3 error-context work below was built
+> and kept. The #1 sections are retained for the record.
+
 Two independent improvements found while reviewing the 2026-06-23 live session
 (the 10016 `Invalid stops` storm investigation):
 

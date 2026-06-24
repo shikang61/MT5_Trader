@@ -2,6 +2,12 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **OUTCOME (2026-06-24):** Tasks 1–4 executed. At the Task 5 gate the deadband
+> was **dropped** — discrete {-1,0,1} signals make a signal deadband a no-op, and
+> real spread cost is ~$31/week (the "-755" was an attribution artifact, not
+> cost). Tasks 1–2 (deadband helper + engine wiring) were **reverted**; Tasks 6–7
+> **cancelled**. Tasks 3–4 (#3 error context) shipped and kept.
+
 **Goal:** Cut execution cost via a research-gated per-book rebalance deadband, and make order errors self-diagnosing.
 
 **Architecture:** A pure `apply_deadband`/`deadband_series` shared by the backtest engine and the live runner (research-prod parity); a research sweep + decision gate before any live deploy; plus `MT5Error` message enrichment and a deduped, non-silent surfacing of swallowed invalid-stops.
