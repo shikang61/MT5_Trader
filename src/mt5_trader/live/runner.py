@@ -77,6 +77,24 @@ def chandelier_sl(side: float, price: float, high: float, low: float,
     return sl, (side, atr_entry, entry, extreme)
 
 
+def widen_breached_stop(side: float, sl: float, price: float,
+                        atr: float, sl_mult: float) -> float:
+    """Push a *breached* trailing stop a full disaster-distance from the current
+    market. A chandelier stop anchored to a stale extreme can land on the wrong
+    side of price after a bounce (short stop below market / long stop above);
+    the gateway would then clamp it to ~spread away — an ultra-tight stop that
+    instant-triggers and churns the book open->stop->open (observed live
+    2026-06-24). Re-anchoring it to price +/- sl_mult*atr keeps a re-attach wide
+    so normal chop can't sweep it. A stop already on the correct side (normal
+    trailing) is left untouched; 0 sl / flat / no ATR -> unchanged."""
+    if not sl or side == 0 or atr <= 0 or sl_mult <= 0:
+        return sl
+    floor = sl_mult * atr
+    if side > 0:                 # long: protective stop sits below price
+        return price - floor if sl >= price else sl
+    return price + floor if sl <= price else sl   # short: stop sits above price
+
+
 def in_reopen_guard(now: datetime, window: tuple[str, str] | None) -> bool:
     """True when `now`'s UTC time-of-day is in the [start, end) reopen-guard window
     (HH:MM strings). The broker disaster stop is detached across this window so the
@@ -394,6 +412,7 @@ class PortfolioRunner(LiveRunner):
             sl, self._trail[sym] = chandelier_sl(lots, price, high, low, atr_val,
                                                  self.cfg.sl_atr_mult,
                                                  self._trail.get(sym))
+            sl = widen_breached_stop(lots, sl, price, atr_val, self.cfg.sl_atr_mult)
             _, atr_entry, entry_price, _ = self._trail[sym]
             _, tp = protective_levels(lots, entry_price, atr_entry,
                                       0.0, self.cfg.tp_atr_mult)
