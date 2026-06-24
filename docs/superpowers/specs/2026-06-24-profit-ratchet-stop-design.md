@@ -2,6 +2,17 @@
 
 Status: design. Author: QR/QD. Date: 2026-06-24.
 
+> **OUTCOME (2026-06-24): DROPPED at the research gates.**
+> Phase 0 diagnostic: giveback is material (donchian median 4.6 ATR), but tick
+> volume does NOT separate reversal from resumption (n_ticks z separation ≈ +0.01
+> donchian / −0.09 vwap / +0.13 london — noise) → volume gate killed before build.
+> Phase 1 sweep: the price-only ratchet beats baseline on NO (T,R) cell for any
+> trend book (donchian Sh 1.95→best −0.40; vwap 1.84→1.24; london 3.90→1.15),
+> turnover explodes 2–5×. Conclusion: the pullback giveback is the *price of the
+> trend edge*, not a fixable leak — protecting it cuts expectancy. All ratchet
+> code reverted; research scripts kept. Don't re-test profit-protection on these
+> trend books without a materially different sample/mechanism.
+
 ## Goal & hypothesis
 
 Trend books give back open profit on in-trend pullbacks (observed live: 2026-06-23

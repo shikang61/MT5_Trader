@@ -2,6 +2,13 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **OUTCOME (2026-06-24): DROPPED at the gates.** Phase 0 ran (Task 1): giveback
+> material, but tick volume does not separate reversal from resumption → Phase 2
+> (volume gate) cancelled. Phase 1 built (Tasks 2–4) then the sweep showed no
+> (T,R) cell beats baseline on any trend book → ratchet reverted (stops.py +
+> engine wiring + tests removed); Tasks 6–7 cancelled. Research scripts kept. See
+> the spec OUTCOME note for numbers.
+
 **Goal:** Protect open profit on deep trend winners via a late-arming second stop (optionally tightened by a tick-volume reversal spike), without touching the entry-side disaster stop.
 
 **Architecture:** A pure `ratchet_mult()` selects the chandelier multiplier — `sl_mult` until a position is `T`×ATR in profit, then a tighter `R` (or `R_tight` on a volume spike). The backtest engine (`_simulate_stops`) and the live runner (`chandelier_sl`) both call it, so research == live. Research-gated in phases; default-off everywhere.
