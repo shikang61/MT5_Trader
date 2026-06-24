@@ -194,10 +194,21 @@ class MT5Gateway:
     def _send(self, request: dict) -> None:
         result = mt5.order_send(request)
         if result is None or result.retcode != mt5.TRADE_RETCODE_DONE:
-            err = MT5Error(f"order_send failed: {getattr(result, 'retcode', None)} "
-                           f"{getattr(result, 'comment', '')} {mt5.last_error()}")
-            err.retcode = getattr(result, "retcode", None)
+            retcode = getattr(result, "retcode", None)
+            err = MT5Error(
+                f"order_send failed: retcode={retcode} "
+                f"action={request.get('action')} symbol={request.get('symbol')} "
+                f"magic={request.get('magic')} "
+                f"comment={getattr(result, 'comment', '')!r} {mt5.last_error()}")
+            err.retcode = retcode
             raise err
+
+    def _note(self, **kw) -> None:
+        """Emit a structured event to an optional sink (set by the runner). No-op
+        if unset — keeps the gateway import-safe and usable without a logger."""
+        cb = getattr(self, "on_event", None)
+        if cb is not None:
+            cb(**kw)
 
     def _min_stop_dist(self, symbol: str) -> float:
         info = mt5.symbol_info(symbol)
@@ -281,21 +292,29 @@ class MT5Gateway:
         tick = mt5.symbol_info_tick(symbol)
         dist = max(self._min_stop_dist(symbol), tick.ask - tick.bid)
         tp = self._round_price(symbol, tp)
+        if not hasattr(self, "_sltp_failed"):
+            self._sltp_failed = {}   # ticket -> (sl, tp) that last failed invalid-stops
         for p in self._mine(mt5.positions_get(symbol=symbol), magic):
             side = 1.0 if p.type == mt5.POSITION_TYPE_BUY else -1.0
             psl = self._round_price(symbol, clamp_sl(side, sl, tick.bid, tick.ask, dist))
-            if abs(p.sl - psl) > 1e-9 or abs(p.tp - tp) > 1e-9:
-                try:
-                    self._send({"action": mt5.TRADE_ACTION_SLTP, "symbol": symbol,
-                                "position": p.ticket, "sl": psl, "tp": tp})
-                except MT5Error as e:
-                    # A protective-stop modify the broker rejects as an invalid stop
-                    # (too close / through the freeze level) must not abort the whole
-                    # trading cycle — entries/exits matter more than re-attaching a
-                    # trailing stop, and clamp_sl already widened it to a valid
-                    # distance. Re-raise anything else (a real broker fault).
-                    if getattr(e, "retcode", None) != mt5.TRADE_RETCODE_INVALID_STOPS:
-                        raise
+            if abs(p.sl - psl) <= 1e-9 and abs(p.tp - tp) <= 1e-9:
+                continue
+            if self._sltp_failed.get(p.ticket) == (psl, tp):
+                continue  # this exact stop already failed invalid-stops; don't re-send/re-note
+            try:
+                self._send({"action": mt5.TRADE_ACTION_SLTP, "symbol": symbol,
+                            "position": p.ticket, "sl": psl, "tp": tp})
+                self._sltp_failed.pop(p.ticket, None)
+            except MT5Error as e:
+                # A protective-stop modify the broker rejects as an invalid stop
+                # (too close / through the freeze level) must not abort the whole
+                # trading cycle — clamp_sl already widened it. Memo + surface once
+                # (deduped, so it can't re-create the 10016 storm); re-raise anything
+                # else (a real broker fault).
+                if getattr(e, "retcode", None) != mt5.TRADE_RETCODE_INVALID_STOPS:
+                    raise
+                self._sltp_failed[p.ticket] = (psl, tp)
+                self._note(event="ERROR", symbol=symbol, retcode=e.retcode, error=repr(e))
 
     def reconcile(self, symbol: str, target_lots: float,
                   sl: float = 0.0, tp: float = 0.0,
