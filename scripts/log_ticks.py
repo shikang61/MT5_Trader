@@ -41,6 +41,17 @@ def portfolio_symbols(path: Path) -> list[str]:
     return sorted(s for s in syms if s)
 
 
+def resolve_symbols(portfolio: list[str], override: list[str] | None,
+                    extra: list[str] | None) -> list[str]:
+    """--symbols fully overrides; otherwise the portfolio's traded symbols PLUS any
+    --extra-symbols — research-only captures no book trades yet (e.g. GBPUSD for the
+    diversifier study), so the gold/silver capture keeps auto-following the portfolio
+    while extra pairs ride along. Deduped + sorted."""
+    if override:
+        return sorted(set(override))
+    return sorted(set(portfolio) | set(extra or []))
+
+
 def log(**kw) -> None:
     kw["ts"] = datetime.now(timezone.utc).isoformat()
     LOG.parent.mkdir(parents=True, exist_ok=True)
@@ -73,6 +84,8 @@ def main():
     load_dotenv()
     p = argparse.ArgumentParser()
     p.add_argument("--symbols", nargs="+", help="default: all symbols in portfolio.yaml")
+    p.add_argument("--extra-symbols", nargs="+",
+                   help="extra symbols to capture beyond the portfolio's (research-only, untraded)")
     p.add_argument("--portfolio", type=Path, default=Path("config/portfolio.yaml"))
     p.add_argument("--flush-seconds", type=float, default=300.0)
     p.add_argument("--overlap-seconds", type=float, default=120.0,
@@ -80,7 +93,7 @@ def main():
     p.add_argument("--lookback-min", type=int, default=60, help="initial backfill on a cold start")
     args = p.parse_args()
 
-    symbols = args.symbols or portfolio_symbols(args.portfolio)
+    symbols = resolve_symbols(portfolio_symbols(args.portfolio), args.symbols, args.extra_symbols)
     print(f"[log_ticks] tick capture | symbols={','.join(symbols)} "
           f"flush={args.flush_seconds:g}s -> {OUT}", flush=True)
     _lock = acquire_or_exit("log_ticks")
