@@ -21,7 +21,6 @@ import numpy as np
 import polars as pl
 
 from ..features.technicals import atr
-from ..stops import ratchet_mult
 from .metrics import summary
 
 
@@ -34,8 +33,6 @@ class BTConfig:
     sl_atr_mult: float = 0.0   # intrabar trailing disaster stop; 0 = off
     tp_atr_mult: float = 0.0   # intrabar take profit; 0 = off
     atr_window: int = 60       # ATR lookback for the stop distance
-    ratchet_trigger: float = 0.0  # arm the profit-ratchet at this many ATRs of open profit; 0 = off
-    ratchet_r: float = 0.0        # tighter chandelier mult once armed (< sl_atr_mult); 0 = off
 
 
 @dataclass
@@ -118,12 +115,8 @@ def _simulate_stops(pos, close, high, low, atr_arr, cfg):
         extreme = max(extreme, high[t]) if long else min(extreme, low[t])
         valid = atr_entry > 0 and atr_entry == atr_entry
         direction = 1.0 if long else -1.0
-        if cfg.sl_atr_mult > 0 and valid:
-            opa = abs(extreme - entry) / atr_entry
-            mult = ratchet_mult(opa, cfg.sl_atr_mult, cfg.ratchet_trigger, cfg.ratchet_r)
-            sl = extreme - direction * mult * atr_entry
-        else:
-            sl = None
+        sl = (extreme - direction * cfg.sl_atr_mult * atr_entry
+              if cfg.sl_atr_mult > 0 and valid else None)
         tp = (entry + direction * cfg.tp_atr_mult * atr_entry
               if cfg.tp_atr_mult > 0 and valid else None)
         exit_px = None
