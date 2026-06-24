@@ -194,9 +194,13 @@ class MT5Gateway:
     def _send(self, request: dict) -> None:
         result = mt5.order_send(request)
         if result is None or result.retcode != mt5.TRADE_RETCODE_DONE:
-            err = MT5Error(f"order_send failed: {getattr(result, 'retcode', None)} "
-                           f"{getattr(result, 'comment', '')} {mt5.last_error()}")
-            err.retcode = getattr(result, "retcode", None)
+            retcode = getattr(result, "retcode", None)
+            err = MT5Error(
+                f"order_send failed: retcode={retcode} "
+                f"action={request.get('action')} symbol={request.get('symbol')} "
+                f"magic={request.get('magic')} "
+                f"comment={getattr(result, 'comment', '')!r} {mt5.last_error()}")
+            err.retcode = retcode
             raise err
 
     def _min_stop_dist(self, symbol: str) -> float:

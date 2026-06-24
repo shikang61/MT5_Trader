@@ -134,3 +134,19 @@ def test_sltp_other_rejection_still_raises(monkeypatch):
     gw = _gw(monkeypatch, fake)
     with pytest.raises(MT5Error):
         gw.set_position_sltp("XAUUSD", sl=4200.0, magic=7)
+
+
+def test_send_error_message_carries_request_context(monkeypatch):
+    class RejectMT5:
+        TRADE_RETCODE_DONE = DONE
+        def order_send(self, req):
+            return types.SimpleNamespace(retcode=MARKET_CLOSED, comment="closed")
+        def last_error(self):
+            return (0, "")
+    monkeypatch.setattr(gwmod, "mt5", RejectMT5())
+    gw = MT5Gateway.__new__(MT5Gateway)
+    with pytest.raises(MT5Error) as ei:
+        gw._send({"action": 1, "symbol": "XAUUSD", "magic": 1001})
+    msg = str(ei.value)
+    assert "XAUUSD" in msg and "1001" in msg and str(MARKET_CLOSED) in msg
+    assert ei.value.retcode == MARKET_CLOSED
