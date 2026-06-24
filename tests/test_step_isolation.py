@@ -96,3 +96,9 @@ def test_step_logged_despite_failure(tmp_path):
     _runner(gw, tmp_path).step(now=NOW)
     steps = [ln for ln in (tmp_path / "p.jsonl").read_text().splitlines() if '"STEP"' in ln]
     assert len(steps) == 1
+
+
+def test_portfolio_runner_routes_gateway_events_to_log(tmp_path):
+    gw = FaultyGW(bad_symbol="NONE")           # nothing fails; we only check wiring
+    r = _runner(gw, tmp_path)
+    assert gw.on_event == r._log

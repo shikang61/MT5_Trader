@@ -334,6 +334,7 @@ class PortfolioRunner(LiveRunner):
                  cfg: RunnerCfg):
         super().__init__(gateway, books[0].strategy, risk, cfg)
         self.books = books
+        self.gw.on_event = self._log    # gateway surfaces deduped errors (e.g. swallowed invalid-stops) here
         self.symbols = sorted({s for b in books for s in (b.symbol, b.symbol_b) if s})
         self._cache = _BarCache(gateway, cfg.lookback_bars)
         self._trail: dict[str, tuple] = {}

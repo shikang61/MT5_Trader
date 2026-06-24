@@ -150,3 +150,33 @@ def test_send_error_message_carries_request_context(monkeypatch):
     msg = str(ei.value)
     assert "XAUUSD" in msg and "1001" in msg and str(MARKET_CLOSED) in msg
     assert ei.value.retcode == MARKET_CLOSED
+
+
+def test_swallowed_invalid_stops_notes_once_and_does_not_resend(monkeypatch):
+    fake = FakeMT5([Pos(1, 0.02, SELL, magic=7)], reject=INVALID_STOPS)
+    gw = _gw(monkeypatch, fake)
+    events = []
+    gw.on_event = lambda **kw: events.append(kw)
+    gw.set_position_sltp("XAUUSD", sl=4200.0, magic=7)   # fails invalid-stops, swallowed
+    gw.set_position_sltp("XAUUSD", sl=4200.0, magic=7)   # same stop -> no re-send, no re-note
+    sltp = [r for r in fake.sent if r["action"] == FakeMT5.TRADE_ACTION_SLTP]
+    assert len(sltp) == 1                 # second call did not re-send
+    assert len(events) == 1               # noted exactly once
+    assert events[0]["symbol"] == "XAUUSD" and events[0]["retcode"] == INVALID_STOPS
+
+
+def test_changed_failing_stop_notes_again(monkeypatch):
+    fake = FakeMT5([Pos(1, 0.02, SELL, magic=7)], reject=INVALID_STOPS)
+    gw = _gw(monkeypatch, fake)
+    events = []
+    gw.on_event = lambda **kw: events.append(kw)
+    gw.set_position_sltp("XAUUSD", sl=4200.0, magic=7)
+    gw.set_position_sltp("XAUUSD", sl=4250.0, magic=7)   # different stop -> note again
+    assert len(events) == 2
+
+
+def test_non_invalid_rejection_still_raises_in_sltp(monkeypatch):
+    fake = FakeMT5([Pos(1, 0.02, SELL, magic=7)], reject=MARKET_CLOSED)
+    gw = _gw(monkeypatch, fake)
+    with pytest.raises(MT5Error):
+        gw.set_position_sltp("XAUUSD", sl=4200.0, magic=7)
