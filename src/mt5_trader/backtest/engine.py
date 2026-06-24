@@ -22,6 +22,7 @@ import polars as pl
 
 from ..features.technicals import atr
 from .metrics import summary
+from ..stops import scaleout_remaining
 
 
 @dataclass
@@ -33,6 +34,8 @@ class BTConfig:
     sl_atr_mult: float = 0.0   # intrabar trailing disaster stop; 0 = off
     tp_atr_mult: float = 0.0   # intrabar take profit; 0 = off
     atr_window: int = 60       # ATR lookback for the stop distance
+    scaleout_trigger: float = 0.0  # bank a fraction once open profit hits this many ATRs; 0 = off
+    scaleout_frac: float = 0.0     # fraction of the position to close at the trigger; 0 = off
 
 
 @dataclass
@@ -63,18 +66,20 @@ def run(bars: pl.DataFrame, signal: np.ndarray, cfg: BTConfig | None = None) -> 
         if not {"high", "low"}.issubset(bars.columns):
             raise ValueError("intrabar stops need 'high' and 'low' columns")
         atr_arr = bars.select(atr(cfg.atr_window)).to_series().to_numpy().astype(float)
-        ret, extra_turn = _simulate_stops(
+        ret, extra_turn, size_mult = _simulate_stops(
             pos, close, bars["high"].to_numpy().astype(float),
             bars["low"].to_numpy().astype(float), atr_arr, cfg)
     else:
         ret = np.zeros(n)
         ret[1:] = close[1:] / close[:-1] - 1.0
         extra_turn = np.zeros(n)
+        size_mult = np.ones(n)
 
-    turnover = np.abs(np.diff(pos, prepend=0.0)) + extra_turn
+    eff_pos = pos * size_mult
+    turnover = np.abs(np.diff(eff_pos, prepend=0.0)) + extra_turn
     cost = turnover * (spread_frac / 2 + cfg.slippage_bps * 1e-4)
 
-    pnl = cfg.leverage * (pos * ret - cost)
+    pnl = cfg.leverage * (eff_pos * ret - cost)
     equity = cfg.init_equity * np.cumprod(1.0 + pnl)
 
     out = bars.with_columns(
@@ -99,6 +104,7 @@ def _simulate_stops(pos, close, high, low, atr_arr, cfg):
     n = len(close)
     ret = np.zeros(n)
     extra_turn = np.zeros(n)
+    size_mult = np.ones(n)            # scale-out: fraction of position carried each bar
     atr_entry = entry = extreme = side = 0.0
     re_anchor = True
     for t in range(1, n):
@@ -115,6 +121,9 @@ def _simulate_stops(pos, close, high, low, atr_arr, cfg):
         extreme = max(extreme, high[t]) if long else min(extreme, low[t])
         valid = atr_entry > 0 and atr_entry == atr_entry
         direction = 1.0 if long else -1.0
+        if valid:
+            opa = abs(extreme - entry) / atr_entry
+            size_mult[t] = scaleout_remaining(opa, cfg.scaleout_trigger, cfg.scaleout_frac)
         sl = (extreme - direction * cfg.sl_atr_mult * atr_entry
               if cfg.sl_atr_mult > 0 and valid else None)
         tp = (entry + direction * cfg.tp_atr_mult * atr_entry
@@ -130,4 +139,4 @@ def _simulate_stops(pos, close, high, low, atr_arr, cfg):
             re_anchor = True
         else:
             ret[t] = close[t] / prev - 1.0
-    return ret, extra_turn
+    return ret, extra_turn, size_mult
