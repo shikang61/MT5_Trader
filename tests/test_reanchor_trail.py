@@ -80,11 +80,17 @@ def test_flat_broker_reanchors_stale_trail(tmp_path):
     assert abs(sl - (PRICE + 8 * TR)) < 0.6      # ~4016
 
 
-def test_in_position_keeps_trail(tmp_path):
-    gw = FakeGW(flat=False)                      # broker still holding -> keep the trail
+def test_in_position_widens_breached_trail(tmp_path):
+    # Broker still holding, so the trail STATE is kept (extreme 3980, not reset).
+    # But that stale anchor yields a stop of 3980 + 16 = 3996 — BELOW price 4000, a
+    # breached short stop the gateway would clamp to ~spread and churn against. The
+    # runner widens the *attached* stop off the breach to price + 8*ATR (~4016) so a
+    # re-attach stays wide. (Re-anchor-on-flat alone missed this: a re-open beats the
+    # flat check, so the position reads "held" while the trail is breached.)
+    gw = FakeGW(flat=False)
     r = _runner(gw, tmp_path)
     r._trail["XAUUSD"] = (-1.0, TR, 3990.0, 3980.0)
     r.step(now=NOW)
     sl = _sl(tmp_path)
-    # held: keeps the stale anchor (extreme 3980) -> 3980 + 16 = 3996, NOT re-anchored
-    assert abs(sl - 3996.0) < 0.6
+    assert sl > PRICE                            # valid: short stop above market
+    assert abs(sl - (PRICE + 8 * TR)) < 0.6      # widened off the breach -> ~4016
