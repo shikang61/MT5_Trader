@@ -1,10 +1,19 @@
 import numpy as np
 import polars as pl
+import pytest
 
+import mt5_trader.research as research
 from mt5_trader.research import (
     SLIP_BP, aligned_fwd, cost_bp, dedupe, fwd_returns, report, sweep_events,
     verdict, _grid_1s,
 )
+
+
+@pytest.fixture(autouse=True)
+def _no_real_trial_log(monkeypatch):
+    # event-study cells log a trial by default; never write research/trials.jsonl
+    # from the test suite.
+    monkeypatch.setattr(research, "LOG_TRIALS", False)
 
 
 def test_cost_bp_bar_columns():
@@ -83,3 +92,24 @@ def test_verdict_pass_fail(capsys):
     assert "PASS" in capsys.readouterr().out
     verdict("b", 0.1, 1.0, 10, 0.4)
     assert "FAIL" in capsys.readouterr().out
+
+
+def test_report_and_verdict_log_a_trial_per_cell(monkeypatch):
+    # each event-study cell is one tested hypothesis -> one logged trial, so the
+    # multiple-testing haircut counts the real search.
+    calls = []
+    monkeypatch.setattr(research.trials, "log_trial",
+                        lambda idea, **k: calls.append((idea, k.get("verdict"))))
+    monkeypatch.setattr(research, "LOG_TRIALS", True)
+    report("london", np.array([5.0, 7.0]), hurdle=1.0)   # PASS
+    verdict("ny", 0.1, 1.0, 10, 0.4)                      # FAIL
+    assert calls == [("london", "PASS"), ("ny", "FAIL")]
+
+
+def test_no_trial_logged_when_disabled(monkeypatch):
+    calls = []
+    monkeypatch.setattr(research.trials, "log_trial", lambda *a, **k: calls.append(1))
+    monkeypatch.setattr(research, "LOG_TRIALS", False)
+    report("x", np.array([5.0]), hurdle=1.0)
+    verdict("y", 5.0, 1.0, 10, 0.6)
+    assert calls == []

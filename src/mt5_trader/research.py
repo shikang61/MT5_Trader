@@ -10,8 +10,15 @@ import numpy as np
 import polars as pl
 
 from .data.ingest import load_ticks
+from .pipeline import trials
 
 SLIP_BP = 0.5
+
+# Each report()/verdict() call scores one event-study cell = one tested
+# hypothesis. Logging it grows research/trials.jsonl so validate.py's deflated-
+# Sharpe haircut counts the REAL search (the count was stuck at 2 while ~24
+# sweep scripts bypassed the log). Tests flip this off (see test_research.py).
+LOG_TRIALS = True
 
 
 def cost_bp(df: pl.DataFrame, spread_col: str = "spread_mean",
@@ -106,6 +113,8 @@ def report(label: str, signed_fwd_bp: np.ndarray, hurdle: float) -> None:
     status = "PASS" if e.mean() > hurdle else "FAIL"
     print(f"  {label}: {status} edge {e.mean():+.2f} bp (cost {hurdle:.2f}), "
           f"n={ok.sum()}, hit {np.mean(e > 0):.1%}")
+    if LOG_TRIALS:
+        trials.log_trial(label, verdict=status)
 
 
 def verdict(name: str, edge_bp: float, hurdle_bp: float, n: int, hit: float) -> None:
@@ -113,3 +122,5 @@ def verdict(name: str, edge_bp: float, hurdle_bp: float, n: int, hit: float) -> 
     status = "PASS" if edge_bp > hurdle_bp else "FAIL"
     print(f"  -> {status}: edge {edge_bp:+.2f} bp/trade vs cost {hurdle_bp:.2f} bp "
           f"({n} events, hit {hit:.1%})\n")
+    if LOG_TRIALS:
+        trials.log_trial(name, verdict=status)
