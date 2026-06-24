@@ -16,8 +16,8 @@ from mt5_trader.strategies.meanrev_pairs import spread_bars
 
 TF_EVERY = {"M1": "1m", "M5": "5m", "M15": "15m", "H1": "1h"}
 SL_ATR_MULT, ATR_WINDOW, SLIPPAGE_BPS = 8.0, 60, 0.5
-TRIGGERS = [0.0, 1.0, 2.0, 3.0, 4.0]   # 0 = baseline (no scale-out)
-FRACS = [0.25, 0.5, 0.75]
+TRIGGERS = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0]   # 0 = baseline (no scale-out)
+FRACS = [0.25, 0.5, 0.75, 0.9]
 TREND_BOOKS = {"donchian", "vwap_trend", "london_orb"}
 
 
