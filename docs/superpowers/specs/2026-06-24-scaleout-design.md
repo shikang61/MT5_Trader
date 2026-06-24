@@ -2,6 +2,18 @@
 
 Status: design. Author: QR/QD. Date: 2026-06-24.
 
+> **OUTCOME (2026-06-24): SHELVED — washes out in the netted portfolio.**
+> Per-book sweep: vwap_trend "passed" standalone (Sh 1.84→2.37, return-flat, DD−30%)
+> but the extended grid (T→6, f→0.9) showed the optimum climbs to the corner
+> (return ABOVE baseline = few-trade overfit); only the f-driven DD cut was robust.
+> NET-level test (the book that actually trades, all books netted): baseline already
+> Sharpe 9.0 / maxDD −0.95%; net-level scale-out only hurt, and **vwap-only scale-out
+> left net maxDD UNCHANGED across all 24 cells** (vwap 0.15 wt; net DD set by donchian
+> 0.35 + net chandelier). KEY LESSON: per-book overlays don't survive netting —
+> validate on the NET book. Code (`scaleout_remaining` + engine `size_mult`) kept as
+> research tooling, default off. 6th dead protect-giveback lever — see
+> [[profit-ratchet-dead]]. Research: `scripts/research_scaleout*.py`.
+
 ## Goal
 
 Bank part of a winning trade as it runs, to lock in profit progressively without
