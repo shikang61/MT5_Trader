@@ -17,9 +17,9 @@ MT5 terminal).
 ┌──────────────▼──── Windows VPS (live) ───────┐
 │ MT5 terminal ◄── IPC ── MT5Gateway           │
 │                          └─ LiveRunner       │
-│  every M1 bar: bars → signal → RiskManager   │
-│  (vol-target + round budget + kill switch)   │
-│  → reconcile position → JSONL audit log      │
+│  every bar: bars → signal → RiskManager      │
+│  (vol-target + exposure cap + kill switch)   │
+│  → net across books → reconcile → audit log  │
 └──────────────────────────────────────────────┘
 ```
 
@@ -37,8 +37,9 @@ MT5 terminal).
   cost model, annualized metrics.
 - **Strategies** (`strategies/`): registry of interchangeable
   `signal(bars) -> positions` objects; same code path in backtest and live.
-- **Risk** (`risk/`): round-aware vol targeting and loss kill switch driven
-  by `config/risk.yaml` — tournament posture is config, not code.
+- **Risk** (`risk/`): vol targeting, net exposure cap, and a daily loss kill
+  switch driven by `config/risk.yaml` — a single standing posture (no
+  competition rounds), config not code. See `docs/POSITION_PIPELINE.md`.
 - **Live** (`live/`): thin MT5 gateway (connect, bars, reconcile-to-target,
   flatten) and a crash-tolerant runner loop with JSONL audit logging.
 
@@ -48,8 +49,8 @@ MT5 terminal).
   research and production; only the data source and the executor differ.
 - **Reconcile, don't order.** The runner computes a target position and
   trades the delta; restarts are idempotent and manual intervention is safe.
-- **Risk as config.** Round schedules, leverage caps and kill thresholds
-  live in YAML, reviewable and diffable before each round.
+- **Risk as config.** Leverage caps, vol target, and kill thresholds live in
+  YAML, reviewable and diffable — a single always-on posture.
 - **Fail-safe loop.** Exceptions are logged and the loop continues; the only
   deliberate halt is the kill switch, which flattens first.
 - **Polars + parquet** for tick-scale data (one month of tick + depth across
