@@ -21,7 +21,6 @@ import numpy as np
 import polars as pl
 
 from ..features.technicals import atr
-from ..stops import breakeven_floor
 from .metrics import summary
 
 
@@ -34,8 +33,6 @@ class BTConfig:
     sl_atr_mult: float = 0.0   # intrabar trailing disaster stop; 0 = off
     tp_atr_mult: float = 0.0   # intrabar take profit; 0 = off
     atr_window: int = 60       # ATR lookback for the stop distance
-    breakeven_trigger: float = 0.0  # arm breakeven at this many ATRs of open profit; 0 = off
-    breakeven_buffer: float = 0.0   # floor sits at entry +/- buffer*ATR (covers round-trip cost)
 
 
 @dataclass
@@ -118,13 +115,8 @@ def _simulate_stops(pos, close, high, low, atr_arr, cfg):
         extreme = max(extreme, high[t]) if long else min(extreme, low[t])
         valid = atr_entry > 0 and atr_entry == atr_entry
         direction = 1.0 if long else -1.0
-        if cfg.sl_atr_mult > 0 and valid:
-            sl = extreme - direction * cfg.sl_atr_mult * atr_entry
-            opa = abs(extreme - entry) / atr_entry
-            sl = breakeven_floor(sl, side, entry, atr_entry, opa,
-                                 cfg.breakeven_trigger, cfg.breakeven_buffer)
-        else:
-            sl = None
+        sl = (extreme - direction * cfg.sl_atr_mult * atr_entry
+              if cfg.sl_atr_mult > 0 and valid else None)
         tp = (entry + direction * cfg.tp_atr_mult * atr_entry
               if cfg.tp_atr_mult > 0 and valid else None)
         exit_px = None
