@@ -34,6 +34,13 @@ books:
   - strategy: donchian
     symbol: XAUUSD
     timeframe: M5
+    params: {exit_n: 110}   # 2026-06-24: exit_n 60->110. The default 60 is the M1 tuning
+                            # (=1h); on M5 that's 5h and whipsaws out of the slow trends. 110
+                            # (~9h) on real XAUUSD M5: ret -1.6%->+4.3%, Sharpe -0.5->+1.9,
+                            # turnover -35%, walk_forward 0.4->0.8, plateau 90-130. Passes 5/6
+                            # gates; FAILS deflated_sharpe (thin per-bar edge on a 5wk sample,
+                            # multiple-testing haircut) — adopted anyway (live 60 was negative);
+                            # re-confirm on more history. entry_n/ema_n kept at defaults.
     weight: 0.40   # most robust book (4x-cost survivor, smooth wiggle) -> anchor
                    # (trimmed 0.40->0.35 on 2026-06-18 to fund asian_sweep; RESTORED to
                    # 0.40 on 2026-06-24 when asian_sweep was reverted 0.20->0.10)
