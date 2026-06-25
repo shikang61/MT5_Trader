@@ -48,7 +48,7 @@ def build_report(day: str, equity_open: float, equity_now: float,
             best = f"best {r['best']:+.2f}" if r["best"] is not None else "best —"
             worst = f"worst {r['worst']:+.2f}" if r["worst"] is not None else "worst —"
             lines.append(
-                f"  {_short(name):<12} {r['gross_pnl']:>+9.2f}  {_winpct(r['wins'], r['trades'])}"
+                f"  {_short(name):<18} {r['gross_pnl']:>+9.2f}  {_winpct(r['wins'], r['trades'])}"
                 f"  {best}  {worst}  {r['trades']} tr")
     else:
         lines.append("  no steps today")
