@@ -1,40 +1,35 @@
 """Pure formatter for the daily Telegram performance report.
 
-Headline = broker truth (realized net + equity change). Per-strategy section =
-modeled gross attribution (pre-cost) reconstructed from the portfolio log — it
-will not exactly tie to account equity.
+Broker truth only: today's equity change + realized net P&L by magic. Sent with
+parse_mode="HTML" — bold emoji headings, one entry per line, reads cleanly in
+Telegram's proportional font (no monospace code block).
 
-Sent with parse_mode="HTML": bold emoji headings, one entry per line in a
-sentence style that reads cleanly in Telegram's proportional font (no monospace
-code block). Two separate sections by design: the broker only tags realized P&L
-by magic (all portfolio books share one magic), so a true per-strategy realized
-split does not exist.
+A per-strategy split is intentionally NOT shown: the broker lumps all portfolio
+books under one magic and nets them, so the only per-strategy view possible is a
+modeled pre-cost estimate that does not tie to real money — dropped as
+misleading.
 """
 from __future__ import annotations
 
 from mt5_trader.live.broker_pnl import MAGIC_LABELS
 
 
-def _short(book: str) -> str:
-    """'DonchianBreakout:XAUUSD@M5' -> 'DonchianBreakout'."""
-    return book.split(":", 1)[0]
+def _trades(n: int) -> str:
+    return f"{n} trade" + ("" if n == 1 else "s")
 
 
-def _detail(wins: int, n: int, best: float | None, worst: float | None,
-            show_win: bool = True) -> str:
-    """Trailing '(67% win · best +X · worst -Y)'; '' when no closed trade.
-    show_win=False drops the win rate (the by-strategy section omits it)."""
-    if not n or best is None or worst is None:
+def _detail(wins: int, n: int, best: float | None, worst: float | None) -> str:
+    """Trailing '(N trades · 67% win · best +X · worst -Y)'; '' when no trade."""
+    if not n:
         return ""
-    parts = []
-    if show_win:
-        parts.append(f"{round(wins / n * 100)}% win")
-    parts += [f"best {best:+.2f}", f"worst {worst:+.2f}"]
+    parts = [_trades(n)]
+    if best is not None and worst is not None:
+        parts += [f"{round(wins / n * 100)}% win", f"best {best:+.2f}", f"worst {worst:+.2f}"]
     return "  (" + " · ".join(parts) + ")"
 
 
 def build_report(day: str, equity_open: float, equity_now: float,
-                 deals: dict, modeled: dict, labels: dict = MAGIC_LABELS) -> str:
+                 deals: dict, labels: dict = MAGIC_LABELS) -> str:
     change = equity_now - equity_open
     out = [
         f"\U0001F7E1 <b>GOLD DESK — Today · {day} (UTC)</b>",
@@ -45,28 +40,16 @@ def build_report(day: str, equity_open: float, equity_now: float,
 
     if deals:
         total = 0.0
+        total_n = 0
         for mg in sorted(deals, key=int):
             v = deals[mg]
             total += v["net"]
+            total_n += v["n"]
             label = labels.get(int(mg), str(mg))
             out.append(f"• {label}: <b>{v['net']:+.2f}</b>"
                        f"{_detail(v['wins'], v['n'], v['best'], v['worst'])}")
-        out.append(f"• <b>Total: {total:+.2f}</b>")
+        out.append(f"• <b>Total: {total:+.2f}</b>  ({_trades(total_n)})")
     else:
-        out.append("• no broker data")
-
-    out += ["", "<b>\U0001F4C8 By strategy today — modeled, pre-cost</b>"]
-    books = {k: v for k, v in modeled.items() if k != "_account"}
-    if books:
-        active = sorted((kv for kv in books.items() if kv[1]["trades"]),
-                        key=lambda kv: -kv[1]["gross_pnl"])
-        idle = [name for name, r in books.items() if not r["trades"]]
-        for name, r in active:
-            out.append(f"• {_short(name)}: <b>{r['gross_pnl']:+.2f}</b>"
-                       f"{_detail(r['wins'], r['trades'], r['best'], r['worst'], show_win=False)}")
-        if idle:
-            out.append(f"<i>Idle: {', '.join(_short(n) for n in idle)}</i>")
-    else:
-        out.append("• no steps today")
+        out.append("• no trades closed today")
 
     return "\n".join(out)

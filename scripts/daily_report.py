@@ -74,7 +74,7 @@ def main() -> None:
     if not steps:
         equity_open = equity_now   # no STEP baseline -> show 0 change, not a full-equity jump
 
-    text = build_report(day, equity_open, equity_now, deals, modeled)
+    text = build_report(day, equity_open, equity_now, deals)
 
     if args.dry_run:
         print(text)
