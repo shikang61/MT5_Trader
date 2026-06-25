@@ -39,9 +39,15 @@ def attribute(steps: list[dict]) -> dict:
 
     def close_trade(name: str) -> None:
         if cur_sign.get(name, 0):
-            books[name]["trades"] += 1
-            if cur_pnl.get(name, 0.0) > 0:
-                books[name]["wins"] += 1
+            p = cur_pnl.get(name, 0.0)
+            b = books[name]
+            b["trades"] += 1
+            if p > 0:
+                b["wins"] += 1
+            if b["best"] is None or p > b["best"]:
+                b["best"] = p
+            if b["worst"] is None or p < b["worst"]:
+                b["worst"] = p
         cur_pnl[name] = 0.0
 
     for ev in steps:
@@ -63,7 +69,8 @@ def attribute(steps: list[dict]) -> dict:
         for info in ev["books"]:
             name = info["book"]
             books.setdefault(name, {"gross_pnl": 0.0, "turnover_lots": 0.0,
-                                    "steps": 0, "trades": 0, "wins": 0})
+                                    "steps": 0, "trades": 0, "wins": 0,
+                                    "best": None, "worst": None})
             books[name]["steps"] += 1
             new = info.get("targets", {})
             old = held.get(name, {})
