@@ -125,3 +125,55 @@ book rarely moves net DD).
 3. Stage 2 net-portfolio comparison generated.
 4. A written recommendation: does retest entry improve the net book? If not,
    stop here — do not build live machinery.
+
+## Findings
+
+### Stage 1 — standalone Donchian@M5 sweep (Task 4)
+
+| config | n_trades | n_filled | n_skipped | entry-impr (bp) | standalone Sharpe |
+|--------|----------|----------|-----------|-----------------|-------------------|
+| baseline (market) | 22 | 22 | 0 | — | 1.89 |
+| mw12 / skip | 22 | 17 | 5 | ~+11 bp | **2.51** |
+| mw24 / skip | 22 | 15 | 7 | ~+11 bp | ~2.1 |
+| mw48 / skip | 22 | 12 | 10 | ~+11 bp | <1.9 |
+| any / market_fallback | 22 | 22 | 0 | ~0/negative | diluted |
+
+Key takeaways:
+- `skip` policy with `max_wait=12` (mw12/skip) is the standalone winner: +11 bp entry improvement, Sharpe 2.51 vs baseline 1.89.
+- The entry improvement is real for filled trades, but the 5 dropped trades (the runaway breakouts that never pull back) carry significant forward PnL — they are the strong breakouts.
+- `market_fallback` dilutes the entry gain to ~0 or negative: chasing the market at timeout undoes the limit benefit.
+- As `max_wait` grows, more winners are dropped (higher `n_skipped`), and standalone Sharpe declines.
+
+### Stage 2 — net 6-book portfolio comparison (Task 5)
+
+Script: `scripts/research_donchian_retest_net.py` (mw12/skip, exit_n=110, ~5wk real feed)
+
+```
+net (donchian baseline): ret +0.0748  sharpe 7.63  maxDD -0.0210  turn 67
+net (donchian_retest)  : ret +0.0524  sharpe 5.85  maxDD -0.0221  turn 61
+```
+
+Net Sharpe **drops 7.63 → 5.85** (−23 %). Net return **drops +7.5% → +5.2%** (−30 %). Net maxDD is **marginally worse** (−0.0210 → −0.0221). Turnover falls slightly (67 → 61) due to fewer entries.
+
+### 6-gate validate_candidate (donchian_retest, mw12/skip, exit_n=110, n_trials=6)
+
+```
+  week_by_week     PASS  {'pos_frac': 0.667, 'n_weeks': 6}
+  cost_stress      PASS  {'ret_4x': 0.0511}
+  turnover         PASS  {'per_bar': 0.0046}
+  walk_forward     PASS  {'pos_frac': 0.6, 'mean_ret': 0.0112, 'folds': [0.0157, -0.0005, 0.0209, -0.0042, 0.0242]}
+  deflated_sharpe  FAIL  {'raw': 0.0078, 'deflated': -0.0143, 'n_trials': 6}
+  OVERALL: FAIL
+```
+
+`deflated_sharpe` fails as expected on a 5wk sample (documented caveat — not a blocker by itself). However, the standalone validate is beside the point: the net result is the gate that matters.
+
+### Verdict: STOP HERE — do not build live retest machinery
+
+The net portfolio test is definitive: swapping donchian → donchian_retest (best Stage-1 config, mw12/skip) **degrades** the net book on every metric that matters — return, Sharpe, and maxDD. This confirms the "inversion risk" stated in the design:
+
+> The strongest breakouts never pull back — they run. A retest filter systematically keeps the weak breakouts (that retrace) and drops the strong ones (that don't).
+
+The 5 skipped trades in Stage 1 are the strongest breakouts; removing them from the net book removes the bulk of the donchian contribution. The standalone Sharpe improvement (1.89 → 2.51) is precisely because the filtered-out trades are the loss-makers in isolation — but those same trades produce large correlated moves that anchor the net book's aggregate returns.
+
+**Action: do not build live per-book limit-order machinery for donchian retest. The edge does not survive netting.** Close branch feat/donchian-retest-entry as research-only. Revisit only if net book composition changes substantially (e.g. donchian weight reduced to the point where a single-book improvement could matter).
