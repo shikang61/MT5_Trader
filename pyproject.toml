@@ -14,6 +14,7 @@ dependencies = [
     "certifi>=2024.6",   # CA bundle for fetch_calendar TLS verify on Windows
     "tzdata>=2024.1",    # polars timezone db on Windows (no system tz database)
     "MetaTrader5>=5.0.45; sys_platform == 'win32'",
+    "optuna>=3.6",
 ]
 
 [project.optional-dependencies]

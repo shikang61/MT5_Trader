@@ -34,8 +34,8 @@ books:
   - strategy: donchian
     symbol: XAUUSD
     timeframe: M5
-    weight: 0.35   # most robust book (4x-cost survivor, smooth wiggle) -> anchor
-                   # (trimmed 0.40->0.35 in the 2026-06-18 reweight to fund diversifiers)
+    weight: 0.30   # most robust book (4x-cost survivor, smooth wiggle) -> anchor
+                   # trimmed 0.40->0.35 (2026-06-18 reweight), 0.35->0.30 (2026-06-25 fund lbma_fix)
   - strategy: vwap_trend
     symbol: XAUUSD
     timeframe: M5
@@ -80,3 +80,9 @@ books:
                              #   one in-sample month (n~25). RAISED 0.10->0.20 (2026-06-18) on full-
                              #   span Sh7.0/maxDD-1.7% DESPITE the "confirm before raising" caution —
                              #   provisional; forward-confirm on comp data, trim back if it fades.
+  - strategy: lbma_fix       # LBMA AM Fix reversal (09:30 UTC = 10:30 BST summer).
+    symbol: XAUUSD            #  Pre-fix price drifts ~11 bp lower; after the benchmark is set
+    timeframe: M5            #   it REVERSES. Enter opposite to last 60-min direction, hold 120 min.
+    weight: 0.05             #   Research (2026-06-25): Sharpe 5.82 @ 1x cost, 4.25 @ 4x; maxDD -1.13%.
+                             #   CAVEAT: only 27 AM Fix events (40 days). Start small; raise when ≥50 events.
+    params: {lookback: 12, hold: 24}  # 12×5m=60min lookback, 24×5m=120min hold

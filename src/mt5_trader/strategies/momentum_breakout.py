@@ -18,7 +18,7 @@ from .base import register
 @dataclass
 class DonchianBreakout:
     entry_n: int = 240
-    exit_n: int = 60
+    exit_n: int = 110   # grid search 2026-06-24: 110 best IS (Sh 2.10) and tied OOS (Sh 12.19); plateau 100-120
     ema_n: int = 1440
 
     name = "donchian"
