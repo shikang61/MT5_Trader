@@ -7,9 +7,9 @@ from __future__ import annotations
 from collections import defaultdict
 
 MAGIC_LABELS = {
-    1001: "portfolio (all books)",
-    2002: "pdhl passive (retired)",
-    2003: "consolidation passive",
+    1001: "Portfolio (all books)",
+    2002: "PDHL passive (retired)",
+    2003: "Passive consolidation",
 }
 
 
