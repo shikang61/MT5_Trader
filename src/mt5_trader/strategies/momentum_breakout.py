@@ -23,7 +23,7 @@ class DonchianBreakout:
 
     name = "donchian"
 
-    def signal(self, bars: pl.DataFrame) -> np.ndarray:
+    def levels(self, bars: pl.DataFrame) -> dict[str, np.ndarray]:
         df = bars.with_columns(
             entry_hi=pl.col("close").rolling_max(self.entry_n).shift(1),
             entry_lo=pl.col("close").rolling_min(self.entry_n).shift(1),
@@ -31,10 +31,15 @@ class DonchianBreakout:
             exit_lo=pl.col("close").rolling_min(self.exit_n).shift(1),
             ema=pl.col("close").ewm_mean(span=self.ema_n),
         )
-        close = df["close"].to_numpy()
-        entry_hi, entry_lo = df["entry_hi"].to_numpy(), df["entry_lo"].to_numpy()
-        exit_hi, exit_lo = df["exit_hi"].to_numpy(), df["exit_lo"].to_numpy()
-        ema = df["ema"].to_numpy()
+        return {k: df[k].to_numpy() for k in
+                ("entry_hi", "entry_lo", "exit_hi", "exit_lo", "ema")}
+
+    def signal(self, bars: pl.DataFrame) -> np.ndarray:
+        lv = self.levels(bars)
+        close = bars["close"].to_numpy()
+        entry_hi, entry_lo = lv["entry_hi"], lv["entry_lo"]
+        exit_hi, exit_lo = lv["exit_hi"], lv["exit_lo"]
+        ema = lv["ema"]
 
         pos = np.zeros(len(close))
         state = 0.0
