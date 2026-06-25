@@ -7,6 +7,7 @@
 """
 import argparse
 import os
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -48,6 +49,9 @@ def fetch_broker(day: str) -> tuple[dict, float]:
 
 
 def main() -> None:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")  # Windows console is cp1252; the report has an emoji
+
     p = argparse.ArgumentParser()
     p.add_argument("--dry-run", action="store_true", help="print the message, do not send")
     p.add_argument("--log", type=Path, default=DEFAULT_LOG)
