@@ -73,8 +73,10 @@ def main() -> None:
     args = p.parse_args()
 
     load_dotenv()
-    start, now = session_bounds()
-    day = now.strftime("%Y-%m-%d")
+    start, _ = session_bounds()
+    # the session opens 22:00 and closes ~21:00 the NEXT calendar day; name it by
+    # that close date (the conventional trading-day label).
+    day = (start + timedelta(days=1)).strftime("%Y-%m-%d")
 
     if args.no_broker:
         deals, equity = {}, 0.0
