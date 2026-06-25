@@ -120,6 +120,13 @@ So the stack survives reboots / runs unattended:
 - Re-create the **weekly calendar-fetch task** (S4U, see
   `memory/vps-runtime-setup`): after each fetch, restart the bot so blackout
   events reload.
+- Re-create the **weekday daily-report task** (`MT5 Daily Report`, S4U,
+  21:10 UTC Mon-Fri): `schtasks /create /tn "MT5 Daily Report" /tr "cmd /c cd
+  /d C:\Users\shikang\Desktop\MT5_Trader && .venv\Scripts\python.exe
+  scripts\daily_report.py >> logs\daily_report.log 2>&1" /sc WEEKLY /d
+  MON,TUE,WED,THU,FRI /st 21:10 /ru shikang /rl LIMITED /np /f`. Sends the
+  per-strategy performance summary via Telegram (`scripts/daily_report.py`);
+  needs `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` in `.env`.
 
 ---
 
