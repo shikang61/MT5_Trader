@@ -74,3 +74,19 @@ def test_chandelier_resets_on_flip_and_is_off_when_invalid():
     assert chandelier_sl(1.0, 100.0, 100.0, 100.0, 0.0, 3.0, None) == (0.0, off)
     assert chandelier_sl(1.0, 100.0, 100.0, 100.0, 2.0, 0.0, None) == (0.0, off)
     assert chandelier_sl(1.0, 100.0, 100.0, 100.0, math.nan, 3.0, None) == (0.0, off)
+
+
+def test_best_worst_trade_per_book():
+    steps = [
+        step(1000, [{"book": "A", "targets": {"X": 1.0}, "signal": 1.0}], {"X": fill(100.0)}),
+        step(1010, [{"book": "A", "targets": {"X": 1.0}, "signal": 1.0}], {"X": fill(110.0)}),  # long +10
+        step(1010, [{"book": "A", "targets": {"X": 0.0}, "signal": 0.0}], {"X": fill(110.0)}),  # flat -> close +10
+        step(1010, [{"book": "A", "targets": {"X": -1.0}, "signal": -1.0}], {"X": fill(110.0)}),# open short
+        step(1005, [{"book": "A", "targets": {"X": -1.0}, "signal": -1.0}], {"X": fill(115.0)}),# short -5
+        step(1005, [{"book": "A", "targets": {"X": 0.0}, "signal": 0.0}], {"X": fill(115.0)}),  # flat -> close -5
+    ]
+    r = attribute(steps)
+    assert r["A"]["trades"] == 2
+    assert r["A"]["wins"] == 1
+    assert r["A"]["best"] == 10.0
+    assert r["A"]["worst"] == -5.0
