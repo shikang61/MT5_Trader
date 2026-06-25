@@ -46,3 +46,14 @@ def test_empty():
 
 def test_labels_present():
     assert MAGIC_LABELS[1001] and MAGIC_LABELS[2003]
+
+
+def test_best_worst_tracked():
+    deals = [
+        Deal(1001, OUT, profit=20.0, commission=0.0, swap=0.0, symbol="XAUUSD"),   # net +20
+        Deal(1001, OUT, profit=-8.0, commission=-1.0, swap=0.0, symbol="XAUUSD"),  # net  -9
+        Deal(1001, OUT, profit=5.0, commission=0.0, swap=0.0, symbol="XAUUSD"),    # net  +5
+    ]
+    out = realized_by_magic(deals, entry_out=OUT)
+    assert out[1001]["best"] == 20.0
+    assert out[1001]["worst"] == -9.0
