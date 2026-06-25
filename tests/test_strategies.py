@@ -92,3 +92,24 @@ def test_donchian_goes_long_in_uptrend():
     sig = REGISTRY["donchian"]().signal(bars)
     assert sig[-1] == 1.0
     assert sig.min() >= 0.0  # never short an uptrend
+
+
+def test_donchian_retest_registered_and_delays_entry():
+    from mt5_trader.strategies.momentum_breakout import DonchianBreakout
+    bars = make_bars(n=4000, seed=3)
+    assert "donchian_retest" in REGISTRY
+    base = DonchianBreakout().signal(bars)
+    retest = REGISTRY["donchian_retest"]().signal(bars)
+    # exits unchanged: a held retest bar always coincides with a held baseline bar
+    held = retest != 0
+    assert held.any()                                   # non-vacuous
+    assert np.array_equal(retest[held], base[held])
+    # entry is delayed: the retest is in the market on fewer (or equal) bars
+    assert (retest != 0).sum() <= (base != 0).sum()
+
+
+def test_donchian_retest_fallback_enters_at_least_as_often():
+    bars = make_bars(n=4000, seed=3)
+    skip = REGISTRY["donchian_retest"](fallback=False).signal(bars)
+    fb = REGISTRY["donchian_retest"](fallback=True).signal(bars)
+    assert (fb != 0).sum() >= (skip != 0).sum()

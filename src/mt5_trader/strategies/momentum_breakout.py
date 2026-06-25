@@ -12,6 +12,7 @@ import numpy as np
 import polars as pl
 
 from .base import register
+from ..backtest.retest import simulate_retest_entry
 
 
 @register
@@ -58,3 +59,29 @@ class DonchianBreakout:
                 state = 0.0
             pos[t] = state
         return pos
+
+
+@register
+@dataclass
+class DonchianRetest:
+    """Donchian breakout that waits for a pullback (retest) to the broken channel
+    edge before entering, instead of buying the breakout at market. See
+    backtest/retest.py. signal() returns the delayed-entry position series; the
+    precise entry price (L) is measured by scripts/research_donchian_retest.py."""
+    entry_n: int = 240
+    exit_n: int = 60
+    ema_n: int = 1440
+    max_wait: int = 24      # M5 bars to wait for the retest (~2h)
+    fallback: bool = False  # True = market entry if no retest by max_wait; False = skip
+
+    name = "donchian_retest"
+
+    def signal(self, bars: pl.DataFrame) -> np.ndarray:
+        base = DonchianBreakout(self.entry_n, self.exit_n, self.ema_n)
+        raw = base.signal(bars)
+        lv = base.levels(bars)
+        fill = simulate_retest_entry(
+            raw, lv["entry_hi"], lv["entry_lo"],
+            bars["high"].to_numpy(), bars["low"].to_numpy(),
+            bars["close"].to_numpy(), self.max_wait, self.fallback)
+        return fill.pos
