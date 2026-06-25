@@ -20,21 +20,27 @@ def _short(book: str) -> str:
     return book.split(":", 1)[0]
 
 
-def _detail(wins: int, n: int, best: float | None, worst: float | None) -> str:
-    """Trailing '(67% win · best +X · worst -Y)'; '' when no closed trade."""
+def _detail(wins: int, n: int, best: float | None, worst: float | None,
+            show_win: bool = True) -> str:
+    """Trailing '(67% win · best +X · worst -Y)'; '' when no closed trade.
+    show_win=False drops the win rate (the by-strategy section omits it)."""
     if not n or best is None or worst is None:
         return ""
-    return f"  ({round(wins / n * 100)}% win · best {best:+.2f} · worst {worst:+.2f})"
+    parts = []
+    if show_win:
+        parts.append(f"{round(wins / n * 100)}% win")
+    parts += [f"best {best:+.2f}", f"worst {worst:+.2f}"]
+    return "  (" + " · ".join(parts) + ")"
 
 
 def build_report(day: str, equity_open: float, equity_now: float,
                  deals: dict, modeled: dict, labels: dict = MAGIC_LABELS) -> str:
     change = equity_now - equity_open
     out = [
-        f"\U0001F7E1 <b>GOLD DESK · {day}</b>",
-        f"\U0001F4BC Equity  {equity_open:,.0f} → {equity_now:,.0f}  (<b>{change:+,.2f}</b>)",
+        f"\U0001F7E1 <b>GOLD DESK — Today · {day} (UTC)</b>",
+        f"\U0001F4BC Equity  {equity_open:,.0f} → {equity_now:,.0f}  (<b>{change:+,.2f}</b> today)",
         "",
-        "<b>\U0001F4B0 Realized — broker truth (net)</b>",
+        "<b>\U0001F4B0 Realized today — broker truth (net)</b>",
     ]
 
     if deals:
@@ -49,7 +55,7 @@ def build_report(day: str, equity_open: float, equity_now: float,
     else:
         out.append("• no broker data")
 
-    out += ["", "<b>\U0001F4C8 By strategy — modeled, pre-cost</b>"]
+    out += ["", "<b>\U0001F4C8 By strategy today — modeled, pre-cost</b>"]
     books = {k: v for k, v in modeled.items() if k != "_account"}
     if books:
         active = sorted((kv for kv in books.items() if kv[1]["trades"]),
@@ -57,7 +63,7 @@ def build_report(day: str, equity_open: float, equity_now: float,
         idle = [name for name, r in books.items() if not r["trades"]]
         for name, r in active:
             out.append(f"• {_short(name)}: <b>{r['gross_pnl']:+.2f}</b>"
-                       f"{_detail(r['wins'], r['trades'], r['best'], r['worst'])}")
+                       f"{_detail(r['wins'], r['trades'], r['best'], r['worst'], show_win=False)}")
         if idle:
             out.append(f"<i>Idle: {', '.join(_short(n) for n in idle)}</i>")
     else:

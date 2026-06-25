@@ -28,6 +28,7 @@ def test_message_is_html_not_codeblock():
     assert "<b>GOLD DESK" in msg                     # bold title (parse_mode=HTML)
     assert "<pre>" not in msg                        # no blue code block
     assert not re.search(r"\dtr", msg)               # no trade-count tokens (e.g. "16tr")
+    assert "Today" in msg and "2026-06-25" in msg    # scope labelled today + date
 
 
 def test_realized_section_per_magic_with_winrate():
@@ -44,6 +45,7 @@ def test_modeled_section_is_labeled_pre_cost_and_sorted():
     assert "Donchian" in msg and "Vwap" in msg
     assert msg.index("Donchian") < msg.index("Vwap")  # sorted by gross desc
     assert "best +410.00" in msg and "worst -180.00" in msg
+    assert "62%" not in msg and "40%" not in msg     # by-strategy win rate removed (26/42, 12/30)
 
 
 def test_empty_inputs_are_explicit_not_blank():
