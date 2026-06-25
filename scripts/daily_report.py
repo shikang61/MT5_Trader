@@ -80,7 +80,7 @@ def main() -> None:
         print(text)
         return
     telegram_send.send(os.environ["TELEGRAM_BOT_TOKEN"],
-                       os.environ["TELEGRAM_CHAT_ID"], text)
+                       os.environ["TELEGRAM_CHAT_ID"], text, parse_mode="HTML")
     print("sent")
 
 

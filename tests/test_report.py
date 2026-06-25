@@ -21,12 +21,18 @@ def test_headline_has_day_equity_and_total():
     assert "-16.64" in msg                          # total realized net (sum of deal nets)
 
 
+def test_message_is_html_monospace():
+    msg = build_report("2026-06-25", 99236.0, 100025.13, DEALS, MODELED)
+    assert "<b>GOLD DESK" in msg                     # bold title (parse_mode=HTML)
+    assert "<pre>" in msg and "</pre>" in msg        # monospace body so columns align
+
+
 def test_realized_section_per_magic_with_winrate():
     msg = build_report("2026-06-25", 99236.0, 100025.13, DEALS, MODELED)
     assert "Portfolio (all books)" in msg           # label for magic 1001
     assert "Passive consolidation" in msg           # label for magic 2003
-    assert "50% W" in msg                            # 8/16
-    assert "57% W" in msg                            # 4/7 -> round(57.14)
+    assert "50%" in msg                              # 8/16
+    assert "57%" in msg                              # 4/7 -> round(57.14)
 
 
 def test_modeled_section_is_labeled_pre_cost_and_sorted():
@@ -34,7 +40,7 @@ def test_modeled_section_is_labeled_pre_cost_and_sorted():
     assert "pre-cost" in msg.lower()                 # disclaimer present
     assert "Donchian" in msg and "Vwap" in msg
     assert msg.index("Donchian") < msg.index("Vwap")  # sorted by gross desc
-    assert "best +410.00" in msg and "worst -180.00" in msg
+    assert "↑+410.00" in msg and "↓-180.00" in msg   # compact best/worst
 
 
 def test_empty_inputs_are_explicit_not_blank():
