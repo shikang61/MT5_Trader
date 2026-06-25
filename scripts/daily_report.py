@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 """Daily performance summary to Telegram. Runs ON the VPS at weekday close.
 
-    .venv\\Scripts\\python.exe scripts\\daily_report.py        # gather + send
-    uv run scripts/daily_report.py --dry-run                   # print, no send
-    uv run scripts/daily_report.py --dry-run --no-broker --log reports/vps_logs/<ts>/portfolio.jsonl
+    .venv\\Scripts\\python.exe scripts\\daily_report.py    # gather + send
+    uv run scripts/daily_report.py --dry-run               # print, no send
+    uv run scripts/daily_report.py --dry-run --no-broker   # off-VPS preview (no MT5)
+
+Window = the current gold trading session: from the most recent 22:00 UTC open
+(daily break is ~21:00-22:00 UTC) through now. Reporting at 21:10 UTC therefore
+covers exactly one session (22:00 prev day -> 21:00 today) with no gap.
 """
 import argparse
 import os
@@ -11,26 +15,37 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import yaml
 from dotenv import load_dotenv
 
-from mt5_trader.backtest.attribution import attribute, load_steps
 from mt5_trader.live import telegram_send
 from mt5_trader.live.broker_pnl import realized_by_magic
 from mt5_trader.live.report import build_report
 
-DEFAULT_LOG = Path("logs/portfolio.jsonl")
+SESSION_OPEN_HOUR = 22  # gold session opens 22:00 UTC (summer/DST; shifts to 23:00 in winter)
+PORTFOLIO_CFG = Path("config/portfolio.yaml")
 
 
-def today_utc() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+def load_weights(path: Path = PORTFOLIO_CFG) -> list[tuple[str, float]]:
+    """[(strategy, weight)] from the portfolio config, heaviest first."""
+    if not path.exists():
+        return []
+    cfg = yaml.safe_load(path.read_text()) or {}
+    pairs = [(b["strategy"], float(b.get("weight", 0.0))) for b in cfg.get("books", [])]
+    return sorted(pairs, key=lambda kv: -kv[1])
 
 
-def load_today_steps(log: Path, day: str) -> list[dict]:
-    return [s for s in load_steps(log) if s.get("ts", "")[:10] == day]
+def session_bounds(now: datetime | None = None) -> tuple[datetime, datetime]:
+    """(session_start, now) — start = the most recent 22:00 UTC at or before now."""
+    now = now or datetime.now(timezone.utc)
+    start = now.replace(hour=SESSION_OPEN_HOUR, minute=0, second=0, microsecond=0)
+    if now < start:
+        start -= timedelta(days=1)
+    return start, now
 
 
-def fetch_broker(day: str) -> tuple[dict, float]:
-    """(deals_by_magic, equity_now). MetaTrader5 imported lazily (VPS only)."""
+def fetch_broker(start: datetime) -> tuple[dict, float]:
+    """(deals_by_magic since `start`, current equity). MetaTrader5 lazy (VPS only)."""
     import MetaTrader5 as m
 
     from mt5_trader.live.mt5_gateway import MT5Gateway
@@ -40,9 +55,8 @@ def fetch_broker(day: str) -> tuple[dict, float]:
                password=os.environ["MT5_PASSWORD"],
                server=os.environ["MT5_SERVER"])
     try:
-        frm = datetime.fromisoformat(day).replace(tzinfo=timezone.utc)
         to = datetime.now(timezone.utc) + timedelta(days=1)
-        deals = realized_by_magic(m.history_deals_get(frm, to) or [], m.DEAL_ENTRY_OUT)
+        deals = realized_by_magic(m.history_deals_get(start, to) or [], m.DEAL_ENTRY_OUT)
         return deals, m.account_info().equity
     finally:
         gw.shutdown()
@@ -54,27 +68,20 @@ def main() -> None:
 
     p = argparse.ArgumentParser()
     p.add_argument("--dry-run", action="store_true", help="print the message, do not send")
-    p.add_argument("--log", type=Path, default=DEFAULT_LOG)
     p.add_argument("--no-broker", action="store_true",
-                   help="skip MT5 (modeled-only preview; for off-VPS testing)")
+                   help="skip MT5 (empty preview; for off-VPS testing)")
     args = p.parse_args()
 
     load_dotenv()
-    day = today_utc()
-    steps = load_today_steps(args.log, day) if args.log.exists() else []
-    modeled = attribute(steps) if steps else {}
-    acct = modeled.get("_account", {})
-    equity_open = acct.get("first_equity", 0.0)
+    start, now = session_bounds()
+    day = now.strftime("%Y-%m-%d")
 
     if args.no_broker:
-        deals, equity_now = {}, acct.get("last_equity", equity_open)
+        deals, equity = {}, 0.0
     else:
-        deals, equity_now = fetch_broker(day)
+        deals, equity = fetch_broker(start)
 
-    if not steps:
-        equity_open = equity_now   # no STEP baseline -> show 0 change, not a full-equity jump
-
-    text = build_report(day, equity_open, equity_now, deals)
+    text = build_report(day, equity, deals, load_weights())
 
     if args.dry_run:
         print(text)

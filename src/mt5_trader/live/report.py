@@ -1,8 +1,9 @@
-"""Pure formatter for the daily Telegram performance report.
+"""Pure formatter for the gold-desk session performance report.
 
-Broker truth only: today's equity change + realized net P&L by magic. Sent with
-parse_mode="HTML" — bold emoji headings, one entry per line, reads cleanly in
-Telegram's proportional font (no monospace code block).
+Broker truth only: current account equity + realized net P&L by magic for the
+current trading session. Sent with parse_mode="HTML" — bold emoji headings, one
+entry per line, reads cleanly in Telegram's proportional font (no monospace
+code block).
 
 A per-strategy split is intentionally NOT shown: the broker lumps all portfolio
 books under one magic and nets them, so the only per-strategy view possible is a
@@ -28,14 +29,13 @@ def _detail(wins: int, n: int, best: float | None, worst: float | None) -> str:
     return "  (" + " · ".join(parts) + ")"
 
 
-def build_report(day: str, equity_open: float, equity_now: float,
-                 deals: dict, labels: dict = MAGIC_LABELS) -> str:
-    change = equity_now - equity_open
+def build_report(day: str, equity: float, deals: dict,
+                 weights: list[tuple[str, float]] = (), labels: dict = MAGIC_LABELS) -> str:
     out = [
-        f"\U0001F7E1 <b>GOLD DESK — Today · {day} (UTC)</b>",
-        f"\U0001F4BC Equity  {equity_open:,.0f} → {equity_now:,.0f}  (<b>{change:+,.2f}</b> today)",
+        f"\U0001F7E1 <b>GOLD DESK · {day} session (UTC)</b>",
+        f"\U0001F4BC Equity: <b>{equity:,.2f}</b>",
         "",
-        "<b>\U0001F4B0 Realized today — broker truth (net)</b>",
+        "<b>\U0001F4B0 Realized this session — broker truth (net)</b>",
     ]
 
     if deals:
@@ -50,6 +50,10 @@ def build_report(day: str, equity_open: float, equity_now: float,
                        f"{_detail(v['wins'], v['n'], v['best'], v['worst'])}")
         out.append(f"• <b>Total: {total:+.2f}</b>  ({_trades(total_n)})")
     else:
-        out.append("• no trades closed today")
+        out.append("• no trades closed this session")
+
+    if weights:
+        out += ["", "<b>\U0001F4CB Live strategies — portfolio weights</b>"]
+        out += [f"• {name}: {round(w * 100)}%" for name, w in weights]
 
     return "\n".join(out)
