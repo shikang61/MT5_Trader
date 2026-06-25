@@ -73,17 +73,15 @@ def main() -> None:
     args = p.parse_args()
 
     load_dotenv()
-    start, _ = session_bounds()
-    # the session opens 22:00 and closes ~21:00 the NEXT calendar day; name it by
-    # that close date (the conventional trading-day label).
-    day = (start + timedelta(days=1)).strftime("%Y-%m-%d")
+    start, now = session_bounds()
+    window = f"{start:%Y-%m-%d %H:%M} to {now:%Y-%m-%d %H:%M} UTC"
 
     if args.no_broker:
         deals, equity = {}, 0.0
     else:
         deals, equity = fetch_broker(start)
 
-    text = build_report(day, equity, deals, load_weights())
+    text = build_report(window, equity, deals, load_weights())
 
     if args.dry_run:
         print(text)

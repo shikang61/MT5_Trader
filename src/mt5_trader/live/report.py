@@ -29,10 +29,11 @@ def _detail(wins: int, n: int, best: float | None, worst: float | None) -> str:
     return "  (" + " · ".join(parts) + ")"
 
 
-def build_report(day: str, equity: float, deals: dict,
+def build_report(window: str, equity: float, deals: dict,
                  weights: list[tuple[str, float]] = (), labels: dict = MAGIC_LABELS) -> str:
     out = [
-        f"\U0001F7E1 <b>GOLD DESK · {day} session (UTC)</b>",
+        f"\U0001F7E1 <b>GOLD DESK session</b>",
+        f"\U0001F552 {window}",
         f"\U0001F4BC Equity: <b>{equity:,.2f}</b>",
         "",
         "<b>\U0001F4B0 Realized this session — broker truth (net)</b>",
