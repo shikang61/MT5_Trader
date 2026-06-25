@@ -38,10 +38,13 @@ def fetch_broker(day: str) -> tuple[dict, float]:
     gw.connect(login=int(os.environ["MT5_LOGIN"]),
                password=os.environ["MT5_PASSWORD"],
                server=os.environ["MT5_SERVER"])
-    frm = datetime.fromisoformat(day).replace(tzinfo=timezone.utc)
-    to = datetime.now(timezone.utc) + timedelta(days=1)
-    deals = realized_by_magic(m.history_deals_get(frm, to) or [], m.DEAL_ENTRY_OUT)
-    return deals, m.account_info().equity
+    try:
+        frm = datetime.fromisoformat(day).replace(tzinfo=timezone.utc)
+        to = datetime.now(timezone.utc) + timedelta(days=1)
+        deals = realized_by_magic(m.history_deals_get(frm, to) or [], m.DEAL_ENTRY_OUT)
+        return deals, m.account_info().equity
+    finally:
+        gw.shutdown()
 
 
 def main() -> None:
