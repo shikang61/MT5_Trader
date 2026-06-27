@@ -15,6 +15,11 @@ __pycache__/
 
 # macOS
 .DS_Store
+__MACOSX/
+._*
+
+# extracted/vendored package install (not part of the repo)
+/optuna_pkg/
 
 # pipeline runtime state (research/stash.yaml is curated + committed)
 /research/verdicts.json
