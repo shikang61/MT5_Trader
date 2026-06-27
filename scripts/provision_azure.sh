@@ -16,7 +16,7 @@ SIZE="Standard_D2als_v6"     # 2 vCPU AMD / 4 GB — ~\$0.08/hr against trial cr
 IMAGE="MicrosoftWindowsServer:WindowsServer:2022-datacenter-azure-edition:latest"
 ADMIN_USER="shikang"
 
-myip() { curl -s ifconfig.me; }
+myip() { curl -s -4 ifconfig.me; }   # -4: force IPv4 (NSG rejects IPv6 /32)
 
 case "${1:-create}" in
 create)
