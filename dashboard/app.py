@@ -161,6 +161,51 @@ def view() -> None:
         st.dataframe(_pnl_style(S.attribution_table(log), ["gross_pnl"]),
                      hide_index=True, use_container_width=True)
 
+    # virtual ledger — live per-strategy P&L (gross = mark-to-market "A",
+    # net = after the book's own spread/slippage "virtual B")
+    st.subheader("virtual ledger · live (gross = if it traded alone, net = after own costs)")
+    led = S.ledger_table(log)
+    if len(led):
+        st.dataframe(_pnl_style(led, ["gross", "net"]),
+                     hide_index=True, use_container_width=True)
+    else:
+        st.caption("no ledger in the log yet (needs a STEP from the updated runner)")
+
+    # per-strategy order timeline — when each book placed what (▲ buy / ▼ sell,
+    # marker size ~ lots). Reconstructed from per-book virtual position changes.
+    st.subheader("order timeline · per strategy (▲ buy / ▼ sell · size ~ lots)")
+    orders = S.book_orders(log)
+    if len(orders):
+        books_axis = sorted(orders["book"].unique().to_list())
+        ofig = go.Figure()
+        for side, sym, col in (("BUY", "triangle-up", UP), ("SELL", "triangle-down", DOWN)):
+            d = orders.filter(pl.col("side") == side)
+            if not len(d):
+                continue
+            ofig.add_trace(go.Scatter(
+                x=d["ts"].to_list(), y=d["book"].to_list(), mode="markers", name=side,
+                marker=dict(symbol=sym, color=col, line=dict(width=0),
+                            size=(d["delta"].abs() * 18 + 9).to_list()),
+                customdata=list(zip(d["delta"].to_list(), d["price"].to_list(),
+                                    d["new_pos"].to_list(), d["symbol"].to_list())),
+                hovertemplate="%{y}<br>%{x|%m-%d %H:%M}<br>" + side +
+                              " %{customdata[0]} %{customdata[3]} @ %{customdata[1]}"
+                              "<br>pos → %{customdata[2]}<extra></extra>"))
+        ofig.update_layout(
+            height=max(220, 36 * len(books_axis) + 90),
+            margin=dict(l=0, r=0, t=6, b=0), paper_bgcolor="rgba(0,0,0,0)",
+            plot_bgcolor="rgba(0,0,0,0)", showlegend=True,
+            legend=dict(orientation="h", y=1.12, x=0, font=dict(color=MUTED)),
+            font=dict(color=MUTED, family="JetBrains Mono", size=11),
+            xaxis=dict(showgrid=True, gridcolor="#1C222B", color=MUTED),
+            yaxis=dict(categoryorder="array", categoryarray=books_axis,
+                       showgrid=True, gridcolor="#1C222B", color=MUTED))
+        st.plotly_chart(ofig, use_container_width=True, config={"displayModeBar": False})
+        st.dataframe(_pnl_style(orders.sort("ts", descending=True).head(40), ["delta"]),
+                     hide_index=True, use_container_width=True)
+    else:
+        st.caption("no orders in the log yet")
+
     # positions + signal/regime
     left, right = st.columns([3, 2])
     with left:

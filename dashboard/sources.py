@@ -89,6 +89,52 @@ def attribution_table(log_path: Path) -> pl.DataFrame:
     ]).sort("gross_pnl", descending=True)
 
 
+def ledger_table(log_path: Path) -> pl.DataFrame:
+    """Latest per-book virtual ledger from the live STEP log. Each book is scored
+    as if it traded its OWN target alone (pre-netting): gross = mark-to-market with
+    no costs ("A"); net = gross minus the spread/slippage on its own turnover
+    ("virtual B"). The last STEP carrying a ledger block is the current live state."""
+    last = None
+    for ev in _steps(log_path):
+        if ev.get("ledger"):
+            last = ev["ledger"]
+    if not last:
+        return pl.DataFrame()
+    rows = [{"book": r["book"],
+             "pos": ", ".join(f"{s}:{l:g}" for s, l in r.get("pos", {}).items()) or "flat",
+             "gross": r["gross"], "cost": r["cost"], "net": r["net"]}
+            for r in last]
+    return pl.DataFrame(rows).sort("net", descending=True)
+
+
+def book_orders(log_path: Path) -> pl.DataFrame:
+    """Per-strategy order events reconstructed from the STEP log. An "order" is a
+    change in a book's own virtual position between two steps (the broker only
+    sees the net, but each book's intent is logged in its ledger pos). Returns
+    ts, book, symbol, delta (signed lots), side, new_pos, price — one row per
+    order, oldest first."""
+    prev: dict[str, dict[str, float]] = {}
+    rows = []
+    for ev in _steps(log_path):
+        price_of = {s: f.get("price") for s, f in ev.get("fills", {}).items()}
+        for r in ev.get("ledger", []):
+            book, pos = r["book"], r.get("pos", {})
+            old = prev.get(book, {})
+            for s in set(pos) | set(old):
+                d = pos.get(s, 0.0) - old.get(s, 0.0)
+                if abs(d) > 1e-9:
+                    rows.append({"ts": ev["ts"], "book": book, "symbol": s,
+                                 "delta": round(d, 4),
+                                 "side": "BUY" if d > 0 else "SELL",
+                                 "new_pos": round(pos.get(s, 0.0), 4),
+                                 "price": price_of.get(s)})
+            prev[book] = dict(pos)
+    if not rows:
+        return pl.DataFrame()
+    return pl.DataFrame(rows).with_columns(
+        pl.col("ts").str.to_datetime(time_unit="us", time_zone="UTC"))
+
+
 def latest_signals(log_path: Path) -> pl.DataFrame:
     steps = list(_steps(log_path))
     if not steps:
@@ -124,7 +170,7 @@ def fill_quality(log_path: Path, probe_bars: dict,
     """Per book: does the live decision match the completed-bar backtest signal?
     After the forming-bar fix this should sit near 100%."""
     import yaml
-    cfg = yaml.safe_load(open(cfg_path))
+    cfg = yaml.safe_load(open(cfg_path, encoding="utf-8"))
     live: dict[str, dict[str, float]] = {}
     for ev in _steps(log_path):
         for b in ev.get("books", []):

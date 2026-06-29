@@ -15,6 +15,7 @@ from pathlib import Path
 from ..backtest.engine import BTConfig
 from ..features.technicals import atr, realized_vol
 from ..risk.manager import RiskManager
+from .ledger import BookLedger
 from .mt5_gateway import MT5Error, MT5Gateway
 
 TF_MINUTES = {"M1": 1, "M5": 5, "M15": 15, "H1": 60}
@@ -36,6 +37,9 @@ class RunnerCfg:
     exposure_cap: float = 0.0  # cap |net directional exposure| as a leverage
                                # multiple of equity (lots*contract*price/equity);
                                # 0 = off. PortfolioRunner only.
+    slippage_bps: float = 0.5  # per-book virtual ledger only: spread/2 + this many
+                               # bps is charged on each book's own turnover to model
+                               # what it would net trading independently ("virtual B").
     log_path: Path = Path("logs/live.jsonl")
     reopen_guard: tuple[str, str] | None = ("21:58", "22:03")  # detach the broker
                                # disaster stop across this UTC window (HH:MM) so the
@@ -355,6 +359,7 @@ class PortfolioRunner(LiveRunner):
         self.gw.on_event = self._log    # gateway surfaces deduped errors (e.g. swallowed invalid-stops) here
         self.symbols = sorted({s for b in books for s in (b.symbol, b.symbol_b) if s})
         self._cache = _BarCache(gateway, cfg.lookback_bars)
+        self._ledger = BookLedger(slippage_bps=cfg.slippage_bps)  # per-book virtual P&L
         self._trail: dict[str, tuple] = {}
         # Net position spans every book on a symbol, so size its disaster stop
         # on the COARSEST timeframe any of those books trade — wide enough that
@@ -391,6 +396,7 @@ class PortfolioRunner(LiveRunner):
             return  # no book saw a new bar
 
         fills = {}
+        marks: dict[str, dict] = {}  # per-symbol price/contract/spread for the virtual ledger
         for sym, lots in net.items():
             bars = self._cache(sym, self._stop_tf[sym])  # stop ATR on coarsest book TF
             halt = self.risk.vol_halt(bars)
@@ -398,6 +404,8 @@ class PortfolioRunner(LiveRunner):
                 lots = 0.0  # fast vol circuit breaker -> force flat this symbol
             price = float(bars["close"][-1])
             contract = self._cache.spec(sym)["contract_size"]
+            spread = float(bars["spread_mean"][-1] or 0.0)
+            marks[sym] = {"price": price, "contract": contract, "spread": spread}
             lots, capped = cap_lots(lots, contract, price, equity, self.cfg.exposure_cap)
             high, low = float(bars["high"][-1]), float(bars["low"][-1])
             atr_val = float(bars.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
@@ -432,10 +440,11 @@ class PortfolioRunner(LiveRunner):
                 traded, err = 0.0, repr(e)
             fills[sym] = {"target_lots": lots, "sl": sl, "tp": tp,
                           "price": price, "vol_halt": halt, "cap": capped,
-                          "contract_size": contract, "traded_lots": traded,
-                          "error": err}
+                          "contract_size": contract, "spread": spread,
+                          "traded_lots": traded, "error": err}
 
-        self._log(event="STEP", equity=equity, books=infos, fills=fills)
+        ledger = self._ledger.update(infos, marks)  # per-book virtual gross/net P&L
+        self._log(event="STEP", equity=equity, books=infos, fills=fills, ledger=ledger)
 
     def run(self) -> None:
         self._log(event="START", books=[b._name() for b in self.books],

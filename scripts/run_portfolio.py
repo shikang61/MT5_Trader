@@ -87,6 +87,7 @@ def main():
                           tp_atr_mult=float(cfg.get("tp_atr_mult", 0.0)),
                           magic=cfg.get("magic"),
                           exposure_cap=float(cfg.get("exposure_cap", 0.0)),
+                          slippage_bps=float(cfg.get("slippage_bps", 0.5)),
                           log_path=Path(f"logs/{args.name}.jsonl")),
         )
         runner.run()
