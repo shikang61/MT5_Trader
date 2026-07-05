@@ -65,7 +65,8 @@ books:
   - strategy: sweep_fade
     symbol: XAUUSD
     timeframe: M1
-    weight: 0.10   # clean low-DD diversifier; raised 0.05->0.15 (2026-06-18), trimmed 0.15->0.10 (2026-06-27 fund lbma_fix). Week-by-week the
+    weight: 0.15   # clean low-DD diversifier; raised 0.05->0.15 (2026-06-18), trimmed 0.15->0.10
+                   # (2026-06-27 fund lbma_fix), RESTORED 0.15 (2026-07-06 lbma_fix cut). Week-by-week the
                    # SMOOTHEST book (+0.34,-0.23,+0.28,+0.03,+0.47; 4/6, maxDD -0.39%) — the most
                    # robust diversifier, weighted up over ratio_mr's single-week edge.
   - strategy: ratio_mr        # XAU traded off the gold/silver ratio z-score, XAU-ONLY.
@@ -73,7 +74,8 @@ books:
     symbol2: XAGUSD          #  XAG leg was dead weight (wide spread, no edge): on May12-Jun11
     beta: 1.0                #  pair +1.2%/Sh1.1 vs XAU-only +4.4%/Sh3.8 (4/5 wks +, cost-robust).
     timeframe: M5            #  regime gate ON as a DRAWDOWN lever: in-sample it costs return
-    weight: 0.05             #  0.10->0.05 (2026-06-27 fund lbma_fix). (gated +2.3% < raw +4.4%) but cuts maxDD both windows (in-sample
+    weight: 0.10             #  0.10->0.05 (2026-06-27 fund lbma_fix), RESTORED 0.10 (2026-07-06
+                             #  lbma_fix cut). (gated +2.3% < raw +4.4%) but cuts maxDD both windows (in-sample
     trade_symbol2: false     #  -.039->-.034; OOS Jun12-16 -.0148->-.0059, cost-robust). Small
     params: {z_n: 288, regime_filter: true, z_stop: 3.0}   # samples (OOS=3 trades) — revisit at >=20 OOS trades.
                               # z_stop=3.0: bail when |z| climbs past 3 (1.0 beyond the z=2 entry) —
@@ -93,8 +95,12 @@ books:
   - strategy: lbma_fix       # LBMA AM Fix reversal (09:30 UTC = 10:30 BST summer).
     symbol: XAUUSD            #  Pre-fix price drifts ~11 bp lower; after the benchmark is set
     timeframe: M5            #   it REVERSES. Enter opposite to last 60-min direction, hold 120 min.
-    weight: 0.15             #   Research (2026-06-25): Sharpe 5.82 @ 1x cost, 4.25 @ 4x; maxDD -1.13%.
+    weight: 0.05             #   Research (2026-06-25): Sharpe 5.82 @ 1x cost, 4.25 @ 4x; maxDD -1.13%.
                              #   CAVEAT: only 27 AM Fix events (40 days). Branch shipped 0.05 ("start
-                             #   small"); set to 0.15 on 2026-06-27 per user — funded by trimming
-                             #   vwap_trend/sweep_fade/ratio_mr 0.05 each. Revisit when >=50 events.
+                             #   small"); raised to 0.15 on 2026-06-27, CUT back to 0.05 on 2026-07-06:
+                             #   OOS (Jun22-Jul3, 10 events) -1.5%, Sharpe -8.66, 7/10 events negative;
+                             #   net-book weight sweep monotone worse per 0.05 of weight OOS. Kept at
+                             #   0.05 (not 0) to keep tracking cheaply; DROP if still negative at ~20
+                             #   OOS events. Freed 0.10 restored to sweep_fade/ratio_mr (their pre-
+                             #   Jun27 levels); vwap_trend stays trimmed (laggard).
     params: {lookback: 12, hold: 24}  # 12×5m=60min lookback, 24×5m=120min hold
