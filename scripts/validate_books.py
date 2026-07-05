@@ -31,6 +31,7 @@ WIGGLE = {
     "london_orb": ("flat_hour", [14, 16, 18]),
     "sweep_fade": ("quiet_bars", [45, 60, 75]),
     "asian_sweep": ("hold_bars", [45, 60, 75]),
+    "lbma_fix": ("lookback", [9, 12, 15]),
 }
 
 _cache: dict[str, pl.DataFrame] = {}

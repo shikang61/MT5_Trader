@@ -12,8 +12,9 @@ Best config on the research window: lookback=12 (60 min), hold=24 (120 min).
   Sharpe 5.82 @ 1x cost (0.5 bp), 4.25 @ 4x cost. Max DD -1.13%.
   27 AM Fix events over 40 days — small sample; start at a low portfolio weight.
 
-Defaults assume 5-minute bars and summer (BST) UTC offset.
-For winter (GMT), set am_hour=10, am_min=30.
+The fix is set on the LONDON clock (10:30 Europe/London), so the bar is matched
+in that timezone — the UTC time shifts with BST/GMT automatically.
+Defaults assume 5-minute bars.
 """
 from __future__ import annotations
 
@@ -28,8 +29,8 @@ from .base import register
 @register
 @dataclass
 class LbmaFixReversal:
-    am_hour: int = 9     # UTC hour of AM Fix  (09:30 UTC = 10:30 BST summer)
-    am_min: int = 30     # UTC minute of AM Fix
+    am_hour: int = 10    # AM Fix hour, LONDON local (10:30 Europe/London)
+    am_min: int = 30     # AM Fix minute, LONDON local
     lookback: int = 12   # bars to look back for pre-fix direction (12 × 5m = 60 min)
     hold: int = 24       # bars to hold after fix (24 × 5m = 120 min)
 
@@ -37,8 +38,12 @@ class LbmaFixReversal:
 
     def signal(self, bars: pl.DataFrame) -> np.ndarray:
         close = bars["close"].to_numpy()
-        hour  = bars["ts"].dt.hour().to_numpy()
-        minute = bars["ts"].dt.minute().to_numpy()
+        ts = bars["ts"]
+        if ts.dtype.time_zone is None:   # tz-naive bars are UTC by convention
+            ts = ts.dt.replace_time_zone("UTC")
+        ldn = ts.dt.convert_time_zone("Europe/London")
+        hour  = ldn.dt.hour().to_numpy()
+        minute = ldn.dt.minute().to_numpy()
         n = len(close)
 
         pos = np.zeros(n)
