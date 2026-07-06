@@ -41,18 +41,24 @@ books:
                             # gates; FAILS deflated_sharpe (thin per-bar edge on a 5wk sample,
                             # multiple-testing haircut) — adopted anyway (live 60 was negative);
                             # re-confirm on more history. entry_n/ema_n kept at defaults.
-    weight: 0.40   # most robust book (4x-cost survivor, smooth wiggle) -> anchor
+    weight: 0.55   # most robust book (4x-cost survivor, smooth wiggle) -> anchor
                    # (trimmed 0.40->0.35 on 2026-06-18 to fund asian_sweep; RESTORED to
                    # 0.40 on 2026-06-24 when asian_sweep was reverted 0.20->0.10)
+                   # RAISED 0.40->0.55 (2026-07-06): broker attribution Jun25-Jul6 showed
+                   # Donchian is the ONLY book with a real cost-surviving edge (full-span
+                   # gross +$1,926; every other book negative gross). Absorbs the 0.15
+                   # freed by zeroing london_orb+lbma_fix and reverting vwap_trend.
   - strategy: vwap_trend
     symbol: XAUUSD
     timeframe: M5
-    weight: 0.15   # trimmed 0.30->0.15 (2026-06-18), 0.15->0.10 (2026-06-27 fund lbma_fix): full-span backtest incl
+    weight: 0.10   # trimmed 0.30->0.15 (2026-06-18), 0.15->0.10 (2026-06-27 fund lbma_fix): full-span backtest incl
                    # Jun16-18 OOS = -0.50%@2bp, Sharpe 0.31 — the overweighted laggard.
                    # Kept >0 (not cut) as trend-MONTH tail-hedge: edge ~ one trend week,
                    # and the Jun16-18 reversing/chop tape punishes it specifically.
                    # RAISED 0.10->0.15 (2026-07-06, funded by london_orb trim): only minor
                    # book OOS-positive Jun22-Jul5 (+1.0%, Sh 2.5) — tail-hedge thesis paid.
+                   # REVERTED 0.15->0.10 (2026-07-06, same day): broker realized Jun25-Jul6
+                   # was -$171 (LIVE, not the +1.0% backtest) — the raise funded a bleeder.
     params: {regime_filter: true, regime_coarsen: 4}
     # Intraday TREND gate (eff-ratio): plain was -2.7%/Sh-1.4/DD-6.96% on the real
     # feed (May11-Jun10); gated c=4 +1.1%/Sh2.2/DD-2.18%, +ve under 4x cost. coarsen
@@ -61,12 +67,14 @@ books:
   - strategy: london_orb
     symbol: XAUUSD
     timeframe: M1
-    weight: 0.05   # weak link: param cliff (flat_hour=14 -> -3%), barely survives 4x cost;
+    weight: 0.0    # weak link: param cliff (flat_hour=14 -> -3%), barely survives 4x cost;
                    # trimmed 0.10->0.05 (lost -$19.79 live 2026-06-16) to fund asian_sweep;
                    # RESTORED to 0.10 on 2026-06-24 when asian_sweep was reverted.
                    # TRIMMED 0.10->0.05 (2026-07-06): OOS Jun22-Jul5 negative on BOTH lenses —
                    # standalone -2.3%/Sh -3.6 AND net-marginal monotone (w=0 lifts OOS Sh
                    # 2.05->3.35). Freed 0.05 -> vwap_trend. DROP if still negative next review.
+                   # DROPPED 0.05->0 (2026-07-06): broker realized Jun25-Jul6 -$577, the single
+                   # biggest loser (>half the -$1,054 portfolio loss). High-churn M1 book. OFF.
   - strategy: sweep_fade
     symbol: XAUUSD
     timeframe: M1
@@ -100,7 +108,7 @@ books:
   - strategy: lbma_fix       # LBMA AM Fix reversal (09:30 UTC = 10:30 BST summer).
     symbol: XAUUSD            #  Pre-fix price drifts ~11 bp lower; after the benchmark is set
     timeframe: M5            #   it REVERSES. Enter opposite to last 60-min direction, hold 120 min.
-    weight: 0.05             #   Research (2026-06-25): Sharpe 5.82 @ 1x cost, 4.25 @ 4x; maxDD -1.13%.
+    weight: 0.0              #   Research (2026-06-25): Sharpe 5.82 @ 1x cost, 4.25 @ 4x; maxDD -1.13%.
                              #   CAVEAT: only 27 AM Fix events (40 days). Branch shipped 0.05 ("start
                              #   small"); raised to 0.15 on 2026-06-27, CUT back to 0.05 on 2026-07-06:
                              #   OOS (Jun22-Jul3, 10 events) -1.5%, Sharpe -8.66, 7/10 events negative;
@@ -108,4 +116,6 @@ books:
                              #   0.05 (not 0) to keep tracking cheaply; DROP if still negative at ~20
                              #   OOS events. Freed 0.10 restored to sweep_fade/ratio_mr (their pre-
                              #   Jun27 levels); vwap_trend stays trimmed (laggard).
+                             #   DROPPED 0.05->0 (2026-07-06): broker realized Jun25-Jul6 -$102, OOS
+                             #   thesis kept failing live. Stop paying spread to track a loser. OFF.
     params: {lookback: 12, hold: 24}  # 12×5m=60min lookback, 24×5m=120min hold
