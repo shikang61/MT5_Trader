@@ -22,8 +22,8 @@ sl_atr_mult: 8.0      # Disaster stop on the NET position (chandelier trail).
                       # BOTH return and DD, full-month AND OOS — 8x: +2.6%/DD-3.6%
                       # (OOS +2.6%/DD-2.0%) vs off -1.7%/DD-7.1%. vwap/sweep never
                       # fire; others neutral. ~1 month, donchian-dominated — provisional
-                      # 2026-06-18. 0 = off. NOTE: reconcile only attaches SL on a
-                      # trade — held-position trailing fix pending.
+                      # 2026-06-18. 0 = off. reconcile keeps the stop attached and
+                      # trailed on held positions too (no-trade cycles included).
 tp_atr_mult: 0.0      # broker-side take profit (0 = off; strategy exits first)
 exposure_cap: 0.5     # cap |net directional exposure| per symbol as a leverage
                       # multiple of equity (net_lots*contract*price/equity). Bounds

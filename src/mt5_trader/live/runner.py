@@ -223,12 +223,23 @@ class LiveRunner:
 
         atr_val = float(closed.select(atr(self.cfg.atr_window)).to_series()[-1] or 0.0)
         high, low = float(closed["high"][-1]), float(closed["low"][-1])
+        # Broker-side flat (disaster stop fired) -> drop the stale trail so the
+        # re-entry re-anchors at the current price, and re-anchor a breached stop
+        # wide. Mirrors PortfolioRunner.step (churn observed live 2026-06-24).
+        if abs(self.gw.position_lots(self.cfg.symbol, self.cfg.magic)) < 1e-9:
+            self._trail = None
         sl, self._trail = chandelier_sl(target_lots, price, high, low, atr_val,
                                         self.cfg.sl_atr_mult,
                                         getattr(self, "_trail", None))
+        sl = widen_breached_stop(target_lots, sl, price, atr_val, self.cfg.sl_atr_mult)
         _, atr_entry, entry_price, _ = self._trail
         _, tp = protective_levels(target_lots, entry_price, atr_entry,
                                   0.0, self.cfg.tp_atr_mult)
+        if in_reopen_guard(now, self.cfg.reopen_guard):
+            # Detach the broker stop across the 22:00 reopen blowout (see
+            # PortfolioRunner.step); _trail keeps tracking the extreme.
+            sl = 0.0
+            self.gw.set_position_sltp(self.cfg.symbol, 0.0, tp, magic=self.cfg.magic)
         delta = self.gw.reconcile(self.cfg.symbol, target_lots, sl=sl, tp=tp,
                                   magic=self.cfg.magic)
 
