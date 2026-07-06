@@ -6,20 +6,23 @@ problem (unlike a bare PID file).
 
     _lock = acquire_or_exit("portfolio")   # keep _lock alive for the run
 
+A busy lock is retried for `wait_s` before giving up: a supervisor restart
+(Stop+Start-ScheduledTask) races the old process's asynchronous death, and
+without the grace window the fresh instance exits on the dying holder's lock
+(observed live 2026-07-06 — portfolio loop silently down until manual restart).
+
 Cross-platform: fcntl.flock on POSIX, msvcrt.locking on Windows (the VPS).
 """
 from __future__ import annotations
 
 import os
 import sys
+import time
 from pathlib import Path
 
 
-def acquire_or_exit(name: str, lock_dir: str | Path = "logs"):
-    """Take the named lock or exit(1) if another holder is alive. Returns the
-    open file handle — the CALLER MUST keep it referenced for the lock to hold."""
-    Path(lock_dir).mkdir(parents=True, exist_ok=True)
-    path = Path(lock_dir) / f".{name}.lock"
+def _try_lock(path: Path):
+    """One non-blocking lock attempt. Returns the held handle or None."""
     handle = open(path, "w")
     try:
         if os.name == "nt":
@@ -28,10 +31,27 @@ def acquire_or_exit(name: str, lock_dir: str | Path = "logs"):
         else:
             import fcntl
             fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return handle
     except OSError:
         handle.close()
-        sys.exit(f"[single_instance] another '{name}' is already running "
-                 f"({path} is locked) — refusing to double-launch.")
-    handle.write(str(os.getpid()))
-    handle.flush()
-    return handle
+        return None
+
+
+def acquire_or_exit(name: str, lock_dir: str | Path = "logs",
+                    wait_s: float = 15.0, poll_s: float = 0.5):
+    """Take the named lock, retrying for `wait_s`, or exit(1) if another holder
+    is still alive after that. Returns the open file handle — the CALLER MUST
+    keep it referenced for the lock to hold."""
+    Path(lock_dir).mkdir(parents=True, exist_ok=True)
+    path = Path(lock_dir) / f".{name}.lock"
+    deadline = time.monotonic() + wait_s
+    while True:
+        handle = _try_lock(path)
+        if handle is not None:
+            handle.write(str(os.getpid()))
+            handle.flush()
+            return handle
+        if time.monotonic() >= deadline:
+            sys.exit(f"[single_instance] another '{name}' is already running "
+                     f"({path} is locked) — refusing to double-launch.")
+        time.sleep(poll_s)
