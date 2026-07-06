@@ -127,6 +127,13 @@ So the stack survives reboots / runs unattended:
   MON,TUE,WED,THU,FRI /st 21:10 /ru shikang /rl LIMITED /np /f`. Sends the
   per-strategy performance summary via Telegram (`scripts/daily_report.py`);
   needs `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` in `.env`.
+- Re-create the **watchdog task** (`MT5 Watchdog`, S4U, every 5 min): runs
+  `scripts\vps_watchdog.py >> logs\watchdog.log` from the repo dir — pages
+  Telegram when a runner log goes stale (loop dead) or logs ERROR/KILL_SWITCH
+  events; all-clear on recovery. Register via PowerShell
+  `Register-ScheduledTask` with a `-Once` trigger repeating every 5 min,
+  principal S4U (setx `TELEGRAM_*` vars are visible to S4U — verified
+  2026-07-06; plain `cmd` paths must use backslashes).
 
 ---
 
