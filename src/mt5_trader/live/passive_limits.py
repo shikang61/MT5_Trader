@@ -104,11 +104,13 @@ class PassiveCfg:
                                # is the shared-equity bound (remedy C) — caps how far
                                # the experiment's P&L can move the account equity the
                                # portfolio kill switch / vol sizing sees. ~0.2x lev.
-    tp_bp: float = 20.0        # closer target (capture the typical ~15bp reversion) +
-    sl_bp: float = 25.0        # WIDER stop = survive the noise-tail before the level reverts.
-                               # TP/SL sweep (2026-06-18, live 8h/8h gate): tp20/sl25 = +7.5bp
-                               # /73% win, beats the old tp30/sl15 (+3.8/55%). Fades want a wide
-                               # stop + close target, not 1:2. n~22, one regime — provisional.
+    tp_bp: float = 37.5        # 1.5:1 reward:risk per user 2026-07-06 (was tp20/sl25 = 0.8:1).
+    sl_bp: float = 25.0        # CAUTION: the 2026-06-18 TP/SL sweep (live 8h/8h gate) picked
+                               # tp20/sl25 = +7.5bp/73% win over the old tp30/sl15 (+3.8/55%) —
+                               # "fades want a wide stop + close target" (n~22, one regime,
+                               # provisional). A 37.5bp target is beyond the typical ~15bp
+                               # reversion, so many fills will hit the 30-min time exit before
+                               # TP; judge by realized broker P&L, revert if win% collapses.
     breakout_bp: float = 15.0  # band-break cancel margin for _broke_out, DECOUPLED from the
                                # position stop (sl_bp): keep the gate's cancel tight even with a
                                # wide stop, else a wide sl would hold limits into breakouts.
