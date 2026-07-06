@@ -47,10 +47,12 @@ books:
   - strategy: vwap_trend
     symbol: XAUUSD
     timeframe: M5
-    weight: 0.10   # trimmed 0.30->0.15 (2026-06-18), 0.15->0.10 (2026-06-27 fund lbma_fix): full-span backtest incl
+    weight: 0.15   # trimmed 0.30->0.15 (2026-06-18), 0.15->0.10 (2026-06-27 fund lbma_fix): full-span backtest incl
                    # Jun16-18 OOS = -0.50%@2bp, Sharpe 0.31 — the overweighted laggard.
                    # Kept >0 (not cut) as trend-MONTH tail-hedge: edge ~ one trend week,
                    # and the Jun16-18 reversing/chop tape punishes it specifically.
+                   # RAISED 0.10->0.15 (2026-07-06, funded by london_orb trim): only minor
+                   # book OOS-positive Jun22-Jul5 (+1.0%, Sh 2.5) — tail-hedge thesis paid.
     params: {regime_filter: true, regime_coarsen: 4}
     # Intraday TREND gate (eff-ratio): plain was -2.7%/Sh-1.4/DD-6.96% on the real
     # feed (May11-Jun10); gated c=4 +1.1%/Sh2.2/DD-2.18%, +ve under 4x cost. coarsen
@@ -59,9 +61,12 @@ books:
   - strategy: london_orb
     symbol: XAUUSD
     timeframe: M1
-    weight: 0.10   # weak link: param cliff (flat_hour=14 -> -3%), barely survives 4x cost;
+    weight: 0.05   # weak link: param cliff (flat_hour=14 -> -3%), barely survives 4x cost;
                    # trimmed 0.10->0.05 (lost -$19.79 live 2026-06-16) to fund asian_sweep;
-                   # RESTORED to 0.10 on 2026-06-24 when asian_sweep was reverted
+                   # RESTORED to 0.10 on 2026-06-24 when asian_sweep was reverted.
+                   # TRIMMED 0.10->0.05 (2026-07-06): OOS Jun22-Jul5 negative on BOTH lenses —
+                   # standalone -2.3%/Sh -3.6 AND net-marginal monotone (w=0 lifts OOS Sh
+                   # 2.05->3.35). Freed 0.05 -> vwap_trend. DROP if still negative next review.
   - strategy: sweep_fade
     symbol: XAUUSD
     timeframe: M1
