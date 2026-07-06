@@ -5,12 +5,18 @@
 #   auto-resumes the next UTC day (the loop keeps running — a kill is not a process exit).
 # give_back = daily trailing kill: flatten if equity falls this fraction from the
 #   day's PEAK (protects an intraday gain; 0 = off).
+# account_dd_halt = STICKY halt on drawdown from the ALL-TIME equity peak (slow
+#   multi-day bleed the daily kill never trips on). Peak persists across restarts
+#   in logs/risk_state.json; a trip does NOT auto-resume — review, then delete the
+#   state file (or set its "halted" to false) to trade again. 0 = off.
+#   Suggested when going real-money: 0.10.
 
 posture:
   max_leverage: 2
   target_vol:   0.30   # gold runs ~0.40 ann vol -> lev ~0.75
   loss_limit:   0.04   # 4% daily kill, auto-resume next UTC day
   give_back:    0.0    # trailing daily kill off
+  account_dd_halt: 0.0 # all-time-peak DD halt off (demo); enable ~0.10 for real money
 
 # Economic-calendar event mute (defensive overlay). Forces flat from before_min
 # before to after_min after any matching event. OFF until a calendar file is
