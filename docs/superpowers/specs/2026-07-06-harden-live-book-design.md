@@ -28,13 +28,14 @@ evidence comments in `portfolio.yaml` (existing convention).
 
 ## Workstream A — cost-first surgery
 
-**A1. Rebalance deadband sweep.** The runner reconciles to target every cycle;
-small vol-driven target drift causes fractional re-trades that pay spread for
-nothing. First confirm what deadband logic already shipped (Jun 24 deadband
-plan); then sweep the band (e.g. skip trades where |Δlots| < x% of target, x ∈
-{0, 5, 10, 20, 30, 50}) by replaying the live-period targets, measuring cost
-saved vs tracking error. **Deliverable:** cost-saved vs tracking-error curve +
-recommended band.
+**A1. Rebalance deadband sweep — RESOLVED AT DESIGN TIME, dropped.** The Jun 24
+deadband plan already built and evaluated exactly this and dropped it at its
+decision gate: discrete {−1,0,1} book signals make a signal deadband a no-op,
+measured real spread cost is ~$31/week, and the large modeled-gross-vs-equity
+gap is an **attribution artifact, not cost** (see plan
+`2026-06-24-deadband-and-error-context.md`, OUTCOME note). Consistent with the
+Jun 25 – Jul 6 window, where the gap was only +$80 — the bleed was signal
+losses, not churn. **Consequence: Workstream B is the highest-value item.**
 
 **A2. Timeframe sweep for surviving M1 books.** Run `sweep_fade` and
 `asian_sweep` at M1 vs M5 (identical logic) on the dump + OOS window — the
