@@ -75,3 +75,32 @@ geometry comparison; revert recommendation if the new setting is worse.
 
 New instruments, new signal families, multi-month backfill, cash-account
 transition work. Workstreams are independent; any can ship alone.
+
+---
+
+## OUTCOMES (2026-07-07)
+
+All workstreams ran on BOTH feeds; verdicts issued on the real broker feed
+(data/real + data/ticks, ~0.27bp spread, live ticks synced through Jul 6 23:00
+UTC) with Dukascopy (~1.46bp) as the cost-conservative check. Full agent
+reports in the session; summary:
+
+| Item | Verdict | Evidence |
+|---|---|---|
+| A1 deadband | **DROPPED at design time** | Already researched & rejected Jun 24; bleed was signal losses, not churn (Jun 25–Jul 6 attribution gap only +$80) |
+| A2 sweep_fade timeframe | **KEEP M1** | M5 fails gates 1+4 both feeds; M15 dead. M1 survives 4× on real feed (IS +0.75%) |
+| A2 asian_sweep timeframe | **KEEP M1** | M5 fails gates 1,3,4. asian_sweep@M1 = only 4×-cost survivor full-span in the whole matrix (+1.27% real). Donchian's M1→M5 lesson does NOT transfer: snapback books pay a one-bar delay at coarser bars |
+| A3 net-marginal | **NO weight changes** | Real feed OOS: donchian POSITIVE unambiguous (remove → Sh 5.75 → −2.88); all minor books FLAT at 1×. Duka's vwap_trend-NEGATIVE and ratio_mr-POSITIVE were cost artifacts — both flip to FLAT on real spread. No london_orb/lbma_fix revival. Jul 6 config (9b21f20) validated |
+| B regime gate | **DO NOT ADOPT** | ER forced-flat inverts the book (+12.3% → −3.6% duka; +8.3% → −5.0% real). CUSUM OOS-negative in 9/9 wiggle cells. ER entry-only closest: helps duka OOS/chop with plateau, but never beats ungated full-span on the real feed — re-test after a chop-heavy month of live ticks |
+| B exit_n | **KEEP 110 — OOS-vindicated** | Beats 60 everywhere (real full-span +8.3% vs +3.4%); 90–130 a true plateau; 90's duka edge flips sign on real feed (noise). Donchian's chop loss is regime-normal, not a parameter defect |
+| C passive geometry | **KEPT 37.5/25 (user decision)** | Research said revert (fails gates 1,3,4; ranking statistically a coin flip, |t|≤1.35; surface is noise; no cell shows robust edge — live +$114/52 trades ≈ 0.35σ). User kept it; review condition: judge on realized broker PnL after ~30 trades at 37.5/25 (~2–3 wks), revisit if it lags the 20/25 live track record |
+
+Shipped artifact: `scripts/eval_net_marginal.py` — the standing gate for any
+future weight change (replaces reactive daily hand-reweighting).
+
+Net conclusion: the live config needs no further changes. The portfolio is one
+real edge (donchian) plus cheap, roughly-neutral diversifiers; the Jun 25–Jul 6
+loss was dominated by two books (london_orb, lbma_fix) that are now off, plus
+regime-normal trend-book chop. Standing re-test triggers: entry-only ER gate
+(after a chop-heavy month), passive geometry (at ~30 trades), sweep_fade
+(if 4×-stress marginal goes negative on the real feed).
