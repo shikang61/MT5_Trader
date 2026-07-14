@@ -1,7 +1,6 @@
 # data & outputs (root only — src/mt5_trader/data is code)
 /data/
 /reports/
-/logs/
 *.parquet
 *.csv
 

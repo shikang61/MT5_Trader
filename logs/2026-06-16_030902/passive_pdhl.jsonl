@@ -1,0 +1,1098 @@
+{"event": "START", "symbol": "XAUUSD", "lots": 0.05, "tp_bp": 12.0, "sl_bp": 20.0, "ts": "2026-06-15T18:07:13.977081+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:07:13.987112+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:07:18.995673+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:07:24.027309+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:07:24.030803+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:07:29.048688+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:07:34.132180+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:07:39.154355+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:07:39.158015+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:07:44.165300+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:07:49.184503+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:07:54.202092+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:07:54.205650+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:07:59.235746+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:04.246120+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:09.256655+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:08:09.260247+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:14.288347+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:19.295498+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:24.306026+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:08:24.309743+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:29.318807+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:34.326586+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:39.354843+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:08:39.358574+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:44.378142+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:49.412584+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:54.419760+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:08:54.423262+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:08:59.430712+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:04.456085+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:09.502606+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:09:09.506007+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:14.551839+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:19.559670+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:24.580802+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:09:24.584332+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:29.591495+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:34.598804+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:39.614688+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:09:39.618222+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:44.650428+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:49.668655+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:54.692863+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:09:54.696496+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:09:59.703818+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:04.732614+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:09.774257+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:10:09.777829+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:14.785032+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:19.797135+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:24.805571+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:10:24.809247+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:29.816438+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:34.823983+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:39.839817+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:10:39.843650+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:44.853850+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:49.861313+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:54.886045+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:10:54.890799+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:10:59.897885+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:11:04.905278+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:11:09.915192+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:11:09.970165+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:11:14.977450+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:11:19.989873+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:11:24.997519+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:11:25.001224+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:11:30.016402+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:11:35.052511+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:11:40.070298+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:11:40.073919+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:11:45.080951+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:11:50.091323+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:11:55.108126+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:11:55.111896+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:00.167318+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:05.174863+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:10.183372+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:12:10.186846+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:15.206936+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:20.227777+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:25.251210+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:12:25.254710+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:30.263381+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:35.272585+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:40.289722+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:12:40.293227+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:45.326251+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:50.337174+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:12:55.346926+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:12:55.350252+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:00.358664+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:05.366672+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:10.374130+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:13:10.377663+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:15.385558+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:20.402620+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:25.434288+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:13:25.437726+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:30.444735+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:35.451846+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:40.459423+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:13:40.462963+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:45.470119+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:50.481496+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:13:55.489195+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:13:55.492457+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:00.504150+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:05.526063+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:10.573418+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:14:10.576915+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:15.595600+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:20.602890+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:25.610606+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:14:25.614045+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:30.632313+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:35.669100+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:40.677222+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:14:40.680690+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:45.695754+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:50.703344+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:14:55.717156+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:14:55.720364+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:00.734858+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:05.763891+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:10.798894+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:15:10.802410+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:15.809083+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:20.817819+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:25.866053+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:15:25.869555+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:30.890972+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:35.908702+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:40.916882+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:15:40.920363+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:45.927026+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:50.934230+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:15:55.941106+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:15:55.944536+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:00.986952+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:05.996351+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:11.004453+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:16:11.007989+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:16.015582+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:21.025938+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:26.033223+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:16:26.036705+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:31.065999+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:36.080524+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:41.089232+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:16:41.092651+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:46.107539+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:51.114349+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:16:56.124479+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:16:56.127802+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:01.135636+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:06.143254+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:11.170161+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:17:11.173610+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:16.184759+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:21.205500+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:26.224005+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:17:26.227553+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:31.246153+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:36.258167+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:41.284326+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:17:41.287630+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:46.337939+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:51.349599+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:17:56.356796+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:17:56.360205+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:01.368284+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:06.375921+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:11.383500+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:18:11.386993+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:16.399066+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:21.406208+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:26.413548+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:18:26.417015+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:31.433079+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:36.462165+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:41.469449+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:18:41.472800+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:46.494093+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:51.507780+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:18:56.523102+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:18:56.526632+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:01.539055+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:06.547103+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:11.563983+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:19:11.567755+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:16.575190+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:21.583032+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:26.590385+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:19:26.593931+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:31.633646+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:36.654347+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:41.661410+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:19:41.664958+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:46.672000+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:51.679427+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:19:56.689855+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:19:56.693334+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:01.706524+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:06.713827+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:11.733875+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:20:11.737311+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:16.761553+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:21.776173+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:26.785612+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:20:26.789747+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:31.821167+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:36.859566+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:41.870858+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:20:41.874410+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:46.891136+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:51.901458+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:20:56.908974+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:20:56.912545+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:01.920029+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:06.948577+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:11.956239+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:21:11.959803+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:16.967094+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:21.980039+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:26.987944+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:21:26.991284+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:31.998295+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:37.010640+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:42.030298+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:21:42.033930+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:47.051489+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:52.058980+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:21:57.066206+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:21:57.069492+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:02.090599+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:07.097792+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:12.107442+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:22:12.110928+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:17.118310+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:22.134466+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:27.146993+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:22:27.150326+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:32.157618+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:37.211159+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:42.236186+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:22:42.239614+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:47.283454+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:52.291336+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:22:57.328780+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:22:57.332292+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:02.349665+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:07.356859+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:12.378206+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:23:12.381684+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:17.389249+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:22.396154+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:27.403472+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:23:27.406904+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:32.413448+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:37.420570+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:42.429961+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:23:42.433500+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:47.440704+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:52.472718+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:23:57.482358+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:23:57.485812+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:02.495883+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:07.507787+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:12.514712+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:24:12.518127+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:17.525501+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:22.532568+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:27.539947+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:24:27.543379+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:32.550637+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:37.582539+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:42.608588+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:24:42.612027+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:47.635742+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:52.643240+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:24:57.650353+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:24:57.653811+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:02.672705+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:07.681958+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:12.689601+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:25:12.693049+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:17.699930+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:22.707130+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:27.714614+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:25:27.718166+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:32.747560+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:37.755144+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:42.762153+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:25:42.765529+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:47.773034+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:52.780798+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:25:57.788023+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:25:57.791450+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:02.798976+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:07.814673+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:12.828977+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:26:12.832643+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:17.840044+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:22.849337+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:27.856812+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:26:27.860868+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:32.883966+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:37.899300+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:42.906126+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:26:42.909609+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:47.921588+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:52.929294+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:26:57.936925+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:26:57.940346+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:02.977987+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:07.985528+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:12.992933+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:27:12.996507+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:18.004329+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:23.023829+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:28.031431+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:27:28.034943+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:33.045898+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:38.053380+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:43.060588+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:27:43.064066+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:48.072292+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:53.087276+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:27:58.095505+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:27:58.098930+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:03.106093+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:08.133523+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:13.159252+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:28:13.162726+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:18.192570+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:23.199804+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:28.208288+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:28:28.211729+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:33.218642+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:38.226270+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:43.233715+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:28:43.237134+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:48.299659+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:53.315815+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:28:58.323602+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:28:58.327090+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:03.367505+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:08.379373+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:13.386971+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:29:13.390443+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:18.397597+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:23.417403+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:28.425930+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:29:28.429481+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:33.449312+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:38.464269+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:43.471196+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:29:43.474206+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:48.481097+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:53.550626+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:29:58.557666+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:29:58.560991+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:03.585931+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:08.593523+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:13.600705+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:30:13.604175+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:18.611328+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:23.620859+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:28.627877+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:30:28.631280+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:33.657477+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:38.664736+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:43.674385+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:30:43.677869+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:48.715438+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:53.731776+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:30:58.787446+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:30:58.791058+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:03.822560+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:08.835809+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:13.843292+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:31:13.846645+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:18.913414+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:23.934756+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:28.966274+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:31:28.969830+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:33.982065+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:39.029960+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:44.037220+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:31:44.041205+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:49.048697+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:54.055593+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:31:59.083215+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:31:59.086630+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:04.093676+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:09.119254+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:14.127307+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:32:14.130693+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:19.138683+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:24.145954+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:29.153423+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:32:29.156874+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:34.178468+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:39.186200+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:44.194355+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:32:44.197950+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:49.204932+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:54.212143+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:32:59.219506+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:32:59.222898+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:04.233143+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:09.256798+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:14.324625+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:33:14.328381+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:19.340192+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:24.348739+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:29.356459+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:33:29.359733+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:34.387030+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:39.399794+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:44.430061+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:33:44.433666+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:49.457906+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:54.485994+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:33:59.532903+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:33:59.536394+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:04.543267+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:09.560044+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:14.592769+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:34:14.596293+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:19.603327+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:24.620781+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:29.628173+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:34:29.631622+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:34.638372+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:39.659924+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:44.669573+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:34:44.673001+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:49.681561+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:54.689647+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:34:59.700563+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:34:59.704050+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:04.712338+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:09.719671+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:14.727843+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:35:14.731312+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:19.748064+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:24.755229+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:29.770885+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:35:29.774332+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:34.800030+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:39.809442+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:44.832893+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:35:44.836436+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:49.843495+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:54.856173+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:35:59.863694+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:35:59.867085+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:36:04.885428+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:36:09.892420+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:36:14.899718+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:36:14.903277+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:36:19.909966+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:36:24.917438+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:36:29.928397+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:36:29.931823+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:36:34.952618+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:36:40.007095+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:36:45.039636+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:36:45.043082+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:36:50.050189+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:36:55.057487+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:00.100792+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:37:00.104266+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:05.111498+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:10.178080+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:15.203893+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:37:15.207360+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:20.234039+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:25.241073+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:30.289044+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:37:30.292283+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:35.299666+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:40.310381+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:45.324556+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:37:45.327830+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:50.360881+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:37:55.367946+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:00.385265+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:38:00.388664+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:05.404235+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:10.451689+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:15.459097+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:38:15.462337+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:20.473785+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:25.488293+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:30.496041+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:38:30.499311+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:35.506349+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:40.549087+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:45.574219+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:38:45.577888+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:50.584652+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:38:55.592046+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:00.600731+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:39:00.604251+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:05.629084+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:10.648968+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:15.659626+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:39:15.663055+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:20.670820+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:25.678002+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:30.690995+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:39:30.694487+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:35.716085+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:40.731634+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:45.762769+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:39:45.766432+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:50.775343+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:39:55.782378+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:00.791095+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:40:00.794561+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:05.827332+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:10.834605+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:15.842192+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:40:15.845642+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:20.853751+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:25.867694+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:30.874822+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:40:30.878262+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:35.892492+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:40.900240+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:45.925658+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:40:45.929169+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:50.935899+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:40:55.943252+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:00.961684+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:41:00.965240+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:05.972105+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:10.979829+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:15.986987+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:41:15.990393+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:21.005847+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:26.033021+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:31.039924+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:41:31.043180+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:36.074800+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:41.082219+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:46.095263+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:41:46.098788+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:51.172477+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:41:56.180178+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:01.187359+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:42:01.190837+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:06.207554+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:11.217896+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:16.226405+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:42:16.229822+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:21.247199+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:26.278690+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:31.287320+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:42:31.290742+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:36.301624+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:41.324569+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:46.345699+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:42:46.349082+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:51.367354+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:42:56.384705+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:01.431579+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:43:01.434983+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:06.443257+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:11.450493+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:16.482647+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:43:16.486348+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:21.493111+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:26.500561+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:31.507736+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:43:31.511198+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:36.518478+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:41.552395+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:46.559968+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:43:46.563439+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:51.570894+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:43:56.614074+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:01.621656+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:44:01.624895+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:06.640316+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:11.647613+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:16.664312+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:44:16.667737+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:21.675499+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:26.690125+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:31.697312+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:44:31.700782+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:36.719226+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:41.729166+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:46.737079+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:44:46.740579+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:51.748052+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:44:56.780099+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:01.787795+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:45:01.791530+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:06.818283+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:11.827942+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:16.867405+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:45:16.871059+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:21.899328+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:26.907587+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:31.929551+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:45:31.933018+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:36.941570+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:41.951050+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:46.958638+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:45:46.962025+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:51.993406+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:45:57.000594+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:02.015531+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:46:02.018934+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:07.025552+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:12.036774+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:17.045861+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:46:17.049297+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:22.061544+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:27.081624+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:32.089503+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:46:32.092938+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:37.100155+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:42.114561+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:47.138662+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:46:47.142263+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:52.149594+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:46:57.166406+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:02.193095+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:47:02.196679+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:07.234023+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:12.258671+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:17.296740+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:47:17.300175+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:22.317603+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:27.337321+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:32.344485+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:47:32.347735+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:37.355315+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:42.377505+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:47.397217+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:47:47.400969+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:52.410640+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:47:57.417706+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:48:02.441862+00:00"}
+{"event": "RECONNECT_OK", "ts": "2026-06-15T18:48:02.446025+00:00"}
+{"event": "ERROR", "error": "MT5Error(\"order_send failed: 10015 Invalid price (1, 'Success')\")", "ts": "2026-06-15T18:48:07.473540+00:00"}
+{"event": "START", "symbol": "XAUUSD", "lots": 0.05, "tp_bp": 12.0, "sl_bp": 20.0, "ts": "2026-06-15T18:48:41.072901+00:00"}
+{"event": "ARM", "sell_level": 4308.92, "buy_level": 4231.18, "level_source": "pdhl", "sides": [1.0], "skipped": [-1.0], "bid": 4324.62, "ask": 4324.75, "lots": 0.05, "tp_bp": 12.0, "sl_bp": 20.0, "expire_min": 311, "ts": "2026-06-15T18:48:41.110957+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T18:49:41.140406+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T18:50:41.184117+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T18:51:41.223918+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T18:52:41.256164+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T18:53:41.288428+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T18:54:41.321070+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T18:55:41.352953+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T18:56:41.386245+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T18:57:41.418421+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T18:58:41.451680+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T18:59:41.484716+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:00:41.516942+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:01:41.549591+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:02:41.582642+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:03:41.615114+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:04:41.647053+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:05:41.679794+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:06:41.725382+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:07:41.767740+00:00"}
+{"event": "START", "symbol": "XAUUSD", "lots": 0.05, "tp_bp": 15.0, "sl_bp": 15.0, "ts": "2026-06-15T19:08:18.657783+00:00"}
+{"event": "ARM", "sell_level": 4308.92, "buy_level": 4231.18, "level_source": "pdhl", "sides": [1.0], "skipped": [-1.0], "bid": 4322.3, "ask": 4322.41, "lots": 0.05, "tp_bp": 15.0, "sl_bp": 15.0, "expire_min": 291, "ts": "2026-06-15T19:08:18.674540+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:09:18.700696+00:00"}
+{"event": "START", "symbol": "XAUUSD", "lots": 0.05, "tp_bp": 15.0, "sl_bp": 15.0, "ts": "2026-06-15T19:09:57.093008+00:00"}
+{"event": "ARM", "sell_level": 4308.92, "buy_level": 4231.18, "level_source": "pdhl", "sides": [1.0], "skipped": [-1.0], "bid": 4322.0, "ask": 4322.13, "lots": 0.05, "tp_bp": 15.0, "sl_bp": 15.0, "expire_min": 290, "ts": "2026-06-15T19:09:57.150835+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:10:57.197300+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:11:57.228659+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:12:57.276196+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:13:57.310894+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:14:57.358908+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:15:57.392693+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:16:57.424788+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:17:57.460053+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:18:57.492258+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:19:57.526719+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:20:57.559277+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:21:57.591256+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:22:57.623905+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:23:57.656693+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:24:57.689193+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:25:57.722345+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:26:57.754473+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:27:57.785926+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:28:57.818713+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:29:57.850209+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:30:57.883898+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:31:57.916549+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:32:57.948165+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:33:57.979568+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:34:58.012821+00:00"}
+{"event": "SNAP", "equity": 99310.58, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:35:58.045980+00:00"}
+{"event": "SNAP", "equity": 99308.98, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:36:58.079489+00:00"}
+{"event": "SNAP", "equity": 99311.92, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:37:58.112682+00:00"}
+{"event": "SNAP", "equity": 99312.95, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:38:58.144304+00:00"}
+{"event": "SNAP", "equity": 99312.22, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:39:58.176878+00:00"}
+{"event": "SNAP", "equity": 99311.1, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:40:58.209066+00:00"}
+{"event": "SNAP", "equity": 99308.34, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:41:58.241151+00:00"}
+{"event": "SNAP", "equity": 99303.98, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:42:58.273156+00:00"}
+{"event": "SNAP", "equity": 99304.93, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:43:58.305033+00:00"}
+{"event": "SNAP", "equity": 99304.54, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:44:58.336820+00:00"}
+{"event": "SNAP", "equity": 99305.75, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:45:58.368818+00:00"}
+{"event": "SNAP", "equity": 99307.82, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:46:58.400132+00:00"}
+{"event": "SNAP", "equity": 99303.29, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:47:58.431721+00:00"}
+{"event": "SNAP", "equity": 99299.11, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:48:58.463929+00:00"}
+{"event": "SNAP", "equity": 99301.35, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:49:58.495790+00:00"}
+{"event": "SNAP", "equity": 99302.39, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:50:58.528595+00:00"}
+{"event": "SNAP", "equity": 99296.17, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:51:58.561528+00:00"}
+{"event": "SNAP", "equity": 99301.44, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:52:58.593873+00:00"}
+{"event": "SNAP", "equity": 99301.26, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:53:58.626425+00:00"}
+{"event": "SNAP", "equity": 99308.12, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:54:58.658381+00:00"}
+{"event": "SNAP", "equity": 99308.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:55:58.689887+00:00"}
+{"event": "SNAP", "equity": 99306.61, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:56:58.721900+00:00"}
+{"event": "SNAP", "equity": 99304.62, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:57:58.754590+00:00"}
+{"event": "SNAP", "equity": 99309.46, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:58:58.787693+00:00"}
+{"event": "SNAP", "equity": 99310.49, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T19:59:58.819870+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:00:58.851294+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:01:58.883651+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:02:58.916223+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:03:58.949347+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:04:58.981956+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:05:59.015152+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:06:59.063968+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:07:59.093114+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:08:59.122320+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:09:59.152087+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:10:59.181845+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:11:59.211159+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:12:59.240767+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:13:59.269987+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:14:59.300087+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:15:59.330574+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:16:59.360936+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:17:59.390590+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:18:59.420692+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:19:59.450355+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:20:59.481073+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:21:59.511421+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:22:59.541718+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:23:59.570900+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:24:59.600407+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:25:59.630980+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:26:59.660568+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:27:59.689590+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:28:59.720276+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:29:59.749510+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:30:59.778841+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:31:59.809025+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:32:59.838803+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:33:59.868629+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:34:59.899866+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:35:59.929541+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:36:59.958554+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:37:59.987072+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:39:00.017196+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:40:00.045629+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:41:00.075483+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:42:00.105043+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:43:00.134694+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:44:00.163783+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:45:00.193353+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:46:00.221944+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:47:00.250690+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:48:00.279811+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:49:00.309355+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:50:00.337931+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:51:00.366843+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:52:00.401867+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:53:00.431326+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:54:00.460857+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:55:00.490183+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:56:00.520546+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:57:00.550222+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:58:00.579524+00:00"}
+{"event": "SNAP", "equity": 99311.57, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T20:59:00.608710+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:00:00.639230+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:01:04.051984+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:02:04.081823+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:03:04.112038+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:04:04.141055+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:05:04.171322+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:06:04.200498+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:07:04.229817+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:08:04.259291+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:09:04.289604+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:10:04.319434+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:11:04.348895+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:12:04.378798+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:13:04.408510+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:14:04.438122+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:15:04.467513+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:16:04.496868+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:17:04.526475+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:18:04.556192+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:19:04.585529+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:20:04.615545+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:21:04.645679+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:22:04.675975+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:23:04.705659+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:24:04.734729+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:25:04.764898+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:26:04.794866+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:27:04.824301+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:28:04.854636+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:29:04.884418+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:30:04.914772+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:31:04.943630+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:32:04.972464+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:33:05.002691+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:34:05.033090+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:35:05.063935+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:36:05.093605+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:37:05.123811+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:38:05.154730+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:39:05.184583+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:40:05.214416+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:41:05.244156+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:42:05.275145+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:43:05.304977+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T21:44:05.334282+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:45:05.363643+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:46:05.393045+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:47:05.422551+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:48:05.452351+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:49:05.481886+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:50:05.510352+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:51:05.540899+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:52:05.571001+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:53:05.600844+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:54:05.630911+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:55:05.660247+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:56:05.692440+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:57:05.722221+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:58:05.751596+00:00"}
+{"event": "SNAP", "equity": 99311.03, "position_lots": 0, "regime": 0, "sell_level": 4246.34, "buy_level": 4170.16, "ts": "2026-06-15T21:59:05.781335+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:00:05.811382+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:01:05.840704+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:02:05.870637+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:03:05.899583+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:04:05.929317+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:05:05.958487+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:06:05.987234+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:07:06.016969+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:08:06.047540+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:09:06.077436+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:10:06.108382+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:11:06.139382+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:12:06.171445+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:13:06.200978+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:14:06.230920+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:15:06.259819+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:16:06.290106+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:17:06.319348+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:18:06.349432+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:19:06.380157+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:20:06.408849+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:21:06.440348+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:22:06.470727+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:23:06.502732+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:24:06.532928+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:25:06.563397+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:26:06.594255+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:27:06.624159+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:28:06.654129+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:29:06.683276+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:30:06.712851+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:31:06.743300+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:32:06.772418+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:33:06.802001+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:34:06.831346+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:35:06.860248+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:36:06.905406+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:37:06.934803+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:38:06.964286+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:39:06.993170+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:40:07.025634+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:41:07.055226+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:42:07.085373+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:43:07.115370+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:44:07.145761+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:45:07.176629+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:46:07.206831+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:47:07.238049+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:48:07.278257+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:49:07.317505+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:50:07.365699+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:51:07.397701+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:52:07.427536+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:53:07.456925+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:54:07.491979+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:55:07.521495+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:56:07.550696+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:57:07.579861+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:58:07.609522+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T22:59:07.638448+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:00:07.668681+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:01:07.698387+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:02:07.727526+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:03:07.757169+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:04:07.787436+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:05:07.816537+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:06:07.845837+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:07:07.875223+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:08:07.905082+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:09:07.935385+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:10:07.963924+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:11:07.992837+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:12:08.023104+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:13:08.052193+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:14:08.081980+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:15:08.111395+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:16:08.140718+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:17:08.170669+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:18:08.200115+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:19:08.230094+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:20:08.260102+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:21:08.289222+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:22:08.319153+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:23:08.348497+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:24:08.378492+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:25:08.408293+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:26:08.438164+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:27:08.467482+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:28:08.497509+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:29:08.526796+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:30:08.556353+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:31:08.586069+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:32:08.615299+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:33:08.645140+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:34:08.674012+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:35:08.703138+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:36:08.732385+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:37:08.761964+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:38:08.792394+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:39:08.822117+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:40:08.851777+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:41:08.881998+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:42:08.911518+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:43:08.940893+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:44:08.970270+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:45:08.999472+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:46:09.029192+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:47:09.058907+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:48:09.087997+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:49:09.117993+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:50:09.148201+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:51:09.176820+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:52:09.206581+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:53:09.236084+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:54:09.265288+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:55:09.295719+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:56:09.324395+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:57:09.354977+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:58:09.384814+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4308.92, "buy_level": 4231.18, "ts": "2026-06-15T23:59:09.413746+00:00"}
+{"event": "ARM", "sell_level": 4369.4, "buy_level": 4285.49, "level_source": "pdhl", "sides": [1.0, -1.0], "skipped": [], "bid": 4315.53, "ask": 4315.7, "lots": 0.05, "tp_bp": 15.0, "sl_bp": 15.0, "expire_min": 1439, "ts": "2026-06-16T00:00:04.447416+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:01:04.476964+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:02:04.505843+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:03:04.535608+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:04:04.565226+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:05:04.594185+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:06:04.623458+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:07:04.652835+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:08:04.682151+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:09:04.712808+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:10:04.742433+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:11:04.772043+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:12:04.801231+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:13:04.830524+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:14:04.860323+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:15:04.889642+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:16:04.918473+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:17:04.948868+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:18:04.978784+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:19:05.008660+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:20:05.038151+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:21:05.068512+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:22:05.106443+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:23:05.136277+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:24:05.167351+00:00"}
+{"event": "SNAP", "equity": 99282.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:25:05.197488+00:00"}
+{"event": "SNAP", "equity": 99281.96, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:26:05.226766+00:00"}
+{"event": "SNAP", "equity": 99280.41, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:27:05.256754+00:00"}
+{"event": "SNAP", "equity": 99289.34, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:28:05.286490+00:00"}
+{"event": "SNAP", "equity": 99285.28, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:29:05.316194+00:00"}
+{"event": "SNAP", "equity": 99283.82, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:30:05.346511+00:00"}
+{"event": "SNAP", "equity": 99288.26, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:31:05.376062+00:00"}
+{"event": "SNAP", "equity": 99287.09, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:32:05.405448+00:00"}
+{"event": "SNAP", "equity": 99296.46, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:33:05.435854+00:00"}
+{"event": "SNAP", "equity": 99287.35, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:34:05.464891+00:00"}
+{"event": "SNAP", "equity": 99295.08, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:35:05.493736+00:00"}
+{"event": "SNAP", "equity": 99298.01, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:36:05.522492+00:00"}
+{"event": "SNAP", "equity": 99301.59, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:37:05.550123+00:00"}
+{"event": "SNAP", "equity": 99302.54, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:38:05.577575+00:00"}
+{"event": "SNAP", "equity": 99302.28, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:39:05.607204+00:00"}
+{"event": "SNAP", "equity": 99301.55, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:40:05.636719+00:00"}
+{"event": "SNAP", "equity": 99300.55, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:41:05.666302+00:00"}
+{"event": "SNAP", "equity": 99300.85, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:42:05.696489+00:00"}
+{"event": "SNAP", "equity": 99297.62, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:43:05.727042+00:00"}
+{"event": "SNAP", "equity": 99295.63, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:44:05.757183+00:00"}
+{"event": "SNAP", "equity": 99296.5, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:45:05.787663+00:00"}
+{"event": "SNAP", "equity": 99300.16, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:46:05.817731+00:00"}
+{"event": "SNAP", "equity": 99303.44, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:47:05.847110+00:00"}
+{"event": "SNAP", "equity": 99304.0, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:48:05.876838+00:00"}
+{"event": "SNAP", "equity": 99302.49, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:49:05.905959+00:00"}
+{"event": "SNAP", "equity": 99303.75, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:50:05.935230+00:00"}
+{"event": "SNAP", "equity": 99299.39, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:51:05.963850+00:00"}
+{"event": "SNAP", "equity": 99302.41, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:52:05.992915+00:00"}
+{"event": "SNAP", "equity": 99305.69, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:53:06.022958+00:00"}
+{"event": "SNAP", "equity": 99307.29, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:54:06.053132+00:00"}
+{"event": "SNAP", "equity": 99309.96, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:55:06.082589+00:00"}
+{"event": "SNAP", "equity": 99309.96, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:56:06.112486+00:00"}
+{"event": "SNAP", "equity": 99309.96, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:57:06.141775+00:00"}
+{"event": "SNAP", "equity": 99309.96, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:58:06.171325+00:00"}
+{"event": "SNAP", "equity": 99309.96, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T00:59:06.201161+00:00"}
+{"event": "SNAP", "equity": 99308.02, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:00:06.230874+00:00"}
+{"event": "SNAP", "equity": 99311.9, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:01:06.261060+00:00"}
+{"event": "SNAP", "equity": 99304.14, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:02:06.291518+00:00"}
+{"event": "SNAP", "equity": 99301.32, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:03:06.321362+00:00"}
+{"event": "SNAP", "equity": 99309.85, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:04:06.350201+00:00"}
+{"event": "SNAP", "equity": 99301.37, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:05:06.380160+00:00"}
+{"event": "SNAP", "equity": 99290.53, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:06:06.409802+00:00"}
+{"event": "SNAP", "equity": 99279.97, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:07:06.440776+00:00"}
+{"event": "SNAP", "equity": 99277.35, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:08:06.471346+00:00"}
+{"event": "SNAP", "equity": 99274.61, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:09:06.501107+00:00"}
+{"event": "SNAP", "equity": 99270.94, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:10:06.532355+00:00"}
+{"event": "SNAP", "equity": 99270.94, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:11:06.562619+00:00"}
+{"event": "SNAP", "equity": 99270.94, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:12:06.591914+00:00"}
+{"event": "SNAP", "equity": 99270.94, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:13:06.621935+00:00"}
+{"event": "SNAP", "equity": 99270.94, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:14:06.651987+00:00"}
+{"event": "SNAP", "equity": 99269.54, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:15:06.680784+00:00"}
+{"event": "SNAP", "equity": 99263.0, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:16:06.710943+00:00"}
+{"event": "SNAP", "equity": 99270.6, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:17:06.740665+00:00"}
+{"event": "SNAP", "equity": 99272.1, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:18:06.770026+00:00"}
+{"event": "SNAP", "equity": 99272.86, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:19:06.800278+00:00"}
+{"event": "SNAP", "equity": 99274.07, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:20:06.831030+00:00"}
+{"event": "SNAP", "equity": 99281.78, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:21:06.860271+00:00"}
+{"event": "SNAP", "equity": 99272.54, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:22:06.891499+00:00"}
+{"event": "SNAP", "equity": 99260.64, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:23:06.922387+00:00"}
+{"event": "SNAP", "equity": 99262.52, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:24:06.953374+00:00"}
+{"event": "SNAP", "equity": 99260.25, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:25:06.982966+00:00"}
+{"event": "SNAP", "equity": 99269.9, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:26:07.012619+00:00"}
+{"event": "SNAP", "equity": 99266.38, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:27:07.041655+00:00"}
+{"event": "SNAP", "equity": 99266.28, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:28:07.071405+00:00"}
+{"event": "SNAP", "equity": 99264.39, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:29:07.101156+00:00"}
+{"event": "SNAP", "equity": 99256.6, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:30:07.129991+00:00"}
+{"event": "SNAP", "equity": 99255.88, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:31:07.160065+00:00"}
+{"event": "SNAP", "equity": 99256.27, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:32:07.190488+00:00"}
+{"event": "SNAP", "equity": 99248.94, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:33:07.220172+00:00"}
+{"event": "SNAP", "equity": 99249.93, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:34:07.250227+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:35:07.279360+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:36:07.308619+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:37:07.338034+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:38:07.367834+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:39:07.397903+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:40:07.428389+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:41:07.458131+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:42:07.487793+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:43:07.516816+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:44:07.545492+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:45:07.574273+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:46:07.603663+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:47:07.634108+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:48:07.664489+00:00"}
+{"event": "SNAP", "equity": 99244.05, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:49:07.693574+00:00"}
+{"event": "SNAP", "equity": 99236.98, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:50:07.723333+00:00"}
+{"event": "SNAP", "equity": 99240.11, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:51:07.753543+00:00"}
+{"event": "SNAP", "equity": 99239.42, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:52:07.783785+00:00"}
+{"event": "SNAP", "equity": 99237.42, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:53:07.814038+00:00"}
+{"event": "SNAP", "equity": 99234.55, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:54:07.843051+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:55:07.872331+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:56:07.901649+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:57:07.931668+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:58:07.961290+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T01:59:07.990329+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T02:00:08.020219+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T02:01:08.052623+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T02:02:08.081766+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T02:03:08.111292+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T02:04:08.140666+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T02:05:08.169633+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T02:06:08.199507+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T02:07:08.227913+00:00"}
+{"event": "SNAP", "equity": 99232.22, "position_lots": 0, "regime": 0, "sell_level": 4369.4, "buy_level": 4285.49, "ts": "2026-06-16T02:08:08.257763+00:00"}
